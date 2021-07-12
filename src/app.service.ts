@@ -33,6 +33,11 @@ export class AppService
       `Incoming connection from ${socket.remoteAddress}:${socket.remotePort}`,
       'NewConnection',
     );
+    setTimeout(() => {
+      this.logger.debug(`Connection timeout`, 'Disconnected');
+      socket.write('Connection Timeout\r\n');
+      socket.end();
+    }, 3000);
   }
 
   async onApplicationBootstrap() {

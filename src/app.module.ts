@@ -2,7 +2,9 @@ import { Logger, Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Options } from './interfaces/options.interface';
 
-@Module({})
+@Module({
+  providers: [],
+})
 export class AppModule {
   static async forRoot(options: Options) {
     options.imports = options.imports ?? [];
