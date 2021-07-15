@@ -1,12 +1,10 @@
-import { Logger, Module } from '@nestjs/common';
+import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Options } from './interfaces/options.interface';
 
-@Module({
-  providers: [],
-})
+@Module({})
 export class AppModule {
-  static async forRoot(options: Options) {
+  static async forRoot(options: Options): Promise<DynamicModule> {
     options.imports = options.imports ?? [];
     options.providers = options.providers ?? [];
     options.providers.push({

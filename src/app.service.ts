@@ -8,6 +8,10 @@ import {
 import { EventEmitter } from 'events';
 import { Options } from './interfaces/options.interface';
 import { Server as TCPServer, Socket as TCPSocket, createServer } from 'net';
+import { GpsDevice } from './models/device.models';
+import { AbstractGpsDevice } from './models/abstract_device.model';
+import { ConfigInterface } from './interfaces/config.interface';
+import { ProtocolName } from './interfaces/protocol.interface';
 
 @Injectable()
 export class AppService
@@ -17,6 +21,8 @@ export class AppService
   protected options: Options;
   protected logger: LoggerService;
   protected tcp: TCPServer;
+  protected devices: Array<AbstractGpsDevice>;
+  protected config: ConfigInterface[];
 
   constructor(
     @Inject('GPS_CONFIG_OPTIONS') options: Options,
@@ -26,29 +32,54 @@ export class AppService
     this.options = options;
     this.options.host = options.host ?? '0.0.0.0';
     this.logger = logger;
+    this.devices = [];
+    this.config = options.config;
   }
 
-  handleConnection(socket: TCPSocket) {
+  handleConnection(socket: TCPSocket, protocol: ProtocolName) {
     this.logger.debug(
       `Incoming connection from ${socket.remoteAddress}:${socket.remotePort}`,
-      'NewConnection',
+      protocol,
     );
-    setTimeout(() => {
-      this.logger.debug(`Connection timeout`, 'Disconnected');
-      socket.write('Connection Timeout\r\n');
-      socket.end();
-    }, 3000);
+    const device = new GpsDevice(socket, protocol, this.logger);
+    this.devices.push(device);
+
+    device.on('disconnect', (uid) => {
+      const index = this.devices.findIndex(
+        (device: AbstractGpsDevice, index: number) => {
+          if (device.getUID() === uid) {
+            this.devices.splice(index, 1);
+            return true;
+          }
+        },
+      );
+      if (index < 0) return;
+      this.logger.debug(`Device ${device.ip}:${device.port} disconnected.`);
+      device.emit('disconnected');
+    });
+    // ! Implement timeout disconnect device.
+    // setTimeout(() => {
+    //   if (!device.) {
+    //     socket.end();
+    //   }
+    // }, 3000);
   }
 
   async onApplicationBootstrap() {
-    this.options.port.forEach((port) => {
-      this.tcp = createServer(this.handleConnection.bind(this)).listen({
-        host: this.options.host,
-        port,
-      });
-      this.logger.log(
-        `The TCP server is listening on ${this.options.host}:${port}`,
-        'AppService',
+    this.config.forEach(({ port, protocol }) => {
+      this.tcp = createServer((socket) =>
+        this.handleConnection(socket, protocol),
+      ).listen(
+        {
+          host: this.options.host,
+          port,
+        },
+        () => {
+          this.logger.debug(
+            `The TCP server is listening on ${this.options.host}:${port} over ${protocol} protocol`,
+            'AppService',
+          );
+        },
       );
     });
   }

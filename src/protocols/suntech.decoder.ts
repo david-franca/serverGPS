@@ -8,12 +8,16 @@ import CellTower from '../models/cell_tower.model';
 import Network from '../models/network.model';
 import Position from '../models/position.model';
 import { TimeZone } from '../models/timezone.model';
+import { AdapterInterface } from 'src/interfaces/adapter.interface';
 
 const compatibleHardware = ['SUNTECH/supplier'];
 const modelName = 'SUNTECH';
 const protocol = 'SUNTECH';
 
-class SuntechProtocolDecoder extends BaseProtocolDecoder {
+class SuntechProtocolDecoder
+  extends BaseProtocolDecoder
+  implements AdapterInterface
+{
   private prefix: string;
   private protocolType: number;
   private hbm: boolean;
@@ -28,53 +32,53 @@ class SuntechProtocolDecoder extends BaseProtocolDecoder {
     this.connection = connection;
   }
 
-  public getPrefix(): string {
+  private getPrefix(): string {
     return this.prefix;
   }
 
-  public setProtocolType(protocolType: number): void {
+  private setProtocolType(protocolType: number): void {
     this.protocolType = protocolType;
   }
 
-  public getProtocolType(deviceId: number): number {
+  private getProtocolType(deviceId: number): number {
     // TODO
     return deviceId;
   }
 
-  public setHbm(hbm: boolean): void {
+  private setHbm(hbm: boolean): void {
     this.hbm = hbm;
   }
 
-  public isHbm(type: string, length: number): boolean {
+  private isHbm(type: string, length: number): boolean {
     if (['STT', 'UEX'].includes(type) && length > 18) return true;
     if (['EMG', 'EVT', 'ALT'].includes(type) && length > 17) {
       return true;
     } else return false;
   }
 
-  public setIncludeAdc(includeAdc: boolean): void {
+  private setIncludeAdc(includeAdc: boolean): void {
     this.includeAdc = includeAdc;
   }
 
-  public isIncludeAdc(deviceId: number): boolean {
+  private isIncludeAdc(deviceId: number): boolean {
     deviceId ? this.setIncludeAdc(true) : this.setIncludeAdc(false);
     return this.includeAdc;
   }
 
-  public setIncludeRpm(includeRpm: boolean): void {
+  private setIncludeRpm(includeRpm: boolean): void {
     this.includeRpm = includeRpm;
   }
 
-  public isIncludeRpm(deviceId: number): boolean {
+  private isIncludeRpm(deviceId: number): boolean {
     deviceId ? this.setIncludeRpm(true) : this.setIncludeRpm(false);
     return this.includeRpm;
   }
 
-  public setIncludeTemp(includeTemp: boolean): void {
+  private setIncludeTemp(includeTemp: boolean): void {
     this.includeTemp = includeTemp;
   }
 
-  public isIncludeTemp(deviceId: number): boolean {
+  private isIncludeTemp(deviceId: number): boolean {
     deviceId ? this.setIncludeTemp(true) : this.setIncludeTemp(false);
     return this.includeTemp;
   }
@@ -273,21 +277,23 @@ class SuntechProtocolDecoder extends BaseProtocolDecoder {
   ) {
     let index = 0;
     const type: string = values[index++].substring(5);
+    console.log(type);
 
     if (!['STT', 'EMG', 'EVT', 'ALT', 'UEX'].includes(type)) {
       return null;
     }
-    const deviceSession = await this.getDeviceSession(
-      channel,
-      parseInt(values[index++]),
-    );
-    if (!deviceSession) {
-      return null;
-    }
+    // const deviceSession = await this.getDeviceSession(
+    //   channel,
+    //   parseInt(values[index++]),
+    // );
+    // if (!deviceSession) {
+    //   return null;
+    // }
 
     const position: Position = new Position();
-    position.setDeviceId(deviceSession.deviceSession.getDeviceId());
-    position.set('device', deviceSession.device);
+    position.setDeviceId(parseInt(values[index++]));
+    // position.setDeviceId(deviceSession.deviceSession.getDeviceId());
+    // position.set('device', deviceSession.device);
     position.set(Position.KEY_TYPE, type);
     position.set('location', true);
     position.set('status', true);
@@ -636,7 +642,7 @@ class SuntechProtocolDecoder extends BaseProtocolDecoder {
     }
   }
 
-  async decode(data: Buffer) {
+  public async decode(data: Buffer) {
     const values: string[] = data.toString().split(';');
 
     this.prefix = values[0];

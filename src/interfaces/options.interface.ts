@@ -5,9 +5,10 @@ import {
   Provider,
   Type,
 } from '@nestjs/common';
+import { ConfigInterface } from './config.interface';
 
 export interface Options {
-  port: Array<number>;
+  config: ConfigInterface[];
   logger?: Type<LoggerService>;
   imports?: Array<
     Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
