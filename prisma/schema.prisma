@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model adapter {
+  id              String                 @id @db.VarChar(36)
+  active          Boolean                @default(true) @db.Boolean
+  deleted         Boolean                @default(false) @db.Boolean
+  createAt        DateTime               @default(now()) @db.Timestamp(6)
+  updateAt        DateTime               @default(now()) @db.Timestamp(6)
+  code            Int                    @db.Integer
+  description     String                 @db.VarChar(200)
+  model           adapter_model
+  equipmentNumber BigInt                 @db.BigInt
+  phone           String                 @db.VarChar(25)
+  mobileOperator  adapter_mobileOperator
+  chipNumber      String                 @db.VarChar(25)
+  timezone        adapter_timezone
+  location        location[]
+  status          status[]
+}
+
+model address {
+  id       String    @id @db.VarChar(36)
+  active   Boolean   @default(true) @db.Boolean
+  deleted  Boolean   @default(false) @db.Boolean
+  createAt DateTime  @default(now()) @db.Timestamp(6)
+  updateAt DateTime  @default(now()) @db.Timestamp(6)
+  road     String    @db.VarChar(100)
+  suburb   String    @db.VarChar(50)
+  city     String    @db.VarChar(30)
+  state    String    @db.VarChar(30)
+  region   String    @db.VarChar(50)
+  postcode String    @db.VarChar(9)
+  country  String    @db.VarChar(20)
+  location location?
+}
+
+model info {
+  id        String   @id @db.VarChar(36)
+  active    Boolean  @default(true) @db.Boolean
+  deleted   Boolean  @default(false) @db.Boolean
+  createAt  DateTime @default(now()) @db.Timestamp(6)
+  updateAt  DateTime @default(now()) @db.Timestamp(6)
+  odometer  Int?     @db.Integer
+  power     Float?   @db.DoublePrecision
+  serial    Int?     @db.Integer
+  io        Int?     @db.Integer
+  mode      Int?     @db.Integer
+  hourMeter Int?     @db.Integer
+  archive   Int?     @db.SmallInt
+  status    status?
+}
+
+model location {
+  id                        String   @id @db.VarChar(36)
+  active                    Boolean  @default(true) @db.Boolean
+  deleted                   Boolean  @default(false) @db.Boolean
+  createAt                  DateTime @default(now()) @db.Timestamp(6)
+  updateAt                  DateTime @default(now()) @db.Timestamp(6)
+  serverTime                DateTime @db.Timestamp(0)
+  fixTime                   DateTime @db.Timestamp(0)
+  satellite                 Int      @db.Integer
+  latitude                  Float    @db.DoublePrecision
+  longitude                 Float    @db.DoublePrecision
+  speed                     Int      @db.Integer
+  course                    String   @db.VarChar(10)
+  cellId                    String   @db.VarChar(10)
+  adapterId                 String?  @db.VarChar(36)
+  address                   String?  @unique @db.VarChar(36)
+  adapter                   adapter? @relation(fields: [adapterId], references: [id])
+  address_addressTolocation address? @relation(fields: [address], references: [id])
+
+  @@index([adapterId], name: "FK_d605880251ccc50b4eab70d649a")
+}
+
+model status {
+  id                String   @id @db.VarChar(36)
+  active            Boolean  @default(true) @db.Boolean
+  deleted           Boolean  @default(false) @db.Boolean
+  createAt          DateTime @default(now()) @db.Timestamp(6)
+  updateAt          DateTime @default(now()) @db.Timestamp(6)
+  blocked           Boolean  @db.Boolean
+  valid             Boolean  @db.Boolean
+  charge            Boolean  @db.Boolean
+  ignition          Boolean  @db.Boolean
+  battery           Float    @db.DoublePrecision
+  adapterId         String?  @db.VarChar(36)
+  info              String?  @unique @db.VarChar(36)
+  adapter           adapter? @relation(fields: [adapterId], references: [id])
+  info_infoTostatus info?    @relation(fields: [info], references: [id])
+
+  @@index([adapterId], name: "FK_95b18f01abf3de7d708a8d1c7f3")
+}
+
+model user {
+  id       String   @id @db.VarChar(36)
+  active   Boolean  @default(true) @db.Boolean
+  deleted  Boolean  @default(false) @db.Boolean
+  createAt DateTime @default(now()) @db.Timestamp(6)
+  updateAt DateTime @default(now()) @db.Timestamp(6)
+  name     String   @db.VarChar(100)
+  username String   @db.VarChar(100)
+  role     String   @db.VarChar(50)
+  password String   @db.VarChar(100)
+}
+
+enum adapter_model {
+  SUNTECH
+  GT06
+}
+
+enum adapter_mobileOperator {
+  Claro
+  Oi
+  Tim
+  Vivo
+  Vodafone
+  Outras
+}
+
+enum adapter_timezone {
+  GMT_14  @map("GMT-14")
+  GMT_13  @map("GMT-13")
+  GMT_12  @map("GMT-12")
+  GMT_11  @map("GMT-11")
+  GMT_10  @map("GMT-10")
+  GMT_9   @map("GMT-9")
+  GMT_8   @map("GMT-8")
+  GMT_7   @map("GMT-7")
+  GMT_6   @map("GMT-6")
+  GMT_5   @map("GMT-5")
+  GMT_4   @map("GMT-4")
+  GMT_3   @map("GMT-3")
+  GMT_2   @map("GMT-2")
+  GMT_1   @map("GMT-1")
+  GMT1    @map("GMT+1")
+  GMT2    @map("GMT+2")
+  GMT3    @map("GMT+3")
+  GMT4    @map("GMT+4")
+  GMT5    @map("GMT+5")
+  GMT6    @map("GMT+6")
+  GMT7    @map("GMT+7")
+  GMT8    @map("GMT+8")
+  GMT9    @map("GMT+9")
+  GMT10   @map("GMT+10")
+  GMT11   @map("GMT+11")
+  GMT12   @map("GMT+12")
+}
