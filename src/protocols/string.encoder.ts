@@ -1,4 +1,4 @@
-import { Command } from 'src/models/command.model';
+import { Command } from '../models';
 
 interface ValueFormatter {
   formatValue(key: string, value): string;

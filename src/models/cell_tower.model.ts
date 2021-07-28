@@ -1,4 +1,4 @@
-export default class CellTower {
+export class CellTower {
   private radioType: string;
   private cellId: number;
   private locationAreaCode: number;

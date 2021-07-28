@@ -1,4 +1,4 @@
-export default class WifiAccessPoint {
+export class WifiAccessPoint {
   private macAddress: string;
   private signalStrength: number;
   private channel: number;

@@ -6,12 +6,10 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { EventEmitter } from 'events';
-import { Options } from './interfaces/options.interface';
+import { Options, ConfigInterface } from './interfaces';
 import { Server as TCPServer, Socket as TCPSocket, createServer } from 'net';
-import { GpsDevice } from './models/device.models';
-import { AbstractGpsDevice } from './models/abstract_device.model';
-import { ConfigInterface } from './interfaces/config.interface';
-import { ProtocolName } from './interfaces/protocol.interface';
+import { GpsDevice, AbstractGpsDevice } from './models';
+import { ProtocolName } from './@types/protocol';
 
 @Injectable()
 export class AppService
@@ -57,12 +55,11 @@ export class AppService
       this.logger.debug(`Device ${device.ip}:${device.port} disconnected.`);
       device.emit('disconnected');
     });
-    // ! Implement timeout disconnect device.
-    // setTimeout(() => {
-    //   if (!device.) {
-    //     socket.end();
-    //   }
-    // }, 3000);
+    setTimeout(() => {
+      if (!device.logged) {
+        socket.end();
+      }
+    }, 30000);
   }
 
   async onApplicationBootstrap() {

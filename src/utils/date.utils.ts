@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-export default class DateBuilder {
+export class DateBuilder {
   private calendar: DateTime;
 
   constructor() {

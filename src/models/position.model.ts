@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon';
 
+import { Network } from '.';
 import Message from './message.model';
-import Network from './network.model';
 
-export default class Position extends Message {
+export class Position extends Message {
   public static KEY_ORIGINAL = 'raw';
   public static KEY_INDEX = 'index';
   public static KEY_HDOP = 'hdop';

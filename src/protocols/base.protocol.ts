@@ -1,23 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Protocol } from 'src/interfaces/protocol.interface';
-import { Command } from 'src/models/command.model';
-import { LinkedList } from 'src/structure/LinkedList';
+import { Protocol } from '../interfaces';
+import { Command } from '../models';
+import { LinkedList } from '../structure/LinkedList';
 
 export abstract class BaseProtocol implements Protocol {
   private name: string;
   private supportedDataCommands: Set<string> = new Set();
   private supportedTextCommands: Set<string> = new Set();
-  private serverList: LinkedList<any>;
+  private serverList: Set<any[]> = new Set();
 
   private textCommandEncoder = null;
 
   constructor() {
-    console.log(this.serverList);
     this.name = BaseProtocol.nameFromClass(BaseProtocol.name);
   }
 
   public static nameFromClass(className: string) {
-    console.log(className.substring(0, className.length - 8).toLowerCase());
     return className.substring(0, className.length - 8).toLowerCase();
   }
 
@@ -25,7 +23,7 @@ export abstract class BaseProtocol implements Protocol {
     return this.name;
   }
 
-  protected addServer(server: any) {
+  protected addServer(...server) {
     this.serverList.add(server);
   }
 

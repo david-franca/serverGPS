@@ -1,14 +1,16 @@
 import { Socket } from 'net';
 
-import BaseProtocolDecoder from './base.decoder';
-import BitUtil from '../utils/bit.util';
-import DateFormat from '../utils/format.util';
-import UnitsConverter from '../utils/converter.util';
-import CellTower from '../models/cell_tower.model';
-import Network from '../models/network.model';
-import Position from '../models/position.model';
-import { TimeZone } from '../models/timezone.model';
-import { AdapterInterface } from 'src/interfaces/adapter.interface';
+import { BaseProtocolDecoder } from '..';
+import { BitUtil, DateFormat, UnitsConverter } from '../../utils';
+import {
+  CellTower,
+  Network,
+  Position,
+  DeviceSession,
+  TimeZone,
+} from '../../models';
+import { AdapterInterface } from '../../interfaces';
+import { Device } from '@prisma/client';
 
 const compatibleHardware = ['SUNTECH/supplier'];
 const modelName = 'SUNTECH';
@@ -26,13 +28,18 @@ class SuntechProtocolDecoder
   private includeTemp: boolean;
 
   private connection: Socket;
+  private session: {
+    deviceSession: DeviceSession;
+    device: Device;
+  };
 
   constructor(connection: Socket) {
     super();
     this.connection = connection;
+    this.session = null;
   }
 
-  private getPrefix(): string {
+  public getPrefix(): string {
     return this.prefix;
   }
 
@@ -47,6 +54,10 @@ class SuntechProtocolDecoder
 
   private setHbm(hbm: boolean): void {
     this.hbm = hbm;
+  }
+
+  public requestLogout() {
+    console.log('logout');
   }
 
   private isHbm(type: string, length: number): boolean {
@@ -141,18 +152,20 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const deviceSession = await this.getDeviceSession(
-      channel,
-      parseInt(values[index++]),
-    );
+    const id = parseInt(values[index++]);
 
-    if (!deviceSession) {
-      return null;
+    if (!this.session) {
+      const session = await this.getDeviceSession(channel, id);
+
+      if (!session) {
+        return null;
+      }
+      this.session = session;
     }
 
     const position = new Position();
-    position.setDeviceId(deviceSession.deviceSession.getDeviceId());
-    position.set('device', deviceSession.device);
+    position.setDeviceId(this.session.deviceSession.getDeviceId());
+    position.set('device', this.session.device);
 
     if (['Emergency', 'Alert'].includes(type)) {
       position.set(Position.KEY_ALARM, Position.ALARM_GENERAL);
@@ -199,18 +212,20 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const deviceSession = await this.getDeviceSession(
-      channel,
-      parseInt(values[index++]),
-    );
+    const id = parseInt(values[index++]);
 
-    if (!deviceSession) {
-      return null;
+    if (!this.session) {
+      const session = await this.getDeviceSession(channel, id);
+
+      if (!session) {
+        return null;
+      }
+      this.session = session;
     }
 
     const position = new Position();
-    position.setDeviceId(deviceSession.deviceSession.getDeviceId());
-    position.set('device', deviceSession.device);
+    position.setDeviceId(this.session.deviceSession.getDeviceId());
+    position.set('device', this.session.device);
 
     position.set(Position.KEY_TYPE, type);
 
@@ -240,7 +255,7 @@ class SuntechProtocolDecoder
 
     position.setNetwork(network);
     position.set(
-      Position.KEY_BATTERY,
+      Position.KEY_BATTERY_LEVEL,
       UnitsConverter.percentage(4.2, parseFloat(values[index++])),
     );
     position.set(Position.KEY_ARCHIVE, values[index++] === '0' ? true : null);
@@ -277,26 +292,28 @@ class SuntechProtocolDecoder
   ) {
     let index = 0;
     const type: string = values[index++].substring(5);
-    console.log(type);
 
     if (!['STT', 'EMG', 'EVT', 'ALT', 'UEX'].includes(type)) {
       return null;
     }
-    // const deviceSession = await this.getDeviceSession(
-    //   channel,
-    //   parseInt(values[index++]),
-    // );
-    // if (!deviceSession) {
-    //   return null;
-    // }
+
+    const id = parseInt(values[index++]);
+
+    if (!this.session) {
+      const session = await this.getDeviceSession(channel, id);
+
+      if (!session) {
+        return null;
+      }
+      this.session = session;
+    }
 
     const position: Position = new Position();
-    position.setDeviceId(parseInt(values[index++]));
-    // position.setDeviceId(deviceSession.deviceSession.getDeviceId());
-    // position.set('device', deviceSession.device);
+    position.setDeviceId(this.session.deviceSession.getDeviceId());
+    position.set('device', this.session.device);
     position.set(Position.KEY_TYPE, type);
     position.set('location', true);
-    position.set('status', true);
+    position.set('statusInfo', true);
 
     if (
       protocol.startsWith('ST3') ||
@@ -394,7 +411,7 @@ class SuntechProtocolDecoder
 
       if (index < values.length) {
         position.set(
-          Position.KEY_BATTERY,
+          Position.KEY_BATTERY_LEVEL,
           UnitsConverter.percentage(4.2, parseFloat(values[index++])),
         );
       }
@@ -455,17 +472,20 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const deviceSession = await this.getDeviceSession(
-      channel,
-      parseInt(values[index++]),
-    );
-    if (!deviceSession) {
-      return null;
+    const id = parseInt(values[index++]);
+
+    if (!this.session) {
+      const session = await this.getDeviceSession(channel, id);
+
+      if (!session) {
+        return null;
+      }
+      this.session = session;
     }
 
     const position = new Position();
-    position.setDeviceId(deviceSession.deviceSession.getDeviceId());
-    position.set('device', deviceSession.device);
+    position.setDeviceId(this.session.deviceSession.getDeviceId());
+    position.set('device', this.session.device);
     position.set(Position.KEY_TYPE, type);
 
     const mask = parseInt(values[index++], 16);

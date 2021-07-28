@@ -1,4 +1,4 @@
-import { ProtocolName } from './protocol.interface';
+import { ProtocolName } from '../@types/protocol';
 
 export interface ConfigInterface {
   port: number;

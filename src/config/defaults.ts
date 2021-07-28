@@ -1,4 +1,4 @@
-import { ConfigInterface } from 'src/interfaces/config.interface';
+import { ConfigInterface } from '../interfaces';
 
 export const config: ConfigInterface[] = [
   {

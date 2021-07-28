@@ -1,6 +1,10 @@
 import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Options } from './interfaces/options.interface';
+import { Options } from './interfaces';
+import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { RoutesGateway } from './routes/routes.gateway';
+import { PositionService } from './services/position/position.service';
 
 @Module({})
 export class AppModule {
@@ -16,6 +20,10 @@ export class AppModule {
       useValue: options,
     });
     options.providers.push(AppService);
+    options.providers.push(RoutesGateway);
+    options.providers.push(PrismaService);
+    options.providers.push(PositionService);
+    options.imports.push(PrismaModule);
     return {
       module: AppModule,
       imports: options.imports,

@@ -4,7 +4,9 @@
     "Suntech",
     "Wifi",
     "imei",
-    "luxon"
+    "luxon",
+    "rssi",
+    "websockets"
   ],
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#b61a3d",

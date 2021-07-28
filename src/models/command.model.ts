@@ -65,6 +65,10 @@ export class Command extends Message {
   private textChannel: boolean;
   private description: string;
 
+  constructor() {
+    super();
+  }
+
   // public clone() {
   //   return Object.assign(Command);
   // }

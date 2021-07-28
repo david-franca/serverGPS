@@ -32,7 +32,7 @@ const crc16Table = new Uint16Array([
 
 const crc16Buffer = Buffer.from(crc16Table.buffer);
 
-export default (buff: Buffer): Buffer => {
+export const crc16 = (buff: Buffer): Buffer => {
   let fcs = 0xffff;
   for (let i = 0; i < buff.length; i++) {
     const index = ((fcs ^ buff.readUInt8(i)) & 0xff) * 2;

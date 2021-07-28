@@ -1,18 +1,9 @@
 import { LoggerService } from '@nestjs/common';
 import { Socket as TCPSocket } from 'net';
-import { ProtocolName } from 'src/interfaces/protocol.interface';
-import { AbstractGpsDevice } from './abstract_device.model';
+import { ProtocolName } from '../@types/protocol';
+import { AbstractGpsDevice } from '.';
 
 export class GpsDevice extends AbstractGpsDevice {
-  uid: string;
-  socket: TCPSocket;
-  logger: LoggerService;
-  ip: string;
-  port: number;
-  protocol: ProtocolName;
-  logged: boolean;
-  adapter: any;
-
   constructor(
     socket: TCPSocket,
     protocol: ProtocolName,
@@ -21,11 +12,7 @@ export class GpsDevice extends AbstractGpsDevice {
     super(socket, protocol, logger);
   }
 
-  getUID(): string {
-    return this.uid;
-  }
-
-  login(canLogin: boolean) {
+  login(canLogin: boolean): void {
     if (!canLogin) {
       this.logger.warn(
         `Device ${this.getUID()} not authorized. Login request was rejected. IP ${
@@ -36,8 +23,18 @@ export class GpsDevice extends AbstractGpsDevice {
         uid: this.getUID(),
         ip: this.ip,
       };
-      this.emit('login_fail', loginFailEvent);
+      this.emit('loginFail', loginFailEvent);
       return;
+    }
+    this.logged = true;
+  }
+
+  async logout(): Promise<void> {
+    this.logged = false;
+    try {
+      this.decoder.requestLogout();
+    } catch (err) {
+      this.emit('error', err);
     }
   }
 }

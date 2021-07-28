@@ -1,31 +1,43 @@
 import { Logger, LoggerService } from '@nestjs/common';
 import { EventEmitter } from 'events';
 import { Socket as TCPSocket } from 'net';
-import { ProtocolName, ProtocolTypes } from '../interfaces/protocol.interface';
-import { ProtocolHandler } from './protocol.model';
+import { PositionService } from '../services/position/position.service';
+import {
+  ProtocolDecoderTypes,
+  ProtocolEncoderTypes,
+  ProtocolName,
+  Protocols,
+} from '../@types/protocol';
+import { Protocol } from '../protocols';
+import { Position } from '.';
 
 export abstract class AbstractGpsDevice extends EventEmitter {
-  uid: string;
+  private service: PositionService = new PositionService();
+  uid: number;
   socket: TCPSocket;
   logger: LoggerService;
   ip: string;
   port: number;
-  protocol: ProtocolName;
+  protocolName: ProtocolName;
+  protocol: Protocols;
   logged: boolean;
-  adapter: ProtocolTypes;
+  decoder: ProtocolDecoderTypes;
+  encoder: ProtocolEncoderTypes;
 
   constructor(
     socket: TCPSocket,
-    protocol: ProtocolName,
+    protocolName: ProtocolName,
     logger?: LoggerService,
   ) {
     super({ captureRejections: true });
     this.socket = socket;
     this.logger = logger || Logger;
-    this.protocol = protocol;
+    this.protocolName = protocolName;
     this.ip = socket instanceof TCPSocket ? socket.remoteAddress : this.ip;
     this.port = socket instanceof TCPSocket ? socket.remotePort : this.port;
-    this.adapter = new ProtocolHandler().handleProtocol(this.protocol, socket);
+    this.protocol = new Protocol(protocolName, socket).protocol();
+    this.decoder = this.protocol.getDecoder();
+    this.encoder = this.protocol.getEncoder();
     this.socket.on('close', () => this.timeout());
     this.socket.on('data', this.handleData.bind(this));
     this.on('error', (err) =>
@@ -37,16 +49,32 @@ export abstract class AbstractGpsDevice extends EventEmitter {
     this.emit('disconnect', this.getUID());
   }
 
-  getUID(): string {
+  getUID(): number {
     return this.uid;
   }
 
   async handleData(data: Buffer) {
-    this.logger.debug(
-      `[${this.getUID()}]Receiving raw data: ${data.toString('hex')}`,
-    );
-    const position = await this.adapter.decode(data);
-    console.log(position);
+    const position = await this.decoder.decode(data);
+    this.login(!!position);
+    if (position) {
+      this.uid = position.getDeviceId();
+      await this.savePositions(position);
+      console.log('Handle Data =>', position);
+      // this.logger.debug(`[${this.getUID()}]Receiving raw data: ${data}`);
+    }
     //TODO
   }
+
+  private async savePositions(position: Position) {
+    if (position.getBoolean('location')) {
+      await this.service.createLocation(position);
+    }
+
+    if (position.getBoolean('statusInfo')) {
+      await this.service.createStatus(position);
+    }
+  }
+
+  abstract login(canLogin: boolean): void;
+  abstract logout(): Promise<void>;
 }

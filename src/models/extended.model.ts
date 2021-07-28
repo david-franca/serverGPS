@@ -1,4 +1,4 @@
-export default class ExtendedModel {
+export class ExtendedModel {
   private id: number;
   private attributes: Map<string, boolean | string | number | any>;
 
@@ -9,7 +9,7 @@ export default class ExtendedModel {
   /**
    * getAttributes
    */
-  public getAttributes() {
+  public getAttributes(): Map<string, any> {
     return this.attributes;
   }
 
@@ -36,8 +36,9 @@ export default class ExtendedModel {
 
   /**
    * set
+   * @param key value to
    */
-  public set(key: string, value: any): void {
+  public set<T>(key: string, value: T): void {
     // if (value) {
     this.attributes.set(key, value);
     // }
@@ -57,7 +58,7 @@ export default class ExtendedModel {
   /**
    * getString
    */
-  public getString(key: string) {
+  public getString(key: string): string {
     const valid = <string>this.attributes.get(key);
     return valid || null;
   }
@@ -65,7 +66,7 @@ export default class ExtendedModel {
   /**
    * getBoolean
    */
-  public getBoolean(key: string) {
+  public getBoolean(key: string): boolean {
     const valid = <boolean>this.attributes.get(key);
     return valid || false;
   }
@@ -73,7 +74,7 @@ export default class ExtendedModel {
   /**
    * getInteger
    */
-  public getInteger(key: string) {
+  public getInteger(key: string): number {
     const valid = parseInt(<string>this.attributes.get(key));
     return valid || 0;
   }
@@ -81,8 +82,16 @@ export default class ExtendedModel {
   /**
    * getFloat
    */
-  public getFloat(key: string) {
+  public getFloat(key: string): number {
     const valid = parseFloat(<string>this.attributes.get(key));
     return valid || 0.0;
+  }
+
+  /**
+   * getAny
+   */
+  public getAny<T>(key: string): T {
+    const valid = <T>this.attributes.get(key);
+    return valid || null;
   }
 }

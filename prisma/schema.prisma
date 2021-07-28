@@ -7,42 +7,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model adapter {
-  id              String                 @id @db.VarChar(36)
-  active          Boolean                @default(true) @db.Boolean
-  deleted         Boolean                @default(false) @db.Boolean
-  createAt        DateTime               @default(now()) @db.Timestamp(6)
-  updateAt        DateTime               @default(now()) @db.Timestamp(6)
-  code            Int                    @db.Integer
-  description     String                 @db.VarChar(200)
-  model           adapter_model
-  equipmentNumber BigInt                 @db.BigInt
-  phone           String                 @db.VarChar(25)
-  mobileOperator  adapter_mobileOperator
-  chipNumber      String                 @db.VarChar(25)
-  timezone        adapter_timezone
-  location        location[]
-  status          status[]
+model Device {
+  id              String         @id @default(uuid()) @db.VarChar(36)
+  active          Boolean        @default(true) @db.Boolean
+  deleted         Boolean        @default(false) @db.Boolean
+  createAt        DateTime       @default(now()) @db.Timestamp(6)
+  updateAt        DateTime       @default(now()) @db.Timestamp(6)
+  code            Int            @db.Integer
+  description     String         @db.VarChar(200)
+  model           Model
+  equipmentNumber BigInt         @db.BigInt
+  phone           String         @db.VarChar(25)
+  mobileOperator  MobileOperator
+  chipNumber      String         @db.VarChar(25)
+  timezone        Timezone
+  location        Location[]
+  status          Status[]
+  Alert           Alert[]
 }
 
-model address {
-  id       String    @id @db.VarChar(36)
-  active   Boolean   @default(true) @db.Boolean
-  deleted  Boolean   @default(false) @db.Boolean
-  createAt DateTime  @default(now()) @db.Timestamp(6)
-  updateAt DateTime  @default(now()) @db.Timestamp(6)
-  road     String    @db.VarChar(100)
-  suburb   String    @db.VarChar(50)
-  city     String    @db.VarChar(30)
-  state    String    @db.VarChar(30)
-  region   String    @db.VarChar(50)
-  postcode String    @db.VarChar(9)
-  country  String    @db.VarChar(20)
-  location location?
-}
+// model Address {
+//   id       String    @id @default(uuid()) @db.VarChar(36)
+//   active   Boolean   @default(true) @db.Boolean
+//   deleted  Boolean   @default(false) @db.Boolean
+//   createAt DateTime  @default(now()) @db.Timestamp(6)
+//   updateAt DateTime  @default(now()) @db.Timestamp(6)
+//   road     String    @db.VarChar(100)
+//   suburb   String    @db.VarChar(50)
+//   city     String    @db.VarChar(30)
+//   state    String    @db.VarChar(30)
+//   region   String    @db.VarChar(50)
+//   postcode String    @db.VarChar(9)
+//   country  String    @db.VarChar(20)
+//   location Location?
+// }
 
-model info {
-  id        String   @id @db.VarChar(36)
+model Info {
+  id        String   @id @default(uuid()) @db.VarChar(36)
   active    Boolean  @default(true) @db.Boolean
   deleted   Boolean  @default(false) @db.Boolean
   createAt  DateTime @default(now()) @db.Timestamp(6)
@@ -50,56 +51,71 @@ model info {
   odometer  Int?     @db.Integer
   power     Float?   @db.DoublePrecision
   serial    Int?     @db.Integer
-  io        Int?     @db.Integer
+  io        String?  @db.VarChar(6)
   mode      Int?     @db.Integer
   hourMeter Int?     @db.Integer
-  archive   Int?     @db.SmallInt
-  status    status?
+  archive   Boolean? @db.Boolean
+  status    Status?
 }
 
-model location {
-  id                        String   @id @db.VarChar(36)
-  active                    Boolean  @default(true) @db.Boolean
-  deleted                   Boolean  @default(false) @db.Boolean
-  createAt                  DateTime @default(now()) @db.Timestamp(6)
-  updateAt                  DateTime @default(now()) @db.Timestamp(6)
-  serverTime                DateTime @db.Timestamp(0)
-  fixTime                   DateTime @db.Timestamp(0)
-  satellite                 Int      @db.Integer
-  latitude                  Float    @db.DoublePrecision
-  longitude                 Float    @db.DoublePrecision
-  speed                     Int      @db.Integer
-  course                    String   @db.VarChar(10)
-  cellId                    String   @db.VarChar(10)
-  adapterId                 String?  @db.VarChar(36)
-  address                   String?  @unique @db.VarChar(36)
-  adapter                   adapter? @relation(fields: [adapterId], references: [id])
-  address_addressTolocation address? @relation(fields: [address], references: [id])
+model Location {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  active     Boolean  @default(true) @db.Boolean
+  deleted    Boolean  @default(false) @db.Boolean
+  createAt   DateTime @default(now()) @db.Timestamp(6)
+  updateAt   DateTime @default(now()) @db.Timestamp(6)
+  serverTime DateTime @db.Timestamp(0)
+  fixTime    DateTime @db.Timestamp(0)
+  satellite  Int      @db.Integer
+  latitude   Float    @db.DoublePrecision
+  longitude  Float    @db.DoublePrecision
+  speed      Int      @db.SmallInt
+  course     String   @db.VarChar(10)
+  cellId     String   @db.VarChar(10)
+  mcc        Int?     @db.Integer
+  mnc        Int?     @db.Integer
+  lac        Int?     @db.Integer
+  deviceId   String   @db.VarChar(36)
+  device     Device   @relation(fields: [deviceId], references: [id])
+  // addressId  String?  @unique @db.VarChar(36)
+  // address    Address? @relation(fields: [addressId], references: [id])
 
-  @@index([adapterId], name: "FK_d605880251ccc50b4eab70d649a")
+  @@index([deviceId])
 }
 
-model status {
-  id                String   @id @db.VarChar(36)
-  active            Boolean  @default(true) @db.Boolean
-  deleted           Boolean  @default(false) @db.Boolean
-  createAt          DateTime @default(now()) @db.Timestamp(6)
-  updateAt          DateTime @default(now()) @db.Timestamp(6)
-  blocked           Boolean  @db.Boolean
-  valid             Boolean  @db.Boolean
-  charge            Boolean  @db.Boolean
-  ignition          Boolean  @db.Boolean
-  battery           Float    @db.DoublePrecision
-  adapterId         String?  @db.VarChar(36)
-  info              String?  @unique @db.VarChar(36)
-  adapter           adapter? @relation(fields: [adapterId], references: [id])
-  info_infoTostatus info?    @relation(fields: [info], references: [id])
-
-  @@index([adapterId], name: "FK_95b18f01abf3de7d708a8d1c7f3")
+model Status {
+  id       String   @id @default(uuid()) @db.VarChar(36)
+  active   Boolean  @default(true) @db.Boolean
+  deleted  Boolean  @default(false) @db.Boolean
+  createAt DateTime @default(now()) @db.Timestamp(6)
+  updateAt DateTime @default(now()) @db.Timestamp(6)
+  blocked  Boolean  @db.Boolean
+  valid    Boolean  @db.Boolean
+  charge   Boolean? @db.Boolean
+  ignition Boolean  @db.Boolean
+  battery  Float    @db.Real
+  rssi     Int?     @db.SmallInt
+  deviceId String   @db.VarChar(36)
+  infoId   String   @unique @db.VarChar(36)
+  device   Device   @relation(fields: [deviceId], references: [id])
+  info     Info     @relation(fields: [infoId], references: [id])
 }
 
-model user {
-  id       String   @id @db.VarChar(36)
+model Alert {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  active    Boolean  @default(true) @db.Boolean
+  deleted   Boolean  @default(false) @db.Boolean
+  createAt  DateTime @default(now()) @db.Timestamp(6)
+  updateAt  DateTime @default(now()) @db.Timestamp(6)
+  emergency String?  @db.VarChar(20)
+  event     String?  @db.VarChar(20)
+  alert     String?  @db.VarChar(20)
+  deviceId  String   @db.VarChar(36)
+  device    Device   @relation(fields: [deviceId], references: [id])
+}
+
+model User {
+  id       String   @id @default(uuid()) @db.VarChar(36)
   active   Boolean  @default(true) @db.Boolean
   deleted  Boolean  @default(false) @db.Boolean
   createAt DateTime @default(now()) @db.Timestamp(6)
@@ -110,12 +126,12 @@ model user {
   password String   @db.VarChar(100)
 }
 
-enum adapter_model {
+enum Model {
   SUNTECH
   GT06
 }
 
-enum adapter_mobileOperator {
+enum MobileOperator {
   Claro
   Oi
   Tim
@@ -124,7 +140,7 @@ enum adapter_mobileOperator {
   Outras
 }
 
-enum adapter_timezone {
+enum Timezone {
   GMT_14  @map("GMT-14")
   GMT_13  @map("GMT-13")
   GMT_12  @map("GMT-12")

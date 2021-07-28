@@ -1,9 +1,12 @@
 import { AddressInfo, Socket } from 'net';
+import { Device, PrismaClient } from '@prisma/client';
 
-import { Protocol } from '../interfaces/protocol.interface';
-import DeviceSession from '../models/session.model';
+import { Protocol } from '../interfaces';
+import { DeviceSession } from '../models';
 
-export default abstract class BaseProtocolDecoder {
+const prisma = new PrismaClient();
+
+export abstract class BaseProtocolDecoder {
   private static PROTOCOL_UNKNOWN = 'unknown';
   private protocol: Protocol;
   private channelDeviceSession: DeviceSession; // connection-based protocols
@@ -26,7 +29,7 @@ export default abstract class BaseProtocolDecoder {
       const device = await this.findDevice(...uniqueIds);
       if (device) {
         return {
-          deviceSession: new DeviceSession(device.equipmentNumber),
+          deviceSession: new DeviceSession(Number(device.equipmentNumber)),
           device,
         };
       } else {
@@ -40,17 +43,19 @@ export default abstract class BaseProtocolDecoder {
    */
   public async findDevice(...uniqueIds: number[]) {
     if (uniqueIds.length > 0) {
-      // let device = null;
+      let device: Device = null;
 
       try {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const uniqueId of uniqueIds) {
-          // if (uniqueId) {
-          //   device = await getRepository(Adapter).findOne({
-          //     where: { equipmentNumber: uniqueId },
-          //   });
-          //   return device;
-          // }
+          if (uniqueId) {
+            device = await prisma.device.findFirst({
+              where: {
+                equipmentNumber: uniqueId,
+              },
+            });
+            return device;
+          }
         }
       } catch (e) {
         return null;

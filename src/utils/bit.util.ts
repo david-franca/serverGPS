@@ -1,4 +1,4 @@
-export default class BitUtil {
+export class BitUtil {
   public static check(number: number, index: number): boolean {
     return (number & (1 << index)) !== 0;
   }

@@ -1,17 +1,17 @@
 import { Socket as TCPSocket } from 'net';
-import crc16Util from 'src/utils/crc16.util';
-import { bufferToHexString, strPad } from 'src/utils/function.util';
-import CellTower from '../models/cell_tower.model';
-import Network from '../models/network.model';
-import Position from '../models/position.model';
-import DeviceSession from '../models/session.model';
-import BitUtil from '../utils/bit.util';
-import UnitsConverter from '../utils/converter.util';
-import DateBuilder from '../utils/date.utils';
-import BaseProtocolDecoder from './base.decoder';
-import { protocol, modelName, compatibleHardware } from './suntech.decoder';
+import {
+  bufferToHexString,
+  distanceBetweenCoordinates,
+  BitUtil,
+  UnitsConverter,
+  DateBuilder,
+  crc16,
+} from '../../utils';
+import { CellTower, Network, Position, DeviceSession } from '../../models';
+import { Device } from '@prisma/client';
+import { BaseProtocolDecoder } from '..';
 
-class GT06ProtocolDecoder extends BaseProtocolDecoder {
+export class GT06ProtocolDecoder extends BaseProtocolDecoder {
   public static MSG_LOGIN = 0x01;
   public static MSG_GPS = 0x10;
   public static MSG_LBS = 0x11;
@@ -68,13 +68,20 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
   private __count: number;
   private connection: TCPSocket;
   private index: number;
-  private deviceSession: DeviceSession;
+  private session: {
+    deviceSession: DeviceSession;
+    device: Device;
+  };
+  private cacheCoordinates = {
+    latitude: 0,
+    longitude: 0,
+  };
 
   constructor(connection: TCPSocket) {
     super();
     this.connection = connection;
     this.__count = 1;
-    this.deviceSession = null;
+    this.session = null;
   }
 
   private command(msg: Buffer, type: boolean): Buffer {
@@ -85,7 +92,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
 
     const flagBit = '41505642'; // A P V B
     const lengthCommand = flagBit.length + data.length;
-    const serial = strPad(this.__count.toString(), 4, '0');
+    const serial = this.__count.toString().padStart(4, '0');
 
     const str = Buffer.from(
       length + protocol + lengthCommand + flagBit + data + serial,
@@ -93,7 +100,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
 
     this.__count++;
 
-    const errorCheck = strPad(crc16Util(str).toString('hex'), 4, '0');
+    const errorCheck = crc16(str).toString('hex').padStart(4, '0');
 
     const buffer = Buffer.from('7878' + str + errorCheck + '0d0a', 'hex');
 
@@ -104,18 +111,22 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
     // write the crc16 at the 4th position from the right (2 bytes)
     // the last two bytes are the line ending
     data.writeUInt16BE(
-      crc16Util(data.slice(2, 6)).readUInt16BE(0),
+      crc16(data.slice(2, 6)).readUInt16BE(0),
       data.length - 4,
     );
   }
 
   private appendSerial(data: Buffer) {
     const serial = Buffer.from(
-      strPad(this.__count.toString(16), 4, '0'),
+      this.__count.toString(16).padStart(4, '0'),
       'hex',
     );
     data.writeUInt16BE(serial.readUInt16BE(0), data.length - 6);
     this.__count++;
+  }
+
+  public requestLogout() {
+    console.log('logout');
   }
 
   public async decode(msg: Buffer) {
@@ -156,7 +167,6 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
       this.appendSerial(response);
       GT06ProtocolDecoder.appendCrc16(response);
       response.writeUInt16BE(0x0d0a, response.length - 2);
-      console.log(response);
       this.connection.write(response);
     }
   }
@@ -243,25 +253,23 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
     const type = buf.readUInt8(this.index++);
 
     if (type !== GT06ProtocolDecoder.MSG_LOGIN) {
-      // if (!this.deviceSession) return null;
-      // const device = await this.getDeviceSession(
-      //   this.connection,
-      //   this.deviceSession.getDeviceId(),
-      // );
-      // if (!device) return null;
-      // this.deviceSession = device.deviceSession;
+      if (!this.session) return null;
+      if (!this.session.deviceSession) return null;
+      if (!this.session.device) return null;
     }
     if (type === GT06ProtocolDecoder.MSG_LOGIN) {
+      const position = new Position();
       const imei = parseInt(
         buf.slice(this.index++, (this.index = this.index + 7)).toString('hex'),
         10,
       );
-      console.log(imei);
 
       // Get the equipment number from the database
-      // const device = await this.getDeviceSession(this.connection, imei);
-      // if (!device) return null;
-      // this.deviceSession = device.deviceSession;
+      const session = await this.getDeviceSession(this.connection, imei);
+      position.set('device', session.device);
+      position.setDeviceId(session.deviceSession.getDeviceId());
+      if (!session) return null;
+      this.session = session;
 
       this.index = this.index + 2;
 
@@ -278,13 +286,15 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
         }
       }
 
-      if (!this.deviceSession) {
+      if (this.session) {
         // Responde ao pacote
         this.sendResponse(false, type, null);
       }
+      return position;
     } else if (type === GT06ProtocolDecoder.MSG_HEARTBEAT) {
       const position = new Position();
-      // position.setDeviceId(this.deviceSession.getDeviceId());
+      position.set('device', this.session.device);
+      position.setDeviceId(this.session.deviceSession.getDeviceId());
       position.set(Position.KEY_TYPE, type);
       const status = buf.readUInt8(this.index++);
 
@@ -346,7 +356,8 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
       // return this.decodeWifi(channel, buf, deviceSession, type);
     } else if (type === GT06ProtocolDecoder.MSG_INFO) {
       const position = new Position();
-      // position.setDeviceId(this.deviceSession.getDeviceId());
+      position.set('device', this.session.device);
+      position.setDeviceId(this.session.deviceSession.getDeviceId());
       position.set(Position.KEY_TYPE, type);
 
       position.set(Position.KEY_POWER, buf.readUInt16BE(this.index++) * 0.01);
@@ -364,7 +375,8 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
     dataLength: number,
   ) {
     const position = new Position();
-    // position.setDeviceId(this.deviceSession.getDeviceId());
+    position.set('device', this.session.device);
+    position.setDeviceId(this.session.deviceSession.getDeviceId());
     position.set(Position.KEY_TYPE, type.toString(16));
 
     if (
@@ -592,6 +604,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
     hasSatellite: boolean,
     hasSpeed: boolean,
   ) {
+    position.set('location', true);
     const dateBuilder = new DateBuilder()
       .setDate(
         buf.readUInt8(this.index++),
@@ -640,6 +653,20 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
     }
     position.setLatitude(latitude);
     position.setLongitude(longitude);
+
+    const distance = distanceBetweenCoordinates(
+      this.cacheCoordinates.latitude,
+      latitude,
+      this.cacheCoordinates.longitude,
+      longitude,
+    );
+    console.log(distance);
+    this.cacheCoordinates = {
+      latitude,
+      longitude,
+    };
+    console.log(this.cacheCoordinates);
+
     if (BitUtil.check(flags, 14)) {
       position.set(Position.KEY_IGNITION, BitUtil.check(flags, 15));
     }
@@ -719,6 +746,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
   }
 
   private decodeStatus(position: Position, buf: Buffer) {
+    position.set('statusInfo', true);
     const status = buf.readUInt8(this.index++);
     position.set(Position.KEY_STATUS, status);
     position.set(Position.KEY_IGNITION, BitUtil.check(status, 1));
@@ -742,6 +770,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
         position.set(Position.KEY_ALARM, Position.ALARM_REMOVING);
         break;
       default:
+        position.set(Position.KEY_ALARM, 'normal');
         break;
     }
     position.set(
@@ -750,7 +779,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
     );
     position.set(Position.KEY_RSSI, buf.readUInt8(this.index++));
     position.set(
-      Position.KEY_ALARM,
+      Position.KEY_ALARM + '2',
       this.decodeAlarm(buf.readUInt8(this.index++)),
     );
 
@@ -758,6 +787,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
   }
 
   private decodeAlarm(value: number) {
+    console.log(value);
     switch (value) {
       case 0x01:
         return Position.ALARM_SOS;
@@ -793,9 +823,7 @@ class GT06ProtocolDecoder extends BaseProtocolDecoder {
       case 0x23:
         return Position.ALARM_FALL_DOWN;
       default:
-        return null;
+        return 'normal';
     }
   }
 }
-
-export { protocol, modelName, compatibleHardware, GT06ProtocolDecoder };

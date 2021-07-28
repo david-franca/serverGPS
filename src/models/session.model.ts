@@ -1,4 +1,4 @@
-export default class DeviceSession {
+export class DeviceSession {
   private deviceId: number;
   private timeZone: string;
   constructor(deviceId: number) {

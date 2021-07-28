@@ -1,4 +1,4 @@
-import ExtendedModel from './extended.model';
+import { ExtendedModel } from './extended.model';
 
 export default class Message extends ExtendedModel {
   private deviceId: number;

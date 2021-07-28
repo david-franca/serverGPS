@@ -1,7 +1,6 @@
-import CellTower from './cell_tower.model';
-import WifiAccessPoint from './wifi.model';
+import { CellTower, WifiAccessPoint } from '.';
 
-export default class Network {
+export class Network {
   private homeMobileCountryCode: number;
   private homeMobileNetworkCode: number;
   private radioType: string;
