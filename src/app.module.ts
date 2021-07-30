@@ -5,12 +5,14 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { RoutesGateway } from './routes/routes.gateway';
 import { PositionService } from './services/position/position.service';
+import { DevicesModule } from './devices/devices.module';
+import { SocketsModule } from './sockets/sockets.module';
 
 @Module({})
 export class AppModule {
   static async forRoot(options: Options): Promise<DynamicModule> {
-    options.imports = options.imports ?? [];
-    options.providers = options.providers ?? [];
+    options.imports = [];
+    options.providers = [];
     options.providers.push({
       provide: 'GPS_LOGGER',
       useClass: options.logger ? options.logger : Logger,
@@ -23,7 +25,7 @@ export class AppModule {
     options.providers.push(RoutesGateway);
     options.providers.push(PrismaService);
     options.providers.push(PositionService);
-    options.imports.push(PrismaModule);
+    options.imports.push(PrismaModule, DevicesModule, SocketsModule);
     return {
       module: AppModule,
       imports: options.imports,

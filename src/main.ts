@@ -8,6 +8,7 @@ async function bootstrap() {
       config,
     }),
   );
-  app.listen(3000);
+  app.enableCors();
+  app.listen(3001);
 }
 bootstrap();
