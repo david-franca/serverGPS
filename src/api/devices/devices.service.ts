@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Device, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -28,7 +28,11 @@ export class DevicesService {
   }
 
   async findOne(where: Prisma.DeviceWhereUniqueInput): Promise<Device> {
-    return this.prisma.device.findUnique({ where });
+    const device = await this.prisma.device.findUnique({ where });
+    if (device) {
+      return device;
+    }
+    throw new HttpException('Device not found', HttpStatus.NOT_FOUND);
   }
 
   async update(params: {

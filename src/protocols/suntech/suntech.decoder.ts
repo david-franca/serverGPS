@@ -47,9 +47,9 @@ class SuntechProtocolDecoder
     this.protocolType = protocolType;
   }
 
-  private getProtocolType(deviceId: number): number {
+  private getProtocolType(deviceId: string): number {
     // TODO
-    return deviceId;
+    return Number(deviceId);
   }
 
   private setHbm(hbm: boolean): void {
@@ -71,7 +71,7 @@ class SuntechProtocolDecoder
     this.includeAdc = includeAdc;
   }
 
-  private isIncludeAdc(deviceId: number): boolean {
+  private isIncludeAdc(deviceId: string): boolean {
     deviceId ? this.setIncludeAdc(true) : this.setIncludeAdc(false);
     return this.includeAdc;
   }
@@ -80,7 +80,7 @@ class SuntechProtocolDecoder
     this.includeRpm = includeRpm;
   }
 
-  private isIncludeRpm(deviceId: number): boolean {
+  private isIncludeRpm(deviceId: string): boolean {
     deviceId ? this.setIncludeRpm(true) : this.setIncludeRpm(false);
     return this.includeRpm;
   }
@@ -89,7 +89,7 @@ class SuntechProtocolDecoder
     this.includeTemp = includeTemp;
   }
 
-  private isIncludeTemp(deviceId: number): boolean {
+  private isIncludeTemp(deviceId: string): boolean {
     deviceId ? this.setIncludeTemp(true) : this.setIncludeTemp(false);
     return this.includeTemp;
   }
@@ -152,7 +152,7 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const id = parseInt(values[index++]);
+    const id = values[index++];
 
     if (!this.session) {
       const session = await this.getDeviceSession(channel, id);
@@ -212,7 +212,7 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const id = parseInt(values[index++]);
+    const id = values[index++];
 
     if (!this.session) {
       const session = await this.getDeviceSession(channel, id);
@@ -297,7 +297,7 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const id = parseInt(values[index++]);
+    const id = values[index++];
 
     if (!this.session) {
       const session = await this.getDeviceSession(channel, id);
@@ -472,7 +472,7 @@ class SuntechProtocolDecoder
       return null;
     }
 
-    const id = parseInt(values[index++]);
+    const id = values[index++];
 
     if (!this.session) {
       const session = await this.getDeviceSession(channel, id);
@@ -603,7 +603,7 @@ class SuntechProtocolDecoder
     let index = 1;
 
     const position = new Position();
-    position.setDeviceId(parseInt(values[index++]));
+    position.setDeviceId(values[index++]);
 
     position.set(Position.KEY_DRIVER_UNIQUE_ID, values[values.length - 1]);
 

@@ -24,12 +24,13 @@ export abstract class BaseProtocolDecoder {
   /**
    * getDeviceSession
    */
-  public async getDeviceSession(chanel: Socket, ...uniqueIds: number[]) {
+  public async getDeviceSession(chanel: Socket, ...uniqueIds: string[]) {
     if (chanel) {
       const device = await this.findDevice(...uniqueIds);
+      console.log('Device =>', device);
       if (device) {
         return {
-          deviceSession: new DeviceSession(Number(device.equipmentNumber)),
+          deviceSession: new DeviceSession(device.equipmentNumber),
           device,
         };
       } else {
@@ -41,7 +42,7 @@ export abstract class BaseProtocolDecoder {
   /**
    * findDeviceId
    */
-  public async findDevice(...uniqueIds: number[]) {
+  public async findDevice(...uniqueIds: string[]) {
     if (uniqueIds.length > 0) {
       let device: Device = null;
 

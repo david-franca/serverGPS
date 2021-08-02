@@ -17,7 +17,7 @@ CREATE TABLE "Device" (
     "code" INTEGER NOT NULL,
     "description" VARCHAR(200) NOT NULL,
     "model" "Model" NOT NULL,
-    "equipmentNumber" BIGINT NOT NULL,
+    "equipmentNumber" VARCHAR(15) NOT NULL,
     "phone" VARCHAR(25) NOT NULL,
     "mobileOperator" "MobileOperator" NOT NULL,
     "chipNumber" VARCHAR(25) NOT NULL,

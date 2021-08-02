@@ -81,7 +81,7 @@ export class Command extends Message {
     this.textChannel = textChannel;
   }
 
-  public getDeviceId(): number {
+  public getDeviceId(): string {
     return super.getDeviceId();
   }
 

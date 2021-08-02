@@ -16,7 +16,7 @@ model Device {
   code            Int            @db.Integer
   description     String         @db.VarChar(200)
   model           Model
-  equipmentNumber BigInt         @db.BigInt
+  equipmentNumber String         @db.VarChar(15)
   phone           String         @db.VarChar(25)
   mobileOperator  MobileOperator
   chipNumber      String         @db.VarChar(25)

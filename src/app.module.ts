@@ -5,7 +5,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { RoutesGateway } from './routes/routes.gateway';
 import { PositionService } from './services/position/position.service';
-import { DevicesModule } from './devices/devices.module';
+import { DevicesModule } from './api/devices/devices.module';
 import { SocketsModule } from './sockets/sockets.module';
 
 @Module({})

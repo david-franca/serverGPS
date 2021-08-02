@@ -12,7 +12,6 @@ import {
 import { Device } from '@prisma/client';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
-import { GetDeviceDto } from './dto/get-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 
 @Controller('devices')
@@ -25,28 +24,9 @@ export class DevicesController {
   }
 
   @Get()
-  async findAll(): Promise<GetDeviceDto[]> {
+  async findAll(): Promise<Device[]> {
     try {
-      const devicesDTO: GetDeviceDto[] = [];
-      const devices = await this.devicesService.findAll({});
-      devices.forEach((device) => {
-        devicesDTO.push({
-          active: device.active,
-          chipNumber: device.chipNumber,
-          code: device.code,
-          createAt: device.createAt,
-          deleted: device.deleted,
-          description: device.description,
-          equipmentNumber: Number(device.equipmentNumber),
-          id: device.id,
-          mobileOperator: device.mobileOperator,
-          model: device.model,
-          phone: device.phone,
-          timezone: device.timezone,
-          updateAt: device.updateAt,
-        });
-      });
-      return devicesDTO;
+      return await this.devicesService.findAll({ where: { deleted: false } });
     } catch (e) {
       throw new HttpException(
         {
@@ -59,7 +39,16 @@ export class DevicesController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Device> {
-    return await this.devicesService.findOne({ id });
+    try {
+      return await this.devicesService.findOne({ id });
+    } catch (e) {
+      throw new HttpException(
+        {
+          message: 'Não encontrado',
+        },
+        404,
+      );
+    }
   }
 
   @Patch(':id')
@@ -77,7 +66,14 @@ export class DevicesController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Device> {
     try {
-      return await this.devicesService.remove({ id });
+      return await this.devicesService.update({
+        where: {
+          id,
+        },
+        data: {
+          deleted: true,
+        },
+      });
     } catch (e) {
       throw new HttpException(
         {

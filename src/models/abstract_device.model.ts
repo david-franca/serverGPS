@@ -13,7 +13,7 @@ import { Position } from '.';
 
 export abstract class AbstractGpsDevice extends EventEmitter {
   private service: PositionService = new PositionService();
-  uid: number;
+  uid: string;
   socket: TCPSocket;
   logger: LoggerService;
   ip: string;
@@ -49,7 +49,7 @@ export abstract class AbstractGpsDevice extends EventEmitter {
     this.emit('disconnect', this.getUID());
   }
 
-  getUID(): number {
+  getUID(): string {
     return this.uid;
   }
 

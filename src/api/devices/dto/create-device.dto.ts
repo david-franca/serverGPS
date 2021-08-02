@@ -6,6 +6,7 @@ import {
   MaxLength,
   IsEnum,
   IsNumberString,
+  IsMobilePhone,
 } from 'class-validator';
 
 export class CreateDeviceDto {
@@ -22,11 +23,13 @@ export class CreateDeviceDto {
   @IsNotEmpty()
   model: Model;
 
-  @IsNumber()
+  @MaxLength(15)
+  @IsString()
   @IsNotEmpty()
-  equipmentNumber: bigint;
+  equipmentNumber: string;
 
   @MaxLength(25)
+  @IsMobilePhone('pt-BR')
   @IsNumberString({ no_symbols: true })
   @IsNotEmpty()
   phone: string;
@@ -35,6 +38,7 @@ export class CreateDeviceDto {
   mobileOperator: MobileOperator;
 
   @MaxLength(25)
+  @IsMobilePhone('pt-BR')
   @IsNumberString({ no_symbols: true })
   @IsNotEmpty()
   chipNumber: string;
@@ -43,14 +47,3 @@ export class CreateDeviceDto {
   @IsNotEmpty()
   timezone: Timezone;
 }
-
-/**
- *   code            Int            @db.Integer
-  description     String         @db.VarChar(200)
-  model           Model
-  equipmentNumber BigInt         @db.BigInt
-  phone           String         @db.VarChar(25)
-  mobileOperator  MobileOperator
-  chipNumber      String         @db.VarChar(25)
-  timezone        Timezone
- */

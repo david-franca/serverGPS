@@ -1,14 +1,14 @@
 import { ExtendedModel } from './extended.model';
 
 export default class Message extends ExtendedModel {
-  private deviceId: number;
+  private deviceId: string;
   private type: string;
 
-  public getDeviceId(): number {
+  public getDeviceId(): string {
     return this.deviceId;
   }
 
-  public setDeviceId(deviceId: number): void {
+  public setDeviceId(deviceId: string): void {
     this.deviceId = deviceId;
   }
 

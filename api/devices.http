@@ -2,23 +2,29 @@ POST http://localhost:3001/devices HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Produto 1",
-  "price": "10.02"
+  "code": 2,
+  "description": "ST310",
+  "model": "SUNTECH",
+  "equipmentNumber": "125544466554",
+  "phone": "8587884378",
+  "mobileOperator": "Oi",
+  "chipNumber": "85999999999",
+  "timezone": "GMT_3"
 }
 
 ###
 GET http://localhost:3001/devices HTTP/1.1
 
 ###
-GET http://localhost:3001/devices/1 HTTP/1.1
+GET http://localhost:3001/devices/7951973-5f28-47ff-9272-86f8311bfc33 HTTP/1.1
 
 ###
-PATCH http://localhost:3001/devices/3 HTTP/1.1
+PATCH http://localhost:3001/devices/17951973-5f28-47ff-9272-86f8311bfc33 HTTP/1.1
 Content-Type: application/json
 
 {
-  "price": 5
+  "mobileOperator": "Tim"
 }
 
 ###
-DELETE http://localhost:3001/devices/2 HTTP/1.1
+DELETE http://localhost:3001/devices/0bbf1e7b-100d-4a1a-b545-645f47742cd9 HTTP/1.1

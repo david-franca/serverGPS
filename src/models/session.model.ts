@@ -1,11 +1,11 @@
 export class DeviceSession {
-  private deviceId: number;
+  private deviceId: string;
   private timeZone: string;
-  constructor(deviceId: number) {
+  constructor(deviceId: string) {
     this.deviceId = deviceId;
   }
 
-  public getDeviceId(): number {
+  public getDeviceId(): string {
     return this.deviceId;
   }
 

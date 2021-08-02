@@ -259,13 +259,17 @@ export class GT06ProtocolDecoder extends BaseProtocolDecoder {
     }
     if (type === GT06ProtocolDecoder.MSG_LOGIN) {
       const position = new Position();
-      const imei = parseInt(
-        buf.slice(this.index++, (this.index = this.index + 7)).toString('hex'),
-        10,
-      );
+      const imei = buf
+        .slice(this.index++, (this.index = this.index + 7))
+        .toString('hex');
 
       // Get the equipment number from the database
-      const session = await this.getDeviceSession(this.connection, imei);
+      const session = await this.getDeviceSession(
+        this.connection,
+        parseInt(imei).toString(),
+      );
+      console.log(imei);
+      console.log(session);
       position.set('device', session.device);
       position.setDeviceId(session.deviceSession.getDeviceId());
       if (!session) return null;
