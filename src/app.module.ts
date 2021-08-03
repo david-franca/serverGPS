@@ -7,6 +7,10 @@ import { RoutesGateway } from './routes/routes.gateway';
 import { PositionService } from './services/position/position.service';
 import { DevicesModule } from './api/devices/devices.module';
 import { SocketsModule } from './sockets/sockets.module';
+import { UsersModule } from './api/users/users.module';
+import { AuthenticationsModule } from './api/authentications/authentications.module';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from '@hapi/joi';
 
 @Module({})
 export class AppModule {
@@ -21,11 +25,26 @@ export class AppModule {
       provide: 'GPS_CONFIG_OPTIONS',
       useValue: options,
     });
-    options.providers.push(AppService);
-    options.providers.push(RoutesGateway);
-    options.providers.push(PrismaService);
-    options.providers.push(PositionService);
-    options.imports.push(PrismaModule, DevicesModule, SocketsModule);
+    options.providers.push(
+      AppService,
+      RoutesGateway,
+      PrismaService,
+      PositionService,
+    );
+    options.imports.push(
+      PrismaModule,
+      DevicesModule,
+      SocketsModule,
+      UsersModule,
+      AuthenticationsModule,
+      ConfigModule.forRoot({
+        validationSchema: Joi.object({
+          DATABASE_URL: Joi.string().required(),
+          JWT_SECRET: Joi.string().required(),
+          JWT_EXPIRATION_TIME: Joi.string().required(),
+        }),
+      }),
+    );
     return {
       module: AppModule,
       imports: options.imports,

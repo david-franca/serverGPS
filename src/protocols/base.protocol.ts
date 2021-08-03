@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Protocol } from '../interfaces';
 import { Command } from '../models';
-import { LinkedList } from '../structure/LinkedList';
 
 export abstract class BaseProtocol implements Protocol {
   private name: string;

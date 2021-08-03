@@ -124,6 +124,8 @@ model User {
   username String   @db.VarChar(100)
   role     String   @db.VarChar(50)
   password String   @db.VarChar(100)
+
+  @@unique([username])
 }
 
 enum Model {
