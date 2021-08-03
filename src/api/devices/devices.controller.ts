@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Device } from '@prisma/client';
-import { FindOneParams } from 'src/utils/findOneParams.util';
+import { FindOneParams } from '../../utils/findOneParams.util';
 import { JwtAuthenticationGuard } from '../guards/jwt-authentication.guard';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthenticationsService } from './authentications.service';
 import { AuthenticationsController } from './authentications.controller';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.strategy';
