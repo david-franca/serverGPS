@@ -22,4 +22,27 @@ export class UsersService {
       HttpStatus.NOT_FOUND,
     );
   }
+
+  async findOne(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new HttpException(
+        'User with this id does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return user;
+  }
+
+  // findAll() {
+  //   return `This action returns all users`;
+  // }
+
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`;
+  // }
 }

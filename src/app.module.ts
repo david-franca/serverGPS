@@ -11,6 +11,8 @@ import { UsersModule } from './api/users/users.module';
 import { AuthenticationsModule } from './api/authentications/authentications.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
+import { APP_FILTER } from '@nestjs/core';
+import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 
 @Module({})
 export class AppModule {
@@ -30,6 +32,7 @@ export class AppModule {
       RoutesGateway,
       PrismaService,
       PositionService,
+      { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
     );
     options.imports.push(
       PrismaModule,
@@ -42,6 +45,8 @@ export class AppModule {
           DATABASE_URL: Joi.string().required(),
           JWT_SECRET: Joi.string().required(),
           JWT_EXPIRATION_TIME: Joi.string().required(),
+          JWT_PRIVATE_KEY: Joi.string().required(),
+          JWT_PUBLIC_KEY: Joi.string().required(),
         }),
       }),
     );

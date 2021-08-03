@@ -11,7 +11,9 @@ describe('AuthenticationsController', () => {
       providers: [AuthenticationsService],
     }).compile();
 
-    controller = module.get<AuthenticationsController>(AuthenticationsController);
+    controller = module.get<AuthenticationsController>(
+      AuthenticationsController,
+    );
   });
 
   it('should be defined', () => {

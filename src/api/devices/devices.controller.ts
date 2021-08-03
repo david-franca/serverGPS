@@ -8,8 +8,11 @@ import {
   Delete,
   HttpException,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { Device } from '@prisma/client';
+import { FindOneParams } from 'src/utils/findOneParams.util';
+import { JwtAuthenticationGuard } from '../guards/jwt-authentication.guard';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
@@ -19,11 +22,13 @@ export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
   @Post()
+  @UseGuards(JwtAuthenticationGuard)
   async create(@Body() createDeviceDto: CreateDeviceDto): Promise<Device> {
     return await this.devicesService.create(createDeviceDto);
   }
 
   @Get()
+  @UseGuards(JwtAuthenticationGuard)
   async findAll(): Promise<Device[]> {
     try {
       return await this.devicesService.findAll({ where: { deleted: false } });
@@ -38,22 +43,15 @@ export class DevicesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Device> {
-    try {
-      return await this.devicesService.findOne({ id });
-    } catch (e) {
-      throw new HttpException(
-        {
-          message: 'Não encontrado',
-        },
-        404,
-      );
-    }
+  @UseGuards(JwtAuthenticationGuard)
+  async findOne(@Param() { id }: FindOneParams): Promise<Device> {
+    return await this.devicesService.findOne({ id });
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthenticationGuard)
   async update(
-    @Param('id') id: string,
+    @Param() { id }: FindOneParams,
     @Body() updateDeviceDto: UpdateDeviceDto,
   ) {
     return await this.devicesService.update({
@@ -64,23 +62,15 @@ export class DevicesController {
 
   @HttpCode(204)
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<Device> {
-    try {
-      return await this.devicesService.update({
-        where: {
-          id,
-        },
-        data: {
-          deleted: true,
-        },
-      });
-    } catch (e) {
-      throw new HttpException(
-        {
-          message: 'Não encontrado',
-        },
-        404,
-      );
-    }
+  @UseGuards(JwtAuthenticationGuard)
+  async remove(@Param() { id }: FindOneParams): Promise<Device> {
+    return await this.devicesService.update({
+      where: {
+        id,
+      },
+      data: {
+        deleted: true,
+      },
+    });
   }
 }

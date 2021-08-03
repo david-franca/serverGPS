@@ -1,6 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Device, Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaError } from '../../database/prismaErrorCodes.enum';
+import { PrismaService } from '../../prisma/prisma.service';
+import { DeviceNotFoundException } from './exception/devicesNotFound.exception';
 
 @Injectable()
 export class DevicesService {
@@ -32,7 +35,7 @@ export class DevicesService {
     if (device) {
       return device;
     }
-    throw new HttpException('Device not found', HttpStatus.NOT_FOUND);
+    throw new DeviceNotFoundException(where.id);
   }
 
   async update(params: {
@@ -40,15 +43,35 @@ export class DevicesService {
     data: Prisma.DeviceUpdateInput;
   }): Promise<Device> {
     const { data, where } = params;
-    return this.prisma.device.update({
-      data,
-      where,
-    });
+    try {
+      return await this.prisma.device.update({
+        data,
+        where,
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        PrismaError.RecordDoesNotExist
+      ) {
+        throw new DeviceNotFoundException(where.id);
+      }
+      throw error;
+    }
   }
 
   async remove(where: Prisma.DeviceWhereUniqueInput): Promise<Device> {
-    return this.prisma.device.delete({
-      where,
-    });
+    try {
+      return this.prisma.device.delete({
+        where,
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === PrismaError.RecordDoesNotExist
+      ) {
+        throw new DeviceNotFoundException(where.id);
+      }
+      throw error;
+    }
   }
 }

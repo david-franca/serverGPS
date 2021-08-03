@@ -1,4 +1,4 @@
-import { MaxLength, IsString, IsNotEmpty } from 'class-validator';
+import { MaxLength, IsString, IsNotEmpty, MinLength } from 'class-validator';
 
 export class RegisterDto {
   @MaxLength(100)
@@ -7,6 +7,7 @@ export class RegisterDto {
   name: string;
 
   @MaxLength(100)
+  @MinLength(7)
   @IsString()
   @IsNotEmpty()
   password: string;

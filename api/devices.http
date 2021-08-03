@@ -16,7 +16,7 @@ Content-Type: application/json
 GET http://localhost:3001/devices HTTP/1.1
 
 ###
-GET http://localhost:3001/devices/7951973-5f28-47ff-9272-86f8311bfc33 HTTP/1.1
+GET http://localhost:3001/devices/17951973-5f28-47ff-9272-86f8311bfc33 HTTP/1.1
 
 ###
 PATCH http://localhost:3001/devices/17951973-5f28-47ff-9272-86f8311bfc33 HTTP/1.1
