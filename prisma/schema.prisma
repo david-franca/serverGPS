@@ -114,6 +114,7 @@ model User {
   refreshToken String?  @db.VarChar
 
   @@unique([username])
+  @@index([username])
 }
 
 // model Token {
