@@ -63,6 +63,13 @@ export class UsersService {
     });
   }
 
+  async removeRefreshToken(id: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { refreshToken: null },
+    });
+  }
+
   // findAll() {
   //   return `This action returns all users`;
   // }

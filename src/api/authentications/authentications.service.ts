@@ -7,6 +7,8 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { TokenPayload } from './interface/tokenPayload.interface';
 import { ConfigService } from '@nestjs/config';
 import { Environments } from './interface/environments.interface';
+import { Response } from 'express';
+import { CookiesProps } from './interface/cookie.interface';
 
 @Injectable()
 export class AuthenticationsService {
@@ -74,7 +76,7 @@ export class AuthenticationsService {
     name: string,
     username: string,
     role: string,
-  ): string {
+  ) {
     const payload: TokenPayload = { name, username, role };
 
     // SIGNING OPTIONS
@@ -84,9 +86,14 @@ export class AuthenticationsService {
     };
 
     const token = this.jwtService.sign(payload, signOptions);
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-    )}`;
+    const maxAge =
+      Number(this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')) * 1000;
+
+    return {
+      token,
+      maxAge,
+      key: 'Authentication',
+    };
   }
 
   public getCookieWithJwtRefreshToken(
@@ -97,26 +104,41 @@ export class AuthenticationsService {
   ) {
     const payload: TokenPayload = { name, username, role };
 
+    const maxAge =
+      Number(this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')) *
+      1000;
+
     // SIGNING OPTIONS
     const signOptions: JwtSignOptions = {
-      expiresIn: `${this.configService.get(
-        'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-      )}s`,
+      expiresIn: `${maxAge / 1000}s`,
       privateKey: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
       subject: userId,
     };
 
     const token = this.jwtService.sign(payload, signOptions);
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-      'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-    )}`;
     return {
-      cookie,
+      maxAge,
       token,
+      key: 'Refresh',
     };
   }
 
-  public getCookieForLogOut() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  public deleteCookies(res: Response, cookies: Record<string, string>) {
+    const keys = Object.keys(cookies);
+    keys.forEach((key) => {
+      res.clearCookie(key, {
+        httpOnly: true,
+      });
+    });
+  }
+
+  public setCookies(res: Response, options: CookiesProps[]) {
+    options.forEach((opt) => {
+      const { key, maxAge, token } = opt;
+      res.cookie(key, token, {
+        httpOnly: true,
+        maxAge,
+      });
+    });
   }
 }

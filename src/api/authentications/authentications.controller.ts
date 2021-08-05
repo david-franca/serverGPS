@@ -50,15 +50,13 @@ export class AuthenticationsController {
         role,
       );
 
-    await this.userService.setCurrentRefreshToken(
-      refreshTokenCookie.token,
-      user.id,
-    );
+    await this.userService.setCurrentRefreshToken(refreshTokenCookie.token, id);
 
-    request.res.setHeader('Set-Cookie', [
+    this.authenticationsService.setCookies(request.res, [
       accessTokenCookie,
-      refreshTokenCookie.cookie,
+      refreshTokenCookie,
     ]);
+
     user.password = undefined;
     return user;
   }
@@ -66,10 +64,9 @@ export class AuthenticationsController {
   @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
   async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
-    response.setHeader(
-      'Set-Cookie',
-      this.authenticationsService.getCookieForLogOut(),
-    );
+    await this.userService.removeRefreshToken(request.user.id);
+    this.authenticationsService.deleteCookies(response, request.cookies);
+
     return response.sendStatus(200);
   }
 
@@ -93,7 +90,7 @@ export class AuthenticationsController {
         role,
       );
 
-    request.res.setHeader('Set-Cookie', accessTokenCookie);
+    this.authenticationsService.setCookies(request.res, [accessTokenCookie]);
     request.user.password = undefined;
     return request.user;
   }

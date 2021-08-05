@@ -72,7 +72,7 @@ describe('AuthenticationsService', () => {
           username,
           role,
         ),
-      ).toEqual('string');
+      ).toEqual('object');
     });
   });
 
