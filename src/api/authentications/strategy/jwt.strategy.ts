@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { UsersService } from '../../../api/users/users.service';
-import { ConfigService } from '../../../config/config.service';
 import { TokenPayload } from '../interface/tokenPayload.interface';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { Environments } from '../interface/environments.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<Record<Environments, string>>,
     private readonly userService: UsersService,
   ) {
     super({
@@ -19,12 +20,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_PUBLIC_KEY'),
+      secretOrKey: configService.get('JWT_ACCESS_TOKEN_PUBLIC_KEY'),
       algorithms: ['RS256'],
     });
   }
 
   async validate(payload: TokenPayload) {
-    return this.userService.findOne(payload.userId);
+    return this.userService.findOne(payload.sub);
   }
 }

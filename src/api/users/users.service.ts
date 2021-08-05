@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { compare, hash } from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -38,6 +39,28 @@ export class UsersService {
       );
     }
     return user;
+  }
+
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
+    const user = await this.findOne(userId);
+
+    const isRefreshTokenMatching = await compare(
+      refreshToken,
+      user.refreshToken,
+    );
+    if (isRefreshTokenMatching) {
+      return user;
+    }
+  }
+
+  async setCurrentRefreshToken(refreshToken: string, id: string) {
+    const currentHashedRefreshToken = await hash(refreshToken, 10);
+    await this.prisma.user.update({
+      data: {
+        refreshToken: currentHashedRefreshToken,
+      },
+      where: { id },
+    });
   }
 
   // findAll() {

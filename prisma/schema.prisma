@@ -8,11 +8,11 @@ datasource db {
 }
 
 model Device {
-  id              String         @id @default(uuid()) @db.VarChar(36)
+  id              String         @id @default(uuid())
   active          Boolean        @default(true) @db.Boolean
   deleted         Boolean        @default(false) @db.Boolean
-  createAt        DateTime       @default(now()) @db.Timestamp(6)
-  updateAt        DateTime       @default(now()) @db.Timestamp(6)
+  createAt        DateTime       @default(now())
+  updateAt        DateTime       @updatedAt
   code            Int            @db.Integer
   description     String         @db.VarChar(200)
   model           Model
@@ -21,33 +21,18 @@ model Device {
   mobileOperator  MobileOperator
   chipNumber      String         @db.VarChar(25)
   timezone        Timezone
+  // Relation fields
   location        Location[]
   status          Status[]
   Alert           Alert[]
 }
 
-// model Address {
-//   id       String    @id @default(uuid()) @db.VarChar(36)
-//   active   Boolean   @default(true) @db.Boolean
-//   deleted  Boolean   @default(false) @db.Boolean
-//   createAt DateTime  @default(now()) @db.Timestamp(6)
-//   updateAt DateTime  @default(now()) @db.Timestamp(6)
-//   road     String    @db.VarChar(100)
-//   suburb   String    @db.VarChar(50)
-//   city     String    @db.VarChar(30)
-//   state    String    @db.VarChar(30)
-//   region   String    @db.VarChar(50)
-//   postcode String    @db.VarChar(9)
-//   country  String    @db.VarChar(20)
-//   location Location?
-// }
-
 model Info {
-  id        String   @id @default(uuid()) @db.VarChar(36)
+  id        String   @id @default(uuid())
   active    Boolean  @default(true) @db.Boolean
   deleted   Boolean  @default(false) @db.Boolean
-  createAt  DateTime @default(now()) @db.Timestamp(6)
-  updateAt  DateTime @default(now()) @db.Timestamp(6)
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
   odometer  Int?     @db.Integer
   power     Float?   @db.DoublePrecision
   serial    Int?     @db.Integer
@@ -55,15 +40,16 @@ model Info {
   mode      Int?     @db.Integer
   hourMeter Int?     @db.Integer
   archive   Boolean? @db.Boolean
+  // Relation fields
   status    Status?
 }
 
 model Location {
-  id         String   @id @default(uuid()) @db.VarChar(36)
+  id         String   @id @default(uuid())
   active     Boolean  @default(true) @db.Boolean
   deleted    Boolean  @default(false) @db.Boolean
-  createAt   DateTime @default(now()) @db.Timestamp(6)
-  updateAt   DateTime @default(now()) @db.Timestamp(6)
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
   serverTime DateTime @db.Timestamp(0)
   fixTime    DateTime @db.Timestamp(0)
   satellite  Int      @db.Integer
@@ -75,58 +61,71 @@ model Location {
   mcc        Int?     @db.Integer
   mnc        Int?     @db.Integer
   lac        Int?     @db.Integer
-  deviceId   String   @db.VarChar(36)
+  // Relation fields
+  deviceId   String
   device     Device   @relation(fields: [deviceId], references: [id])
-  // addressId  String?  @unique @db.VarChar(36)
-  // address    Address? @relation(fields: [addressId], references: [id])
 
   @@index([deviceId])
 }
 
 model Status {
-  id       String   @id @default(uuid()) @db.VarChar(36)
+  id       String   @id @default(uuid())
   active   Boolean  @default(true) @db.Boolean
   deleted  Boolean  @default(false) @db.Boolean
-  createAt DateTime @default(now()) @db.Timestamp(6)
-  updateAt DateTime @default(now()) @db.Timestamp(6)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
   blocked  Boolean  @db.Boolean
   valid    Boolean  @db.Boolean
   charge   Boolean? @db.Boolean
   ignition Boolean  @db.Boolean
   battery  Float    @db.Real
   rssi     Int?     @db.SmallInt
-  deviceId String   @db.VarChar(36)
-  infoId   String   @unique @db.VarChar(36)
+  // Relation fields
+  deviceId String
+  infoId   String
   device   Device   @relation(fields: [deviceId], references: [id])
   info     Info     @relation(fields: [infoId], references: [id])
 }
 
 model Alert {
-  id        String   @id @default(uuid()) @db.VarChar(36)
+  id        String   @id @default(uuid())
   active    Boolean  @default(true) @db.Boolean
   deleted   Boolean  @default(false) @db.Boolean
-  createAt  DateTime @default(now()) @db.Timestamp(6)
-  updateAt  DateTime @default(now()) @db.Timestamp(6)
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
   emergency String?  @db.VarChar(20)
   event     String?  @db.VarChar(20)
   alert     String?  @db.VarChar(20)
-  deviceId  String   @db.VarChar(36)
+  // Relation fields
+  deviceId  String
   device    Device   @relation(fields: [deviceId], references: [id])
 }
 
 model User {
-  id       String   @id @default(uuid()) @db.VarChar(36)
-  active   Boolean  @default(true) @db.Boolean
-  deleted  Boolean  @default(false) @db.Boolean
-  createAt DateTime @default(now()) @db.Timestamp(6)
-  updateAt DateTime @default(now()) @db.Timestamp(6)
-  name     String   @db.VarChar(100)
-  username String   @db.VarChar(100)
-  role     String   @db.VarChar(50)
-  password String   @db.VarChar(100)
+  id           String   @id @default(uuid())
+  active       Boolean  @default(true) @db.Boolean
+  deleted      Boolean  @default(false) @db.Boolean
+  createAt     DateTime @default(now())
+  updateAt     DateTime @updatedAt
+  name         String   @db.VarChar(100)
+  username     String   @db.VarChar(100)
+  role         String   @db.VarChar(50)
+  password     String   @db.VarChar(100)
+  refreshToken String?  @db.VarChar
 
   @@unique([username])
 }
+
+// model Token {
+//   id       String   @id @default(uuid())
+//   createAt DateTime @default(now())
+//   updateAt DateTime @updatedAt
+//   iss      String   @db.VarChar
+//   iat      DateTime @default(now())
+//   exp      DateTime @db.Timestamp
+//   aud      String   @db.VarChar(20)
+//   sub      String   @db.VarChar(20)
+// }
 
 enum Model {
   SUNTECH

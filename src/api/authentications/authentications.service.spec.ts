@@ -1,14 +1,14 @@
 import * as Joi from '@hapi/joi';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from '../../prisma/prisma.module';
-import { ConfigService } from '../../config/config.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { AuthenticationsController } from './authentications.controller';
 import { AuthenticationsService } from './authentications.service';
+import { Environments } from './interface/environments.interface';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 
@@ -22,21 +22,22 @@ describe('AuthenticationsService', () => {
         ConfigModule.forRoot({
           validationSchema: Joi.object({
             DATABASE_URL: Joi.string().required(),
-            JWT_SECRET: Joi.string().required(),
-            JWT_EXPIRATION_TIME: Joi.string().required(),
-            JWT_PRIVATE_KEY: Joi.string().required(),
-            JWT_PUBLIC_KEY: Joi.string().required(),
+            JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+            JWT_ACCESS_TOKEN_PUBLIC_KEY: Joi.string().required(),
           }),
         }),
         PrismaModule,
         JwtModule.registerAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: async (configService: ConfigService) => ({
-            privateKey: configService.get('JWT_PRIVATE_KEY'),
-            publicKey: configService.get('JWT_PUBLIC_KEY'),
+          useFactory: async (
+            configService: ConfigService<Record<Environments, string>>,
+          ) => ({
+            publicKey: configService.get('JWT_ACCESS_TOKEN_PUBLIC_KEY'),
             signOptions: {
-              expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}s`,
+              expiresIn: `${configService.get(
+                'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+              )}s`,
               issuer: 'David França',
               algorithm: 'RS256',
             },
@@ -53,16 +54,24 @@ describe('AuthenticationsService', () => {
       controllers: [AuthenticationsController],
     }).compile();
 
-    authenticationService = await module.get<AuthenticationsService>(
+    authenticationService = module.get<AuthenticationsService>(
       AuthenticationsService,
     );
   });
 
   describe('when creating a cookie', () => {
     it('should return a string', () => {
-      const userId = 'e6508213-670a-4c68-b757-bb765246003c';
+      const userId = 'ebc282b9-dceb-4d8e-8c37-b914064ace6e';
+      const name = 'David';
+      const username = 'david.franca';
+      const role = 'ADMIN';
       expect(
-        typeof authenticationService.getCookieWithJwtToken(userId),
+        typeof authenticationService.getCookieWithJwtAccessToken(
+          userId,
+          name,
+          username,
+          role,
+        ),
       ).toEqual('string');
     });
   });

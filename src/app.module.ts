@@ -43,10 +43,12 @@ export class AppModule {
       ConfigModule.forRoot({
         validationSchema: Joi.object({
           DATABASE_URL: Joi.string().required(),
-          JWT_SECRET: Joi.string().required(),
-          JWT_EXPIRATION_TIME: Joi.string().required(),
-          JWT_PRIVATE_KEY: Joi.string().required(),
-          JWT_PUBLIC_KEY: Joi.string().required(),
+          JWT_REFRESH_TOKEN_PRIVATE_KEY: Joi.string().required(),
+          JWT_REFRESH_TOKEN_PUBLIC_KEY: Joi.string().required(),
+          JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+          JWT_ACCESS_TOKEN_PRIVATE_KEY: Joi.string().required(),
+          JWT_ACCESS_TOKEN_PUBLIC_KEY: Joi.string().required(),
+          JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
         }),
       }),
     );

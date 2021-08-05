@@ -9,11 +9,11 @@ CREATE TYPE "Timezone" AS ENUM ('GMT-14', 'GMT-13', 'GMT-12', 'GMT-11', 'GMT-10'
 
 -- CreateTable
 CREATE TABLE "Device" (
-    "id" VARCHAR(36) NOT NULL,
+    "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
-    "createAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
     "code" INTEGER NOT NULL,
     "description" VARCHAR(200) NOT NULL,
     "model" "Model" NOT NULL,
@@ -28,11 +28,11 @@ CREATE TABLE "Device" (
 
 -- CreateTable
 CREATE TABLE "Info" (
-    "id" VARCHAR(36) NOT NULL,
+    "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
-    "createAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
     "odometer" INTEGER,
     "power" DOUBLE PRECISION,
     "serial" INTEGER,
@@ -46,11 +46,11 @@ CREATE TABLE "Info" (
 
 -- CreateTable
 CREATE TABLE "Location" (
-    "id" VARCHAR(36) NOT NULL,
+    "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
-    "createAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
     "serverTime" TIMESTAMP(0) NOT NULL,
     "fixTime" TIMESTAMP(0) NOT NULL,
     "satellite" INTEGER NOT NULL,
@@ -62,56 +62,57 @@ CREATE TABLE "Location" (
     "mcc" INTEGER,
     "mnc" INTEGER,
     "lac" INTEGER,
-    "deviceId" VARCHAR(36) NOT NULL,
+    "deviceId" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Status" (
-    "id" VARCHAR(36) NOT NULL,
+    "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
-    "createAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
     "blocked" BOOLEAN NOT NULL,
     "valid" BOOLEAN NOT NULL,
     "charge" BOOLEAN,
     "ignition" BOOLEAN NOT NULL,
     "battery" REAL NOT NULL,
     "rssi" SMALLINT,
-    "deviceId" VARCHAR(36) NOT NULL,
-    "infoId" VARCHAR(36) NOT NULL,
+    "deviceId" TEXT NOT NULL,
+    "infoId" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Alert" (
-    "id" VARCHAR(36) NOT NULL,
+    "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
-    "createAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
     "emergency" VARCHAR(20),
     "event" VARCHAR(20),
     "alert" VARCHAR(20),
-    "deviceId" VARCHAR(36) NOT NULL,
+    "deviceId" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" VARCHAR(36) NOT NULL,
+    "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
-    "createAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updateAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "username" VARCHAR(100) NOT NULL,
     "role" VARCHAR(50) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
+    "refreshToken" VARCHAR,
 
     PRIMARY KEY ("id")
 );
@@ -120,7 +121,10 @@ CREATE TABLE "User" (
 CREATE INDEX "Location.deviceId_index" ON "Location"("deviceId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Status.infoId_unique" ON "Status"("infoId");
+CREATE UNIQUE INDEX "Status_infoId_unique" ON "Status"("infoId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User.username_unique" ON "User"("username");
 
 -- AddForeignKey
 ALTER TABLE "Location" ADD FOREIGN KEY ("deviceId") REFERENCES "Device"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -3,16 +3,17 @@ import { RegisterDto } from './dto/register.dto';
 import { hash, compare } from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { PrismaError } from '../../database/prismaErrorCodes.enum';
-import { ConfigService } from '../../config/config.service';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { TokenPayload } from './interface/tokenPayload.interface';
+import { ConfigService } from '@nestjs/config';
+import { Environments } from './interface/environments.interface';
 
 @Injectable()
 export class AuthenticationsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<Record<Environments, string>>,
   ) {}
 
   async register(registrationData: RegisterDto) {
@@ -68,12 +69,51 @@ export class AuthenticationsService {
     }
   }
 
-  public getCookieWithJwtToken(userId: string): string {
-    const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload);
+  public getCookieWithJwtAccessToken(
+    userId: string,
+    name: string,
+    username: string,
+    role: string,
+  ): string {
+    const payload: TokenPayload = { name, username, role };
+
+    // SIGNING OPTIONS
+    const signOptions: JwtSignOptions = {
+      subject: userId,
+      privateKey: this.configService.get('JWT_ACCESS_TOKEN_PRIVATE_KEY'),
+    };
+
+    const token = this.jwtService.sign(payload, signOptions);
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-      'JWT_EXPIRATION_TIME',
+      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
     )}`;
+  }
+
+  public getCookieWithJwtRefreshToken(
+    userId: string,
+    name: string,
+    username: string,
+    role: string,
+  ) {
+    const payload: TokenPayload = { name, username, role };
+
+    // SIGNING OPTIONS
+    const signOptions: JwtSignOptions = {
+      expiresIn: `${this.configService.get(
+        'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+      )}s`,
+      privateKey: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
+      subject: userId,
+    };
+
+    const token = this.jwtService.sign(payload, signOptions);
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+    )}`;
+    return {
+      cookie,
+      token,
+    };
   }
 
   public getCookieForLogOut() {

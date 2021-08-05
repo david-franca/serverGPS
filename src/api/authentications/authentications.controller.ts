@@ -10,7 +10,9 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthenticationGuard } from '../guards/jwt-authentication.guard';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { LocalAuthenticationGuard } from '../guards/localAuthentication.guard';
+import { UsersService } from '../users/users.service';
 import { AuthenticationsService } from './authentications.service';
 import { RegisterDto } from './dto/register.dto';
 import { RequestWithUser } from './interface/request.interface';
@@ -19,6 +21,7 @@ import { RequestWithUser } from './interface/request.interface';
 export class AuthenticationsController {
   constructor(
     private readonly authenticationsService: AuthenticationsService,
+    private readonly userService: UsersService,
   ) {}
 
   @Post('register')
@@ -31,8 +34,31 @@ export class AuthenticationsController {
   @Post('login')
   async login(@Req() request: RequestWithUser) {
     const { user } = request;
-    const cookie = this.authenticationsService.getCookieWithJwtToken(user.id);
-    request.res.setHeader('Set-Cookie', cookie);
+    const { id, name, username, role } = user;
+    const accessTokenCookie =
+      this.authenticationsService.getCookieWithJwtAccessToken(
+        id,
+        name,
+        username,
+        role,
+      );
+    const refreshTokenCookie =
+      this.authenticationsService.getCookieWithJwtRefreshToken(
+        id,
+        name,
+        username,
+        role,
+      );
+
+    await this.userService.setCurrentRefreshToken(
+      refreshTokenCookie.token,
+      user.id,
+    );
+
+    request.res.setHeader('Set-Cookie', [
+      accessTokenCookie,
+      refreshTokenCookie.cookie,
+    ]);
     user.password = undefined;
     return user;
   }
@@ -53,5 +79,22 @@ export class AuthenticationsController {
     const user = request.user;
     user.password = undefined;
     return user;
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  refresh(@Req() request: RequestWithUser) {
+    const { id, name, username, role } = request.user;
+    const accessTokenCookie =
+      this.authenticationsService.getCookieWithJwtAccessToken(
+        id,
+        name,
+        username,
+        role,
+      );
+
+    request.res.setHeader('Set-Cookie', accessTokenCookie);
+    request.user.password = undefined;
+    return request.user;
   }
 }
