@@ -19,7 +19,7 @@ const adapterData: Prisma.DeviceCreateInput[] = [
     equipmentNumber: '866968030810130',
     phone: '85987884378',
     mobileOperator: 'Oi',
-    chipNumber: '85987884378',
+    chipNumber: '85987884379',
     timezone: 'GMT_3',
   },
 ];

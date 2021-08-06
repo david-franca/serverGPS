@@ -26,6 +26,25 @@ export class DevicesService {
       take,
       cursor,
       where,
+      orderBy: orderBy ?? {
+        createAt: 'asc',
+      },
+    });
+  }
+
+  async searchAll(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.DeviceWhereUniqueInput;
+    where?: Prisma.DeviceWhereInput;
+    orderBy?: Prisma.DeviceOrderByInput;
+  }): Promise<Device[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.device.findMany({
+      skip,
+      take,
+      cursor,
+      where,
       orderBy,
     });
   }

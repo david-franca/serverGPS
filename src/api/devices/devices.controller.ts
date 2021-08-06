@@ -9,17 +9,25 @@ import {
   HttpException,
   HttpCode,
   UseGuards,
+  CACHE_MANAGER,
+  Inject,
+  Query,
 } from '@nestjs/common';
 import { Device } from '@prisma/client';
+import { Cache } from 'cache-manager';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import { JwtAuthenticationGuard } from '../guards/jwt-authentication.guard';
+import { PaginationParams } from '../pagination/params.pagination';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 
 @Controller('devices')
 export class DevicesController {
-  constructor(private readonly devicesService: DevicesService) {}
+  constructor(
+    private readonly devicesService: DevicesService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthenticationGuard)
@@ -29,9 +37,28 @@ export class DevicesController {
 
   @Get()
   @UseGuards(JwtAuthenticationGuard)
-  async findAll(): Promise<Device[]> {
+  async findAll(
+    @Query('search') search: string,
+    @Query() { take, skip }: PaginationParams,
+  ): Promise<Device[]> {
     try {
-      return await this.devicesService.findAll({ where: { deleted: false } });
+      if (search) {
+        const searchArray = search.split('=');
+
+        return await this.devicesService.searchAll({
+          where: {
+            [`${searchArray[0]}`]: searchArray[1],
+            deleted: false,
+          },
+          take,
+          skip,
+        });
+      }
+      return await this.devicesService.findAll({
+        where: { deleted: false },
+        take,
+        skip,
+      });
     } catch (e) {
       throw new HttpException(
         {
