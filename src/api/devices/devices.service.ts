@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Device, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { Cache } from 'cache-manager';
 import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DeviceNotFoundException } from './exception/devicesNotFound.exception';
 
 @Injectable()
 export class DevicesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async create(data: Prisma.DeviceCreateInput): Promise<Device> {
+    await this.clearCache();
     return this.prisma.device.create({ data });
   }
 
@@ -63,6 +68,7 @@ export class DevicesService {
   }): Promise<Device> {
     const { data, where } = params;
     try {
+      await this.clearCache();
       return await this.prisma.device.update({
         data,
         where,
@@ -78,11 +84,15 @@ export class DevicesService {
     }
   }
 
-  async remove(where: Prisma.DeviceWhereUniqueInput): Promise<Device> {
+  async remove(where: Prisma.DeviceWhereUniqueInput): Promise<void> {
     try {
-      return this.prisma.device.delete({
+      await this.prisma.device.update({
         where,
+        data: {
+          deleted: true,
+        },
       });
+      await this.clearCache();
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
@@ -92,5 +102,14 @@ export class DevicesService {
       }
       throw error;
     }
+  }
+
+  async clearCache() {
+    const keys: string[] = await this.cacheManager.store.keys();
+    keys.forEach((key) => {
+      if (key.startsWith('GET_DEVICES_CACHE')) {
+        this.cacheManager.del(key);
+      }
+    });
   }
 }

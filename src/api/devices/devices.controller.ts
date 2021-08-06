@@ -12,6 +12,10 @@ import {
   CACHE_MANAGER,
   Inject,
   Query,
+  CacheInterceptor,
+  UseInterceptors,
+  CacheKey,
+  CacheTTL,
 } from '@nestjs/common';
 import { Device } from '@prisma/client';
 import { Cache } from 'cache-manager';
@@ -35,6 +39,9 @@ export class DevicesController {
     return await this.devicesService.create(createDeviceDto);
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('GET_DEVICES_CACHE')
+  @CacheTTL(120)
   @Get()
   @UseGuards(JwtAuthenticationGuard)
   async findAll(
