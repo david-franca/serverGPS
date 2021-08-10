@@ -20,7 +20,7 @@ import { Environments } from '../authentications/interface/environments.interfac
         host: configService.get('REDIS_HOST'),
         port: configService.get('REDIS_PORT'),
         ttl: 120,
-        password: configService.get('REDIS_PASSWORD'),
+        // password: configService.get('REDIS_PASSWORD'),
       }),
     }),
   ],
