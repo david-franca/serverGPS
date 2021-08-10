@@ -54,5 +54,4 @@ lib-cov
 *.key.pub
 
 .docker/dbdata
-.docker/postgres
 .docker/redisdata
