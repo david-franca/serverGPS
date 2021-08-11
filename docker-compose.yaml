@@ -1,15 +1,18 @@
-version: '3.7'
+version: '3.8'
 
 services:
   app:
     build: .
+    restart: always
     entrypoint: .docker/entrypoint.sh
     ports:
       - 3001:3001
+      - 2790-2800:2790-2800
     volumes:
       - .:/home/node/app
     depends_on:
       - db
+      - redis
     networks:
       - postgres-compose-network
 
@@ -21,16 +24,19 @@ services:
     volumes:
       - .docker/dbdata:/var/lib/postgresql/data
     ports:
-      - '15432:5432'
+      - '${POSTGRES_PORT}:5432'
+    command: -p ${POSTGRES_PORT}
     environment:
-      POSTGRES_PASSWORD: '@Lab2019'
-      POSTGRES_USER: dev
-      POSTGRES_DB: apvBrasil
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_NAME}
     networks:
       - postgres-compose-network
 
   redis:
     image: 'redis:alpine'
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - ./.docker/redisdata:/data
     ports:
