@@ -1,6 +1,5 @@
-import { DynamicModule, Logger, Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Options } from './interfaces';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { RoutesGateway } from './routes/routes.gateway';
@@ -10,55 +9,42 @@ import { SocketsModule } from './sockets/sockets.module';
 import { UsersModule } from './api/users/users.module';
 import { AuthenticationsModule } from './api/authentications/authentications.module';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from '@hapi/joi';
+import { object, string, number } from '@hapi/joi';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { config } from './config/defaults';
 
-@Module({})
-export class AppModule {
-  static async forRoot(options: Options): Promise<DynamicModule> {
-    options.imports = [];
-    options.providers = [];
-    options.providers.push({
-      provide: 'GPS_LOGGER',
-      useClass: options.logger ? options.logger : Logger,
-    });
-    options.providers.push({
-      provide: 'GPS_CONFIG_OPTIONS',
-      useValue: options,
-    });
-    options.providers.push(
-      AppService,
-      RoutesGateway,
-      PrismaService,
-      PositionService,
-      { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
-    );
-    options.imports.push(
-      PrismaModule,
-      DevicesModule,
-      SocketsModule,
-      UsersModule,
-      AuthenticationsModule,
-      ConfigModule.forRoot({
-        validationSchema: Joi.object({
-          DATABASE_URL: Joi.string().required(),
-          JWT_REFRESH_TOKEN_PRIVATE_KEY: Joi.string().required(),
-          JWT_REFRESH_TOKEN_PUBLIC_KEY: Joi.string().required(),
-          JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().required(),
-          JWT_ACCESS_TOKEN_PRIVATE_KEY: Joi.string().required(),
-          JWT_ACCESS_TOKEN_PUBLIC_KEY: Joi.string().required(),
-          JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.number().required(),
-          REDIS_HOST: Joi.string().required(),
-          REDIS_PORT: Joi.number().required(),
-          REDIS_PASSWORD: Joi.string().required(),
-        }),
+@Module({
+  controllers: [],
+  imports: [
+    PrismaModule,
+    DevicesModule,
+    SocketsModule,
+    UsersModule,
+    AuthenticationsModule,
+    ConfigModule.forRoot({
+      validationSchema: object({
+        DATABASE_URL: string().required(),
+        JWT_REFRESH_TOKEN_PRIVATE_KEY: string().required(),
+        JWT_REFRESH_TOKEN_PUBLIC_KEY: string().required(),
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: number().required(),
+        JWT_ACCESS_TOKEN_PRIVATE_KEY: string().required(),
+        JWT_ACCESS_TOKEN_PUBLIC_KEY: string().required(),
+        JWT_ACCESS_TOKEN_EXPIRATION_TIME: number().required(),
+        REDIS_HOST: string().required(),
+        REDIS_PORT: number().required(),
+        REDIS_PASSWORD: string().required(),
       }),
-    );
-    return {
-      module: AppModule,
-      imports: options.imports,
-      providers: options.providers,
-    };
-  }
-}
+    }),
+  ],
+  providers: [
+    AppService,
+    RoutesGateway,
+    PrismaService,
+    PositionService,
+    { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
+    { provide: 'GPS_CONFIG_OPTIONS', useValue: { config } },
+    { provide: 'GPS_LOGGER', useClass: Logger },
+  ],
+})
+export class AppModule {}
