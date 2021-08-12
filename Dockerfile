@@ -1,10 +1,8 @@
-## Comando obrigatório
-## Baixa a imagem do node com versão alpine (versão mais simplificada e leve)
 FROM node:alpine
 
 RUN apk add --no-cache bash git yarn
 
-RUN npm i -g @nestjs/cli@7.6.0
+RUN npm i -g @nestjs/cli@7.6.0 && npm install pm2 -g
 
 USER node
 

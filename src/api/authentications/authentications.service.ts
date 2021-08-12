@@ -19,7 +19,10 @@ export class AuthenticationsService {
   ) {}
 
   async register(registrationData: RegisterDto) {
-    const hashedPassword = await hash(registrationData.password, 10);
+    const hashedPassword = await hash(
+      registrationData.password,
+      this.configService.get('SALT_NUMBER'),
+    );
 
     try {
       const createUser = await this.usersService.create({

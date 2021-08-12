@@ -1,21 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    restart: always
-    entrypoint: .docker/entrypoint.sh
-    ports:
-      - 3001:3001
-      - 2790-2800:2790-2800
-    volumes:
-      - .:/home/node/app
-    depends_on:
-      - db
-      - redis
-    networks:
-      - postgres-compose-network
-
   db:
     build: .docker/postgres
     restart: always
@@ -25,13 +10,12 @@ services:
       - .docker/dbdata:/var/lib/postgresql/data
     ports:
       - '${POSTGRES_PORT}:5432'
-    command: -p ${POSTGRES_PORT}
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASS}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_NAME}
     networks:
-      - postgres-compose-network
+      - postgres
 
   redis:
     image: 'redis:alpine'
@@ -40,10 +24,10 @@ services:
     volumes:
       - ./.docker/redisdata:/data
     ports:
-      - '15442:6379'
+      - '${REDIS_PORT}:6379'
     networks:
-      - postgres-compose-network
+      - postgres
 
 networks:
-  postgres-compose-network:
+  postgres:
     driver: 'bridge'

@@ -11,7 +11,7 @@ import { AuthenticationsModule } from './api/authentications/authentications.mod
 import { ConfigModule } from '@nestjs/config';
 import { object, string, number } from '@hapi/joi';
 import { APP_FILTER } from '@nestjs/core';
-import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { ExceptionsLoggerFilter } from './utils';
 import { config } from './config/defaults';
 
 @Module({
@@ -34,6 +34,7 @@ import { config } from './config/defaults';
         REDIS_HOST: string().required(),
         REDIS_PORT: number().required(),
         REDIS_PASSWORD: string().required(),
+        SALT_NUMBER: number().required(),
       }),
     }),
   ],

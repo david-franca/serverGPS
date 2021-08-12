@@ -5,3 +5,4 @@ export * from './format.util';
 export * from './function.util';
 export * from './timezone.util';
 export * from './crc16.util';
+export * from './exceptionsLogger.filter';

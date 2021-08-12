@@ -1,13 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { compare, hash } from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Environments } from '../authentications/interface/environments.interface';
 
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly configService: ConfigService<Record<Environments, string>>,
+  ) {}
 
   async create(data: CreateUserDto): Promise<User> {
     return await this.prisma.user.create({
@@ -54,7 +59,10 @@ export class UsersService {
   }
 
   async setCurrentRefreshToken(refreshToken: string, id: string) {
-    const currentHashedRefreshToken = await hash(refreshToken, 10);
+    const currentHashedRefreshToken = await hash(
+      refreshToken,
+      this.configService.get('SALT_NUMBER'),
+    );
     await this.prisma.user.update({
       data: {
         refreshToken: currentHashedRefreshToken,

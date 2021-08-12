@@ -6,4 +6,5 @@ fi
 
 yarn
 npx prisma migrate deploy
+yarn build
 yarn start:prod

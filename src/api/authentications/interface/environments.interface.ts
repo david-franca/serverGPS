@@ -8,4 +8,5 @@ export type Environments =
   | 'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
   | 'REDIS_HOST'
   | 'REDIS_PORT'
-  | 'REDIS_PASSWORD';
+  | 'REDIS_PASSWORD'
+  | 'SALT_NUMBER';
