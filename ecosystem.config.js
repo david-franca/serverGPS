@@ -23,7 +23,7 @@ module.exports = {
       path: '/home/ubuntu/teste/deploy',
       'pre-deploy-local': "echo 'This is a local executed command'",
       'post-deploy':
-        'yarn && npx prisma migrate deploy && yarn build && pm2 reload ecosystem.config.js --env production',
+        'yarn && docker-compose up -d --build && npx prisma migrate deploy && yarn build && pm2 reload ecosystem.config.js --env production',
       'pre-setup': '',
     },
   },
