@@ -20,7 +20,7 @@ module.exports = {
       key: process.env.HOME + '/Downloads/AWSAPV.pem',
       ref: 'origin/master',
       repo: 'git@github.com:francinha02/serverGPS.git',
-      path: '/teste/deploy',
+      path: '/home/ubuntu/teste/deploy',
       'pre-deploy-local': "echo 'This is a local executed command'",
       'post-deploy':
         'yarn && npx prisma migrate deploy && yarn build && pm2 reload ecosystem.config.js --env production',
