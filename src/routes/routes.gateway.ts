@@ -1,4 +1,6 @@
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
@@ -11,7 +13,7 @@ import { Server, Socket } from 'socket.io';
 })
 export class RoutesGateway implements OnGatewayConnection {
   @WebSocketServer()
-  private server: Server;
+  server: Server;
 
   afterInit(server: Server) {
     // console.log('Init', server._connectTimeout);
@@ -23,7 +25,10 @@ export class RoutesGateway implements OnGatewayConnection {
     client.emit('received', payload);
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() ...args: any[]
+  ) {
     console.log('Connected', client.id, args);
   }
 
