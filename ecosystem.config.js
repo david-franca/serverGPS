@@ -16,7 +16,7 @@ module.exports = {
   deploy: {
     production: {
       user: 'ubuntu',
-      host: ['18.119.135.252'],
+      host: ['davidfranca.tech'],
       key: process.env.HOME + '/Downloads/AWSAPV.pem',
       ref: 'origin/master',
       repo: 'git@github.com:francinha02/serverGPS.git',
