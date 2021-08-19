@@ -46,7 +46,7 @@ export class DevicesController {
   @UseGuards(JwtAuthenticationGuard)
   async findAll(
     @Query('search') search: string,
-    @Query() { take, skip }: PaginationParams,
+    @Query() { take, skip, order, sort }: PaginationParams,
   ): Promise<Device[]> {
     try {
       if (search) {
@@ -59,6 +59,9 @@ export class DevicesController {
           },
           take,
           skip,
+          orderBy: {
+            [order]: sort,
+          },
         });
       }
       return await this.devicesService.findAll({

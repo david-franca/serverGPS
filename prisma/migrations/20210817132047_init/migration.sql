@@ -118,6 +118,15 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Device.equipmentNumber_unique" ON "Device"("equipmentNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Device.chipNumber_unique" ON "Device"("chipNumber");
+
+-- CreateIndex
+CREATE INDEX "Device.equipmentNumber_chipNumber_index" ON "Device"("equipmentNumber", "chipNumber");
+
+-- CreateIndex
 CREATE INDEX "Location.deviceId_index" ON "Location"("deviceId");
 
 -- CreateIndex
@@ -125,6 +134,9 @@ CREATE UNIQUE INDEX "Status_infoId_unique" ON "Status"("infoId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User.username_unique" ON "User"("username");
+
+-- CreateIndex
+CREATE INDEX "User.username_index" ON "User"("username");
 
 -- AddForeignKey
 ALTER TABLE "Location" ADD FOREIGN KEY ("deviceId") REFERENCES "Device"("id") ON DELETE CASCADE ON UPDATE CASCADE;

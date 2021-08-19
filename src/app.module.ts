@@ -35,6 +35,7 @@ import { config } from './config/defaults';
         REDIS_PORT: number().required(),
         REDIS_PASSWORD: string().required(),
         SALT_NUMBER: number().required(),
+        CORS_HOST: string().required(),
       }),
     }),
   ],

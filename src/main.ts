@@ -3,18 +3,21 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
-import { ExceptionsLoggerFilter } from './utils';
+import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: '*',
-      credentials: true,
-    },
-  });
+  const app = await NestFactory.create(AppModule);
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new ExceptionsLoggerFilter(httpAdapter));
-  // app.enableCors();
+  const configService = app.get(ConfigService);
+  app.enableCors({
+    credentials: true,
+    origin: configService.get<string>('CORS_HOST').split(', '),
+  });
+  app.useGlobalFilters(
+    new ExceptionsLoggerFilter(httpAdapter),
+    new NotFoundExceptionFilter(),
+  );
   app.use(cookieParser());
   app.use(helmet());
   app.useGlobalPipes(

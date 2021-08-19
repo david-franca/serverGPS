@@ -24,7 +24,7 @@ model Device {
   // Relation fields
   location        Location[]
   status          Status[]
-  Alert           Alert[]
+  alert           Alert[]
 
   @@index([equipmentNumber, chipNumber])
 }
@@ -117,17 +117,6 @@ model User {
 
   @@index([username])
 }
-
-// model Token {
-//   id       String   @id @default(uuid())
-//   createAt DateTime @default(now())
-//   updateAt DateTime @updatedAt
-//   iss      String   @db.VarChar
-//   iat      DateTime @default(now())
-//   exp      DateTime @db.Timestamp
-//   aud      String   @db.VarChar(20)
-//   sub      String   @db.VarChar(20)
-// }
 
 enum Model {
   SUNTECH
