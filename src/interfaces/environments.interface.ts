@@ -9,4 +9,8 @@ export type Environments =
   | 'REDIS_HOST'
   | 'REDIS_PORT'
   | 'REDIS_PASSWORD'
-  | 'SALT_NUMBER';
+  | 'SALT_NUMBER'
+  | 'EMAIL_HOST'
+  | 'EMAIL_USER'
+  | 'EMAIL_PASSWORD'
+  | 'EMAIL_PORT';

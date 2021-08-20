@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './strategy/refreshToken.strategy';
-import { Environments } from './interface/environments.interface';
+import { Environments } from '../../interfaces';
 
 @Module({
   imports: [

@@ -4,7 +4,7 @@ import { DevicesService } from './devices.service';
 import { DevicesController } from './devices.controller';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Environments } from '../authentications/interface/environments.interface';
+import { Environments } from '../../interfaces';
 
 @Module({
   controllers: [DevicesController],

@@ -8,7 +8,7 @@ import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { AuthenticationsController } from './authentications.controller';
 import { AuthenticationsService } from './authentications.service';
-import { Environments } from './interface/environments.interface';
+import { Environments } from '../../interfaces';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 

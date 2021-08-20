@@ -6,7 +6,7 @@ import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { TokenPayload } from './interface/tokenPayload.interface';
 import { ConfigService } from '@nestjs/config';
-import { Environments } from './interface/environments.interface';
+import { Environments } from '../../interfaces';
 import { Response } from 'express';
 import { CookiesProps } from './interface/cookie.interface';
 
@@ -132,7 +132,6 @@ export class AuthenticationsService {
       res.clearCookie(key, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true,
       });
     });
   }
@@ -144,7 +143,6 @@ export class AuthenticationsService {
         httpOnly: true,
         maxAge,
         sameSite: 'none',
-        secure: true,
       });
     });
   }
