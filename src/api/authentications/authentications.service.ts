@@ -132,6 +132,7 @@ export class AuthenticationsService {
       res.clearCookie(key, {
         httpOnly: true,
         sameSite: 'lax',
+        secure: true,
       });
     });
   }
@@ -143,6 +144,7 @@ export class AuthenticationsService {
         httpOnly: true,
         maxAge,
         sameSite: 'lax',
+        secure: true,
       });
     });
   }
