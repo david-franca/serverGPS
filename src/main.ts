@@ -23,7 +23,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       errorHttpStatusCode: 422,
-      skipMissingProperties: true,
       transform: true,
     }),
   );

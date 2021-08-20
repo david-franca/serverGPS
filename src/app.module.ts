@@ -13,6 +13,10 @@ import { object, string, number } from '@hapi/joi';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils';
 import { config } from './config/defaults';
+import { EmailService } from './email/email.service';
+import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EmailSchedulesModule } from './email-schedules/email-schedules.module';
 
 @Module({
   controllers: [],
@@ -22,6 +26,8 @@ import { config } from './config/defaults';
     SocketsModule,
     UsersModule,
     AuthenticationsModule,
+    EmailModule,
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       validationSchema: object({
         DATABASE_URL: string().required(),
@@ -36,14 +42,20 @@ import { config } from './config/defaults';
         REDIS_PASSWORD: string().required(),
         SALT_NUMBER: number().required(),
         CORS_HOST: string().required(),
+        EMAIL_HOST: string().required(),
+        EMAIL_USER: string().required(),
+        EMAIL_PASSWORD: string().required(),
+        EMAIL_PORT: number().required(),
       }),
     }),
+    EmailSchedulesModule,
   ],
   providers: [
     AppService,
     RoutesGateway,
     PrismaService,
     PositionService,
+    EmailService,
     { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
     { provide: 'GPS_CONFIG_OPTIONS', useValue: { config } },
     { provide: 'GPS_LOGGER', useClass: Logger },
