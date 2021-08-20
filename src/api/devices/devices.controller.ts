@@ -41,7 +41,7 @@ export class DevicesController {
 
   @UseInterceptors(CacheInterceptor)
   @CacheKey('GET_DEVICES_CACHE')
-  @CacheTTL(120)
+  @CacheTTL(60)
   @Get()
   @UseGuards(JwtAuthenticationGuard)
   async findAll(

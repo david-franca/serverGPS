@@ -44,6 +44,18 @@ export class DevicesService {
         },
       },
     });
+
+    devices.forEach((device) => {
+      device.location.sort((a, b) => {
+        return b.fixTime.getTime() - a.fixTime.getTime();
+      });
+
+      device.status.sort((a, b) => {
+        return b.updateAt.getTime() - a.updateAt.getTime();
+      });
+      device.location.length = 1;
+      device.status.length = 1;
+    });
     return devices;
   }
 
