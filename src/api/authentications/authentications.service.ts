@@ -131,7 +131,7 @@ export class AuthenticationsService {
     keys.forEach((key) => {
       res.clearCookie(key, {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: true,
       });
     });
@@ -143,7 +143,7 @@ export class AuthenticationsService {
       res.cookie(key, token, {
         httpOnly: true,
         maxAge,
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: true,
       });
     });
