@@ -16,7 +16,6 @@ export class EmailSchedulesService {
   }
 
   scheduleEmail(emailSchedule: CreateEmailScheduleDto) {
-    console.log(emailSchedule);
     const date = new Date(emailSchedule.date);
     const job = new CronJob(date, () => {
       this.emailService.sendMail({

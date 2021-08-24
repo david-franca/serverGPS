@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { convertMapToObject } from '../utils';
 
 import { Network } from '.';
 import Message from './message.model';
@@ -268,5 +269,25 @@ export class Position extends Message {
 
   public getType(): string {
     return super.getType();
+  }
+
+  public getAllData() {
+    return {
+      protocol: this.protocol,
+      serverTime: this.serverTime,
+      deviceTime: this.deviceTime,
+      fixTime: this.fixTime,
+      outdated: this.outdated,
+      valid: this.valid,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      altitude: this.altitude,
+      speed: this.speed,
+      course: this.course,
+      address: this.address,
+      accuracy: this.accuracy,
+      network: this.network,
+      attributes: convertMapToObject(this.getAttributes()),
+    };
   }
 }

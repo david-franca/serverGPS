@@ -1,5 +1,4 @@
 import { Logger, LoggerService } from '@nestjs/common';
-import { EventEmitter } from 'events';
 import { Socket as TCPSocket } from 'net';
 import { PositionService } from '../services/position/position.service';
 import {
@@ -9,9 +8,9 @@ import {
   Protocols,
 } from '../@types/protocol';
 import { Protocol } from '../protocols';
-import { Position } from '.';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
-export abstract class AbstractGpsDevice extends EventEmitter {
+export abstract class AbstractGpsDevice {
   private service: PositionService = new PositionService();
   uid: string;
   socket: TCPSocket;
@@ -23,14 +22,16 @@ export abstract class AbstractGpsDevice extends EventEmitter {
   logged: boolean;
   decoder: ProtocolDecoderTypes;
   encoder: ProtocolEncoderTypes;
+  eventEmitter: EventEmitter2;
 
   constructor(
     socket: TCPSocket,
     protocolName: ProtocolName,
-    logger?: LoggerService,
+    logger: LoggerService,
+    eventEmitter: EventEmitter2,
   ) {
-    super({ captureRejections: true });
     this.socket = socket;
+    this.eventEmitter = eventEmitter;
     this.logger = logger || Logger;
     this.protocolName = protocolName;
     this.ip = socket instanceof TCPSocket ? socket.remoteAddress : this.ip;
@@ -40,13 +41,13 @@ export abstract class AbstractGpsDevice extends EventEmitter {
     this.encoder = this.protocol.getEncoder();
     this.socket.on('close', () => this.timeout());
     this.socket.on('data', this.handleData.bind(this));
-    this.on('error', (err) =>
+    this.eventEmitter.on('error', (err) =>
       this.logger.error(`[${this.getUID()}][${this.ip}:${this.port}]${err}`),
     );
   }
 
   protected timeout() {
-    this.emit('disconnect', this.getUID());
+    this.eventEmitter.emit('disconnect', this.getUID());
   }
 
   getUID(): string {
@@ -58,21 +59,11 @@ export abstract class AbstractGpsDevice extends EventEmitter {
     this.login(!!position);
     if (position) {
       this.uid = position.getDeviceId();
-      await this.savePositions(position);
-      console.log('Handle Data =>', position);
+      this.eventEmitter.emit('positions.received', position);
+      // console.log('Handle Data =>', position);
       // this.logger.debug(`[${this.getUID()}]Receiving raw data: ${data}`);
     }
     //TODO
-  }
-
-  private async savePositions(position: Position) {
-    if (position.getBoolean('location')) {
-      await this.service.createLocation(position);
-    }
-
-    if (position.getBoolean('statusInfo')) {
-      await this.service.createStatus(position);
-    }
   }
 
   abstract login(canLogin: boolean): void;

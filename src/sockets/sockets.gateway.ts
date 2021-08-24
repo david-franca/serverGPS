@@ -4,27 +4,37 @@ import {
   MessageBody,
   OnGatewayConnection,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { SocketsService } from './sockets.service';
-import { CreateSocketDto } from './dto/create-socket.dto';
-import { UpdateSocketDto } from './dto/update-socket.dto';
 import { Server, Socket } from 'socket.io';
+import { Position } from '../models';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @WebSocketGateway({
-  cors: true,
+  cors: {
+    credentials: true,
+    origin: ['http://localhost:3000'],
+  },
 })
 export class SocketsGateway implements OnGatewayConnection {
   @WebSocketServer()
   private server: Server;
 
-  constructor(private readonly socketsService: SocketsService) {}
+  constructor(
+    private readonly socketsService: SocketsService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   afterInit() {
     // TODO
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
-    console.log('Connected', client.id, args);
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    await this.socketsService.getUserFromSocket(client);
+    this.eventEmitter.on('positions.received', (position: Position) => {
+      client.emit('positions.sended', position);
+    });
   }
 
   handleDisconnect(socket: Socket) {
@@ -32,27 +42,40 @@ export class SocketsGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('createSocket')
-  create(@MessageBody() createSocketDto: CreateSocketDto) {
-    return this.socketsService.create(createSocketDto);
+  async listenForMessages(
+    @MessageBody() content: string,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const user = await this.socketsService.getUserFromSocket(socket);
+
+    this.server.sockets.emit('receive_message', {
+      content,
+      user,
+    });
   }
 
-  @SubscribeMessage('findAllSockets')
-  findAll() {
-    return this.socketsService.findAll();
-  }
+  // @SubscribeMessage('createSocket')
+  // create(@MessageBody() createSocketDto: CreateSocketDto) {
+  //   return this.socketsService.create(createSocketDto);
+  // }
 
-  @SubscribeMessage('findOneSocket')
-  findOne(@MessageBody() id: number) {
-    return this.socketsService.findOne(id);
-  }
+  // @SubscribeMessage('findAllSockets')
+  // findAll() {
+  //   return this.socketsService.findAll();
+  // }
 
-  @SubscribeMessage('updateSocket')
-  update(@MessageBody() updateSocketDto: UpdateSocketDto) {
-    return this.socketsService.update(updateSocketDto.id, updateSocketDto);
-  }
+  // @SubscribeMessage('findOneSocket')
+  // findOne(@MessageBody() id: number) {
+  //   return this.socketsService.findOne(id);
+  // }
 
-  @SubscribeMessage('removeSocket')
-  remove(@MessageBody() id: number) {
-    return this.socketsService.remove(id);
-  }
+  // @SubscribeMessage('updateSocket')
+  // update(@MessageBody() updateSocketDto: UpdateSocketDto) {
+  //   return this.socketsService.update(updateSocketDto.id, updateSocketDto);
+  // }
+
+  // @SubscribeMessage('removeSocket')
+  // remove(@MessageBody() id: number) {
+  //   return this.socketsService.remove(id);
+  // }
 }

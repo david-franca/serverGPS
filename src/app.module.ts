@@ -2,13 +2,12 @@ import { Logger, Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { RoutesGateway } from './routes/routes.gateway';
 import { PositionService } from './services/position/position.service';
 import { DevicesModule } from './api/devices/devices.module';
 import { SocketsModule } from './sockets/sockets.module';
 import { UsersModule } from './api/users/users.module';
 import { AuthenticationsModule } from './api/authentications/authentications.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { object, string, number } from '@hapi/joi';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils';
@@ -17,6 +16,10 @@ import { EmailService } from './email/email.service';
 import { EmailModule } from './email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailSchedulesModule } from './email-schedules/email-schedules.module';
+import { BullModule } from '@nestjs/bull';
+import { Environments } from './interfaces';
+import { ProtocolModule } from './protocols/protocol.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   controllers: [],
@@ -27,7 +30,10 @@ import { EmailSchedulesModule } from './email-schedules/email-schedules.module';
     UsersModule,
     AuthenticationsModule,
     EmailModule,
+    EmailSchedulesModule,
+    ProtocolModule,
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       validationSchema: object({
         DATABASE_URL: string().required(),
@@ -48,11 +54,22 @@ import { EmailSchedulesModule } from './email-schedules/email-schedules.module';
         EMAIL_PORT: number().required(),
       }),
     }),
-    EmailSchedulesModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService<Record<Environments, any>>,
+      ) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+          password: configService.get('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   providers: [
     AppService,
-    RoutesGateway,
     PrismaService,
     PositionService,
     EmailService,

@@ -27,7 +27,6 @@ export abstract class BaseProtocolDecoder {
   public async getDeviceSession(chanel: Socket, ...uniqueIds: string[]) {
     if (chanel) {
       const device = await this.findDevice(...uniqueIds);
-      console.log('Device =>', device);
       if (device) {
         return {
           deviceSession: new DeviceSession(device.equipmentNumber),

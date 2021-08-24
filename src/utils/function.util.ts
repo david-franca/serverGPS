@@ -45,3 +45,10 @@ export function distanceBetweenCoordinates(
 
   return R * c; // in metres
 }
+
+export const convertMapToObject = (map: Map<string, any>) => {
+  return Array.from(map).reduce((obj, [key, value]) => {
+    obj[key] = value;
+    return obj;
+  }, {});
+};

@@ -268,8 +268,6 @@ export class GT06ProtocolDecoder extends BaseProtocolDecoder {
         this.connection,
         parseInt(imei).toString(),
       );
-      console.log(imei);
-      console.log(session);
       position.set('device', session.device);
       position.setDeviceId(session.deviceSession.getDeviceId());
       if (!session) return null;
@@ -791,7 +789,6 @@ export class GT06ProtocolDecoder extends BaseProtocolDecoder {
   }
 
   private decodeAlarm(value: number) {
-    console.log(value);
     switch (value) {
       case 0x01:
         return Position.ALARM_SOS;

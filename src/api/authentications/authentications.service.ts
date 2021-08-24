@@ -126,6 +126,13 @@ export class AuthenticationsService {
     };
   }
 
+  public async getUserFromAuthenticationToken(token: string) {
+    const payload: TokenPayload = this.jwtService.verify(token);
+    if (payload.username) {
+      return await this.usersService.findByUsername(payload.username);
+    }
+  }
+
   public deleteCookies(res: Response, cookies: Record<string, string>) {
     const keys = Object.keys(cookies);
     keys.forEach((key) => {
