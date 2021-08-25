@@ -26,7 +26,7 @@ export class ProtocolProcessor {
   }
 
   @OnQueueFailed()
-  onError(job: Job, error) {
+  onError(job: Job, error: Error) {
     this.logger.error(
       `Failed job ${job.id} of type ${job.name}: ${error.message}`,
       error.stack,
@@ -47,7 +47,6 @@ export class ProtocolProcessor {
     const rawPosition = job.data.position;
     const position = this.setPosition(rawPosition);
     await this.savePositions(position);
-    return;
   }
 
   private async savePositions(position: Position): Promise<void> {

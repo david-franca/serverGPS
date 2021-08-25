@@ -13,8 +13,17 @@ export class ProtocolService {
 
   @OnEvent('positions.received')
   async handlePositions(position: Position) {
-    await this.positionQueue.add('save', {
-      position: position.getAllData(),
-    });
+    await this.positionQueue.add(
+      'save',
+      {
+        position: position.getAllData(),
+      },
+      {
+        priority: 3,
+        attempts: 3,
+        timeout: 10000,
+        removeOnComplete: true,
+      },
+    );
   }
 }

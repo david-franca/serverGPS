@@ -1,4 +1,3 @@
-import { LoggerService } from '@nestjs/common';
 import { Socket as TCPSocket } from 'net';
 import { ProtocolName } from '../@types/protocol';
 import { AbstractGpsDevice } from '.';
@@ -8,10 +7,9 @@ export class GpsDevice extends AbstractGpsDevice {
   constructor(
     socket: TCPSocket,
     protocol: ProtocolName,
-    logger: LoggerService,
     eventEmitter: EventEmitter2,
   ) {
-    super(socket, protocol, logger, eventEmitter);
+    super(socket, protocol, eventEmitter);
     this.eventEmitter = eventEmitter;
   }
 

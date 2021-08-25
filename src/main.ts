@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
 import { ConfigService } from '@nestjs/config';
+import { RedisIoAdapter } from './adapters/redis.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useWebSocketAdapter(new RedisIoAdapter(app));
   app.listen(3001);
 }
 bootstrap();

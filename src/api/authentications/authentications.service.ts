@@ -127,7 +127,11 @@ export class AuthenticationsService {
   }
 
   public async getUserFromAuthenticationToken(token: string) {
+    if (!token) {
+      return null;
+    }
     const payload: TokenPayload = this.jwtService.verify(token);
+    console.log('Payload =>', payload);
     if (payload.username) {
       return await this.usersService.findByUsername(payload.username);
     }

@@ -1,13 +1,13 @@
 import {
   Inject,
   Injectable,
-  LoggerService,
+  Logger,
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { Options, ConfigInterface } from './interfaces';
 import { Server as TCPServer, Socket as TCPSocket, createServer } from 'net';
-import { GpsDevice, AbstractGpsDevice } from './models';
+import { GpsDevice } from './models';
 import { ProtocolName } from './@types/protocol';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
@@ -16,19 +16,18 @@ export class AppService
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   protected options: Options;
-  protected logger: LoggerService;
+  private readonly logger = new Logger(this.constructor.name);
   protected tcp: TCPServer;
-  protected devices: Array<AbstractGpsDevice>;
+  protected devices: Array<GpsDevice>;
   protected config: ConfigInterface[];
 
   constructor(
     @Inject('GPS_CONFIG_OPTIONS') options: Options,
-    @Inject('GPS_LOGGER') logger: LoggerService,
+
     private eventEmitter: EventEmitter2,
   ) {
     this.options = options;
     this.options.host = '0.0.0.0';
-    this.logger = logger;
     this.devices = [];
     this.config = options.config;
   }
@@ -38,12 +37,7 @@ export class AppService
       `Incoming connection from ${socket.remoteAddress}:${socket.remotePort}`,
       protocol,
     );
-    const device = new GpsDevice(
-      socket,
-      protocol,
-      this.logger,
-      this.eventEmitter,
-    );
+    const device = new GpsDevice(socket, protocol, this.eventEmitter);
     this.devices.push(device);
 
     setTimeout(() => {
@@ -55,14 +49,12 @@ export class AppService
 
   @OnEvent('disconnect')
   handleDisconnect(uid: string) {
-    const index = this.devices.findIndex(
-      (device: AbstractGpsDevice, index: number) => {
-        if (device.getUID() === uid) {
-          this.devices.splice(index, 1);
-          return true;
-        }
-      },
-    );
+    const index = this.devices.findIndex((device: GpsDevice, index: number) => {
+      if (device.getUID() === uid) {
+        this.devices.splice(index, 1);
+        return true;
+      }
+    });
     if (index < 0) return;
     this.logger.debug(`Device ${uid} disconnected.`);
     this.eventEmitter.emit('disconnected');
@@ -80,7 +72,6 @@ export class AppService
         () => {
           this.logger.debug(
             `The TCP server is listening on ${this.options.host}:${port} over ${protocol} protocol`,
-            'AppService',
           );
         },
       );
@@ -93,7 +84,7 @@ export class AppService
     this.tcp.close();
   }
 
-  onPromiseError(error: any) {
+  onPromiseError(error: Error) {
     this.logger.error(error);
   }
 }

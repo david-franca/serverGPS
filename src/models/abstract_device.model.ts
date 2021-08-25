@@ -1,6 +1,5 @@
-import { Logger, LoggerService } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Socket as TCPSocket } from 'net';
-import { PositionService } from '../services/position/position.service';
 import {
   ProtocolDecoderTypes,
   ProtocolEncoderTypes,
@@ -11,10 +10,9 @@ import { Protocol } from '../protocols';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 export abstract class AbstractGpsDevice {
-  private service: PositionService = new PositionService();
   uid: string;
   socket: TCPSocket;
-  logger: LoggerService;
+  readonly logger = new Logger(this.constructor.name);
   ip: string;
   port: number;
   protocolName: ProtocolName;
@@ -27,12 +25,10 @@ export abstract class AbstractGpsDevice {
   constructor(
     socket: TCPSocket,
     protocolName: ProtocolName,
-    logger: LoggerService,
     eventEmitter: EventEmitter2,
   ) {
     this.socket = socket;
     this.eventEmitter = eventEmitter;
-    this.logger = logger || Logger;
     this.protocolName = protocolName;
     this.ip = socket instanceof TCPSocket ? socket.remoteAddress : this.ip;
     this.port = socket instanceof TCPSocket ? socket.remotePort : this.port;
@@ -54,16 +50,13 @@ export abstract class AbstractGpsDevice {
     return this.uid;
   }
 
-  async handleData(data: Buffer) {
+  async handleData(data: Buffer): Promise<void> {
     const position = await this.decoder.decode(data);
     this.login(!!position);
     if (position) {
       this.uid = position.getDeviceId();
       this.eventEmitter.emit('positions.received', position);
-      // console.log('Handle Data =>', position);
-      // this.logger.debug(`[${this.getUID()}]Receiving raw data: ${data}`);
     }
-    //TODO
   }
 
   abstract login(canLogin: boolean): void;
