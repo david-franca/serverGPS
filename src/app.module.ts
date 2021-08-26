@@ -20,6 +20,9 @@ import { BullModule } from '@nestjs/bull';
 import { Environments } from './interfaces';
 import { ProtocolModule } from './protocols/protocol.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { StateModule } from './state/state.module';
+import { PropagatorModule } from './propagator/propagator.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   controllers: [],
@@ -34,6 +37,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProtocolModule,
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
+    StateModule,
+    PropagatorModule,
+    RedisModule,
     ConfigModule.forRoot({
       validationSchema: object({
         DATABASE_URL: string().required(),

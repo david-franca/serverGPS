@@ -5,20 +5,22 @@ import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
 import { ConfigService } from '@nestjs/config';
-import { RedisIoAdapter } from './adapters/redis.adapter';
+import { StateIoAdapter } from './state/state.adapter';
+import { StateService } from './state/state.service';
+import { Environments } from './interfaces';
+import { PropagatorService } from './propagator/propagator.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { httpAdapter } = app.get(HttpAdapterHost);
-  const configService = app.get(ConfigService);
+  const configService: ConfigService<Record<Environments, any>> =
+    app.get(ConfigService);
+  const stateService = app.get(StateService);
+  const propagatorService = app.get(PropagatorService);
   app.enableCors({
     credentials: true,
-    origin: configService.get<string>('CORS_HOST').split(', '),
+    origin: configService.get('CORS_HOST').split(', '),
   });
-  app.useGlobalFilters(
-    new ExceptionsLoggerFilter(httpAdapter),
-    new NotFoundExceptionFilter(),
-  );
   app.use(cookieParser());
   app.use(helmet());
   app.useGlobalPipes(
@@ -27,7 +29,13 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useWebSocketAdapter(new RedisIoAdapter(app));
-  app.listen(3001);
+  app.useGlobalFilters(
+    new ExceptionsLoggerFilter(httpAdapter),
+    new NotFoundExceptionFilter(),
+  );
+  app.useWebSocketAdapter(
+    new StateIoAdapter(app, stateService, propagatorService),
+  );
+  await app.listen(3001);
 }
 bootstrap();

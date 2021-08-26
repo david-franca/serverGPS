@@ -13,11 +13,15 @@ import { Server, Socket } from 'socket.io';
 import { Position } from '../models';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Environments } from '../interfaces';
+
+const configService = new ConfigService<Record<Environments, any>>();
 
 @WebSocketGateway({
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: configService.get<string>('CORS_HOST').split(', '),
   },
 })
 export class SocketsGateway

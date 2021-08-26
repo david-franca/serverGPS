@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 
 @Injectable()
-export class RedisService {
+export class StateService {
   private socketState = new Map<string, Socket[]>();
 
   public remove(userId: string, socket: Socket): boolean {
