@@ -1,24 +1,26 @@
+import { Cache } from 'cache-manager';
+
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  HttpException,
-  HttpCode,
-  UseGuards,
   CACHE_MANAGER,
-  Inject,
-  Query,
   CacheInterceptor,
-  UseInterceptors,
   CacheKey,
   CacheTTL,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Device } from '@prisma/client';
-import { Cache } from 'cache-manager';
+
 import { FindOneParams } from '../../utils/findOneParams.util';
 import { JwtAuthenticationGuard } from '../guards/jwt-authentication.guard';
 import { PaginationParams } from '../pagination/params.pagination';

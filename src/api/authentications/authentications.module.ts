@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AuthenticationsService } from './authentications.service';
-import { AuthenticationsController } from './authentications.controller';
-import { PrismaService } from '../../prisma/prisma.service';
-import { UsersService } from '../users/users.service';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategy/local.strategy';
-import { UsersModule } from '../users/users.module';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './strategy/jwt.strategy';
-import { JwtRefreshTokenStrategy } from './strategy/refreshToken.strategy';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+
 import { Environments } from '../../interfaces';
+import { PrismaService } from '../../prisma/prisma.service';
+import { UsersModule } from '../users/users.module';
+import { UsersService } from '../users/users.service';
+import { AuthenticationsController } from './authentications.controller';
+import { AuthenticationsService } from './authentications.service';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { LocalStrategy } from './strategy/local.strategy';
+import { JwtRefreshTokenStrategy } from './strategy/refreshToken.strategy';
 
 @Module({
   imports: [

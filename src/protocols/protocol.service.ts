@@ -1,7 +1,9 @@
+import { Queue } from 'bull';
+
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { Queue } from 'bull';
+
 import { Position } from '../models';
 
 @Injectable()

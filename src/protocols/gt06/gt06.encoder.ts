@@ -1,5 +1,6 @@
 import { Socket as TCPSocket } from 'net';
-import { GT06ProtocolDecoder } from '.';
+
+import { GT06ProtocolDecoder } from './';
 
 export class GT06ProtocolEncoder {
   /**

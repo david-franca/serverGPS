@@ -1,6 +1,8 @@
+import { CronJob } from 'cron';
+
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
-import { CronJob } from 'cron';
+
 import { EmailService } from '../email/email.service';
 import { CreateEmailScheduleDto } from './dto/create-email-schedule.dto';
 

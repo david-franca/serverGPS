@@ -1,13 +1,14 @@
-import { MobileOperator, Model, Timezone } from '@prisma/client';
 import {
+  IsEnum,
+  IsMobilePhone,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsString,
   MaxLength,
-  IsEnum,
-  IsNumberString,
-  IsMobilePhone,
 } from 'class-validator';
+
+import { MobileOperator, Model, Timezone } from '@prisma/client';
 
 export class CreateDeviceDto {
   @IsNumber()

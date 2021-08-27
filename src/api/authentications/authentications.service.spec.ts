@@ -2,13 +2,14 @@ import * as Joi from '@hapi/joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
+
+import { Environments } from '../../interfaces';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { AuthenticationsController } from './authentications.controller';
 import { AuthenticationsService } from './authentications.service';
-import { Environments } from '../../interfaces';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 

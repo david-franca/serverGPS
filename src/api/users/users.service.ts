@@ -1,10 +1,11 @@
+import { compare, hash } from 'bcrypt';
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
-import { compare, hash } from 'bcrypt';
-import { PrismaService } from '../../prisma/prisma.service';
-import { Environments } from '../../interfaces';
 
+import { Environments } from '../../interfaces';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()

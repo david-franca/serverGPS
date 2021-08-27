@@ -1,5 +1,7 @@
-import { Provider } from '@nestjs/common';
 import { RedisClient } from 'redis';
+
+import { Provider } from '@nestjs/common';
+
 import { pubClient, subClient } from '../state/state.adapter';
 import { REDIS_CONSTANTS } from './redis.enum';
 

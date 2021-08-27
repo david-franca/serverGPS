@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Device, Location, Prisma, Status } from '@prisma/client';
+
 import { Position } from '../../models';
 import { PrismaService } from '../../prisma/prisma.service';
 

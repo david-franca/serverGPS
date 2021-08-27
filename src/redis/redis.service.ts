@@ -1,8 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { RedisClient } from 'redis';
 import { Observable, Observer } from 'rxjs';
-import { REDIS_CONSTANTS } from './redis.enum';
 import { filter, map } from 'rxjs/operators';
+
+import { Inject, Injectable } from '@nestjs/common';
+
+import { REDIS_CONSTANTS } from './redis.enum';
 
 export interface RedisSubscribeMessage {
   readonly message: string;

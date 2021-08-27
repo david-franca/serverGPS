@@ -1,4 +1,5 @@
 import { Socket } from 'net';
+
 import { Command } from '../models';
 
 export interface Protocol {

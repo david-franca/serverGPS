@@ -1,9 +1,9 @@
 import {
+  existsSync,
+  mkdirSync,
   PathLike,
   readFileSync,
   writeFileSync,
-  existsSync,
-  mkdirSync,
 } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';

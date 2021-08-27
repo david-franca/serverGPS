@@ -1,5 +1,6 @@
-import { SuntechProtocolDecoder } from './suntech.decoder';
 import { Socket as TCPSocket } from 'net';
+
+import { SuntechProtocolDecoder } from './suntech.decoder';
 
 export class SuntechProtocolEncoder {
   /**

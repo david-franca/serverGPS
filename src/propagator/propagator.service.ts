@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { tap } from 'rxjs/operators';
 import { Server } from 'socket.io';
+
+import { Injectable } from '@nestjs/common';
+
 import { RedisService } from '../redis/redis.service';
 import { StateService } from '../state/state.service';
-import { REDIS_EVENTS } from './propagator.enum';
-import { tap } from 'rxjs/operators';
 import { EventEmitDTO } from './dto/event-emit.dto';
 import { EventSendDTO } from './dto/event-send.dto';
+import { REDIS_EVENTS } from './propagator.enum';
 
 @Injectable()
 export class PropagatorService {

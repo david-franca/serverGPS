@@ -1,3 +1,5 @@
+import { createServer, Server as TCPServer, Socket as TCPSocket } from 'net';
+
 import {
   Inject,
   Injectable,
@@ -5,11 +7,11 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import { Options, ConfigInterface } from './interfaces';
-import { Server as TCPServer, Socket as TCPSocket, createServer } from 'net';
-import { GpsDevice } from './models';
-import { ProtocolName } from './@types/protocol';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+
+import { ProtocolName } from './@types/protocol';
+import { ConfigInterface, Options } from './interfaces';
+import { GpsDevice } from './models';
 
 @Injectable()
 export class AppService

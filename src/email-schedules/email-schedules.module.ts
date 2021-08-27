@@ -1,8 +1,9 @@
 import { Logger, Module } from '@nestjs/common';
-import { EmailSchedulesService } from './email-schedules.service';
-import { EmailSchedulesController } from './email-schedules.controller';
-import { EmailService } from '../email/email.service';
 import { ConfigModule } from '@nestjs/config';
+
+import { EmailService } from '../email/email.service';
+import { EmailSchedulesController } from './email-schedules.controller';
+import { EmailSchedulesService } from './email-schedules.service';
 
 @Module({
   controllers: [EmailSchedulesController],

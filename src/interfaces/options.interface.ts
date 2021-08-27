@@ -5,7 +5,8 @@ import {
   Provider,
   Type,
 } from '@nestjs/common';
-import { ConfigInterface } from '.';
+
+import { ConfigInterface } from './';
 
 export interface Options {
   config: ConfigInterface[];

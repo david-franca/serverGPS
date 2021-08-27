@@ -1,16 +1,17 @@
 import { Socket } from 'net';
 
-import { BaseProtocolDecoder } from '..';
-import { BitUtil, DateFormat, UnitsConverter } from '../../utils';
+import { Device } from '@prisma/client';
+
+import { BaseProtocolDecoder } from '../';
+import { AdapterInterface } from '../../interfaces';
 import {
   CellTower,
+  DeviceSession,
   Network,
   Position,
-  DeviceSession,
   TimeZone,
 } from '../../models';
-import { AdapterInterface } from '../../interfaces';
-import { Device } from '@prisma/client';
+import { BitUtil, DateFormat, UnitsConverter } from '../../utils';
 
 const compatibleHardware = ['SUNTECH/supplier'];
 const modelName = 'SUNTECH';

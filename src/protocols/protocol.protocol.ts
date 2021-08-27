@@ -1,7 +1,8 @@
-import { SuntechProtocol } from './suntech';
 import { Socket as TCPSocket } from 'net';
-import { GT06Protocol } from './gt06';
+
 import { ProtocolName } from '../@types/protocol';
+import { GT06Protocol } from './gt06';
+import { SuntechProtocol } from './suntech';
 
 export class Protocol {
   private name: ProtocolName;

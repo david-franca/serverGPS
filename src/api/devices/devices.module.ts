@@ -1,10 +1,12 @@
-import { CacheModule, Module } from '@nestjs/common';
 import * as redisStore from 'cache-manager-redis-store';
-import { DevicesService } from './devices.service';
-import { DevicesController } from './devices.controller';
-import { PrismaService } from '../../prisma/prisma.service';
+
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import { Environments } from '../../interfaces';
+import { PrismaService } from '../../prisma/prisma.service';
+import { DevicesController } from './devices.controller';
+import { DevicesService } from './devices.service';
 
 @Module({
   controllers: [DevicesController],

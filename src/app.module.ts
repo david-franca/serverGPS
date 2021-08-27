@@ -1,28 +1,29 @@
-import { Logger, Module } from '@nestjs/common';
-import { AppService } from './app.service';
-import { PrismaService } from './prisma/prisma.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { PositionService } from './services/position/position.service';
-import { DevicesModule } from './api/devices/devices.module';
-import { SocketsModule } from './sockets/sockets.module';
-import { UsersModule } from './api/users/users.module';
-import { AuthenticationsModule } from './api/authentications/authentications.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { object, string, number } from '@hapi/joi';
-import { APP_FILTER } from '@nestjs/core';
-import { ExceptionsLoggerFilter } from './utils';
-import { config } from './config/defaults';
-import { EmailService } from './email/email.service';
-import { EmailModule } from './email/email.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { EmailSchedulesModule } from './email-schedules/email-schedules.module';
+import { number, object, string } from '@hapi/joi';
 import { BullModule } from '@nestjs/bull';
-import { Environments } from './interfaces';
-import { ProtocolModule } from './protocols/protocol.module';
+import { Logger, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { StateModule } from './state/state.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
+import { AuthenticationsModule } from './api/authentications/authentications.module';
+import { DevicesModule } from './api/devices/devices.module';
+import { UsersModule } from './api/users/users.module';
+import { AppService } from './app.service';
+import { config } from './config/defaults';
+import { EmailSchedulesModule } from './email-schedules/email-schedules.module';
+import { EmailModule } from './email/email.module';
+import { EmailService } from './email/email.service';
+import { Environments } from './interfaces';
+import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
 import { PropagatorModule } from './propagator/propagator.module';
+import { ProtocolModule } from './protocols/protocol.module';
 import { RedisModule } from './redis/redis.module';
+import { PositionService } from './services/position/position.service';
+import { SocketsModule } from './sockets/sockets.module';
+import { StateModule } from './state/state.module';
+import { ExceptionsLoggerFilter } from './utils';
 
 @Module({
   controllers: [],

@@ -1,14 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
-import { hash, compare } from 'bcrypt';
-import { UsersService } from '../users/users.service';
-import { PrismaError } from '../../database/prismaErrorCodes.enum';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { TokenPayload } from './interface/tokenPayload.interface';
-import { ConfigService } from '@nestjs/config';
-import { Environments } from '../../interfaces';
+import { compare, hash } from 'bcrypt';
 import { Response } from 'express';
+
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+
+import { PrismaError } from '../../database/prismaErrorCodes.enum';
+import { Environments } from '../../interfaces';
+import { UsersService } from '../users/users.service';
+import { RegisterDto } from './dto/register.dto';
 import { CookiesProps } from './interface/cookie.interface';
+import { TokenPayload } from './interface/tokenPayload.interface';
 
 @Injectable()
 export class AuthenticationsService {

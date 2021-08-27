@@ -1,14 +1,17 @@
-import { ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
-import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
+
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { StateIoAdapter } from './state/state.adapter';
-import { StateService } from './state/state.service';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+
+import { AppModule } from './app.module';
 import { Environments } from './interfaces';
 import { PropagatorService } from './propagator/propagator.service';
+import { StateIoAdapter } from './state/state.adapter';
+import { StateService } from './state/state.service';
+import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,6 +26,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.use(helmet());
+  app.use(compression());
   app.useGlobalPipes(
     new ValidationPipe({
       errorHttpStatusCode: 422,

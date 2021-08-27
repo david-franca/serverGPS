@@ -1,5 +1,7 @@
 import { AddressInfo, Socket as TCPSocket } from 'net';
+
 import { Device } from '@prisma/client';
+
 import { Protocol } from '../interfaces';
 import { DeviceSession } from '../models';
 import { PrismaService } from '../prisma/prisma.service';

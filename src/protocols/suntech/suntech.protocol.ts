@@ -1,7 +1,8 @@
 import { Socket as TCPSocket } from 'net';
-import { SuntechProtocolEncoder, SuntechProtocolDecoder } from '.';
-import { BaseProtocol } from '..';
+
+import { BaseProtocol } from '../';
 import { Command } from '../../models';
+import { SuntechProtocolDecoder, SuntechProtocolEncoder } from './';
 
 export class SuntechProtocol extends BaseProtocol {
   private encoder: SuntechProtocolEncoder;

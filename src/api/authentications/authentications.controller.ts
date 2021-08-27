@@ -1,14 +1,16 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Req,
-  HttpCode,
-  UseGuards,
-  Res,
-  Get,
-} from '@nestjs/common';
 import { Response } from 'express';
+
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+
 import { JwtAuthenticationGuard } from '../guards/jwt-authentication.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { LocalAuthenticationGuard } from '../guards/localAuthentication.guard';

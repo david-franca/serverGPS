@@ -1,5 +1,6 @@
-import { IsNumber, Min, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
+
 import { Prisma } from '@prisma/client';
 
 export class PaginationParams {

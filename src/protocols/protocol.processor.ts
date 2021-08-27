@@ -1,3 +1,5 @@
+import { Job } from 'bull';
+
 import {
   OnQueueActive,
   OnQueueCompleted,
@@ -7,7 +9,7 @@ import {
 } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Job } from 'bull';
+
 import { Position } from '../models';
 import { PositionService } from '../services/position/position.service';
 

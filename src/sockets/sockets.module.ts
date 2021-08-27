@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { SocketsService } from './sockets.service';
-import { SocketsGateway } from './sockets.gateway';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+
 import { AuthenticationsService } from '../api/authentications/authentications.service';
 import { UsersService } from '../api/users/users.service';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PrismaModule } from '../prisma/prisma.module';
 import { Environments } from '../interfaces';
+import { PrismaModule } from '../prisma/prisma.module';
+import { SocketsGateway } from './sockets.gateway';
+import { SocketsService } from './sockets.service';
 
 @Module({
   providers: [

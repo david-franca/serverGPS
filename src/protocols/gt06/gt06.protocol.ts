@@ -1,6 +1,7 @@
 import { Socket as TCPSocket } from 'net';
-import { GT06ProtocolDecoder, GT06ProtocolEncoder } from '.';
-import { BaseProtocol } from '..';
+
+import { BaseProtocol } from '../';
+import { GT06ProtocolDecoder, GT06ProtocolEncoder } from './';
 
 export class GT06Protocol extends BaseProtocol {
   private encoder: GT06ProtocolEncoder;

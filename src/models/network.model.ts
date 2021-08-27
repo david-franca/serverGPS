@@ -1,4 +1,4 @@
-import { CellTower, WifiAccessPoint } from '.';
+import { CellTower, WifiAccessPoint } from './';
 
 export class Network {
   private homeMobileCountryCode: number;

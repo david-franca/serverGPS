@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import * as Mail from 'nodemailer/lib/mailer';
+
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import { Environments } from '../interfaces';
 
 @Injectable()

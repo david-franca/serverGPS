@@ -1,7 +1,9 @@
+import { Cache } from 'cache-manager';
+
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Device, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { Cache } from 'cache-manager';
+
 import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DeviceNotFoundException } from './exception/devicesNotFound.exception';

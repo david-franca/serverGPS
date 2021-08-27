@@ -1,7 +1,8 @@
-import { Socket as TCPSocket } from 'net';
-import { ProtocolName } from '../@types/protocol';
-import { AbstractGpsDevice } from '.';
 import { EventEmitter2 } from 'eventemitter2';
+import { Socket as TCPSocket } from 'net';
+
+import { ProtocolName } from '../@types/protocol';
+import { AbstractGpsDevice } from './';
 
 export class GpsDevice extends AbstractGpsDevice {
   constructor(

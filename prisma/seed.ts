@@ -1,6 +1,7 @@
-import { MobileOperator, Prisma, PrismaClient, Timezone } from '@prisma/client';
-import { datatype, address, date, name, internet, phone } from 'faker';
 import { hashSync } from 'bcrypt';
+import { address, datatype, date, internet, name, phone } from 'faker';
+
+import { MobileOperator, Prisma, PrismaClient, Timezone } from '@prisma/client';
 
 const prisma = new PrismaClient();
 

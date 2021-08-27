@@ -1,14 +1,16 @@
-import { INestApplicationContext, WebSocketAdapter } from '@nestjs/common';
-import { IoAdapter } from '@nestjs/platform-socket.io';
+import { parse } from 'cookie';
 import { RedisClient } from 'redis';
 import { Server, ServerOptions } from 'socket.io';
 import { createAdapter } from 'socket.io-redis';
+
+import { INestApplicationContext, WebSocketAdapter } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { parse } from 'cookie';
-import { AuthenticatedSocket } from '../interfaces/socket.interface';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+
 import { Environments } from '../interfaces';
-import { StateService } from './state.service';
+import { AuthenticatedSocket } from '../interfaces/socket.interface';
 import { PropagatorService } from '../propagator/propagator.service';
+import { StateService } from './state.service';
 
 const configService = new ConfigService<Record<Environments, any>>();
 export const pubClient: RedisClient = new RedisClient({

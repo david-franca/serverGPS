@@ -1,3 +1,6 @@
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
 import {
   CallHandler,
   ExecutionContext,
@@ -5,8 +8,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { WsResponse } from '@nestjs/websockets';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+
 import { AuthenticatedSocket } from '../interfaces/socket.interface';
 import { PropagatorService } from './propagator.service';
 

@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
-import { convertMapToObject } from '../utils';
 
-import { Network } from '.';
+import { convertMapToObject } from '../utils';
+import { Network } from './';
 import Message from './message.model';
 
 export class Position extends Message {
