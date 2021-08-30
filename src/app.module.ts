@@ -59,6 +59,8 @@ import { ExceptionsLoggerFilter } from './utils';
         EMAIL_USER: string().required(),
         EMAIL_PASSWORD: string().required(),
         EMAIL_PORT: number().required(),
+        SERVER_PORT: number().required(),
+        SESSION_SECRET: string().required(),
       }),
     }),
     BullModule.forRootAsync({

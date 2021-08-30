@@ -1,4 +1,3 @@
-import { parse } from 'cookie';
 import { Socket } from 'socket.io';
 
 import { Injectable } from '@nestjs/common';
@@ -12,12 +11,8 @@ export class SocketsService {
 
   async getUserFromSocket(socket: Socket) {
     try {
-      const cookie = socket.handshake.headers.cookie;
-      const { Authentication: authenticationToken } = parse(cookie);
-      const user =
-        await this.authenticationService.getUserFromAuthenticationToken(
-          authenticationToken,
-        );
+      console.log(socket.id);
+      const user = null;
       if (!user) {
         throw new WsException('Invalid credentials');
       }

@@ -14,4 +14,6 @@ export type Environments =
   | 'EMAIL_USER'
   | 'EMAIL_PASSWORD'
   | 'EMAIL_PORT'
-  | 'CORS_HOST';
+  | 'CORS_HOST'
+  | 'SERVER_PORT'
+  | 'SESSION_SECRET';

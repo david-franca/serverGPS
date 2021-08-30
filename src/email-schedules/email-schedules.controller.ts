@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
-import { JwtAuthenticationGuard } from '../api/guards/jwt-authentication.guard';
+import { CookieAuthenticationGuard } from '../api/guards/cookie-authentication.guard';
 import { CreateEmailScheduleDto } from './dto/create-email-schedule.dto';
 import { EmailSchedulesService } from './email-schedules.service';
 
@@ -9,19 +9,19 @@ export class EmailSchedulesController {
   constructor(private readonly emailSchedulesService: EmailSchedulesService) {}
 
   @Post('schedule')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(CookieAuthenticationGuard)
   create(@Body() createEmailScheduleDto: CreateEmailScheduleDto) {
     return this.emailSchedulesService.scheduleEmail(createEmailScheduleDto);
   }
 
   @Post('cancel')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(CookieAuthenticationGuard)
   cancel() {
     return this.emailSchedulesService.cancelAllScheduledEmails();
   }
 
   @Get('jobs')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(CookieAuthenticationGuard)
   findAll() {
     return this.emailSchedulesService.findAll();
   }

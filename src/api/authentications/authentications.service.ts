@@ -1,23 +1,18 @@
 import { compare, hash } from 'bcrypt';
-import { Response } from 'express';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { Environments } from '../../interfaces';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
-import { CookiesProps } from './interface/cookie.interface';
-import { TokenPayload } from './interface/tokenPayload.interface';
 
 @Injectable()
 export class AuthenticationsService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService<Record<Environments, string>>,
+    private readonly configService: ConfigService<Record<Environments, any>>,
   ) {}
 
   async register(registrationData: RegisterDto) {
@@ -74,88 +69,5 @@ export class AuthenticationsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  }
-
-  public getCookieWithJwtAccessToken(
-    userId: string,
-    name: string,
-    username: string,
-    role: string,
-  ) {
-    const payload: TokenPayload = { name, username, role };
-
-    // SIGNING OPTIONS
-    const signOptions: JwtSignOptions = {
-      subject: userId,
-      privateKey: this.configService.get('JWT_ACCESS_TOKEN_PRIVATE_KEY'),
-    };
-
-    const token = this.jwtService.sign(payload, signOptions);
-    const maxAge =
-      Number(this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')) * 1000;
-
-    return {
-      token,
-      maxAge,
-      key: 'Authentication',
-    };
-  }
-
-  public getCookieWithJwtRefreshToken(
-    userId: string,
-    name: string,
-    username: string,
-    role: string,
-  ) {
-    const payload: TokenPayload = { name, username, role };
-
-    const maxAge =
-      Number(this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')) *
-      1000;
-
-    // SIGNING OPTIONS
-    const signOptions: JwtSignOptions = {
-      expiresIn: `${maxAge / 1000}s`,
-      privateKey: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
-      subject: userId,
-    };
-
-    const token = this.jwtService.sign(payload, signOptions);
-    return {
-      maxAge,
-      token,
-      key: 'Refresh',
-    };
-  }
-
-  public async getUserFromAuthenticationToken(token: string) {
-    if (!token) {
-      return null;
-    }
-    const payload: TokenPayload = this.jwtService.verify(token);
-    if (payload.username) {
-      return await this.usersService.findByUsername(payload.username);
-    }
-  }
-
-  public deleteCookies(res: Response, cookies: Record<string, string>) {
-    const keys = Object.keys(cookies);
-    keys.forEach((key) => {
-      res.clearCookie(key, {
-        httpOnly: true,
-        sameSite: 'none',
-      });
-    });
-  }
-
-  public setCookies(res: Response, options: CookiesProps[]) {
-    options.forEach((opt) => {
-      const { key, maxAge, token } = opt;
-      res.cookie(key, token, {
-        httpOnly: true,
-        maxAge,
-        sameSite: 'none',
-      });
-    });
   }
 }

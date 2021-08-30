@@ -3,8 +3,9 @@ import { RedisClient } from 'redis';
 import { Server, ServerOptions } from 'socket.io';
 import { createAdapter } from 'socket.io-redis';
 
-import { INestApplicationContext, WebSocketAdapter } from '@nestjs/common';
+import { WebSocketAdapter } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 
 import { Environments } from '../interfaces';
@@ -25,7 +26,7 @@ export class StateIoAdapter extends IoAdapter implements WebSocketAdapter {
   private server: Server;
 
   constructor(
-    private readonly app: INestApplicationContext,
+    private readonly app: NestExpressApplication,
     private readonly stateService: StateService,
     private readonly propagatorService: PropagatorService,
   ) {

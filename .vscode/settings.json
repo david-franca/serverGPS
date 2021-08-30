@@ -6,6 +6,7 @@
     "Wifi",
     "imei",
     "luxon",
+    "resave",
     "rssi",
     "websockets"
   ],
