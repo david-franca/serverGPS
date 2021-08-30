@@ -1,5 +1,3 @@
-import * as path from 'path';
-
 import { MailerOptions } from '@nestjs-modules/mailer';
 // import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigService } from '@nestjs/config';
@@ -7,8 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { Environments } from '../interfaces';
 
 const configService = new ConfigService<Record<Environments, any>>();
-
-console.log(path.resolve(__dirname, '..', '..'));
 
 export const mailerConfig: MailerOptions = {
   // template: {

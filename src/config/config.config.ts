@@ -21,5 +21,7 @@ export const configOptions: ConfigModuleOptions = {
     EMAIL_PORT: number().required(),
     SERVER_PORT: number().required(),
     SESSION_SECRET: string().required(),
+    THROTTLE_TTL: number().required(),
+    THROTTLE_LIMIT: number().required(),
   }),
 };

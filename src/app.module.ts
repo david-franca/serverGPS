@@ -4,9 +4,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthenticationsModule } from './api/authentications/authentications.module';
 import { DevicesModule } from './api/devices/devices.module';
@@ -17,6 +18,7 @@ import {
   configOptions,
   defaultsConfig,
   mailerConfig,
+  throttlerAsyncOptions,
   winstonConfig,
 } from './config';
 import { EmailSchedulesModule } from './email/email-schedules.module';
@@ -50,6 +52,7 @@ import { ExceptionsLoggerFilter } from './utils';
     MailerModule.forRoot(mailerConfig),
     ConfigModule.forRoot(configOptions),
     BullModule.forRootAsync(asyncBullConfig),
+    ThrottlerModule.forRootAsync(throttlerAsyncOptions),
   ],
   providers: [
     AppService,
@@ -58,6 +61,7 @@ import { ExceptionsLoggerFilter } from './utils';
     { provide: APP_INTERCEPTOR, useClass: LoggerInterceptor },
     { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
     { provide: 'GPS_CONFIG_OPTIONS', useValue: { config: defaultsConfig } },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

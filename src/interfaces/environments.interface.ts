@@ -16,4 +16,6 @@ export type Environments =
   | 'EMAIL_PORT'
   | 'CORS_HOST'
   | 'SERVER_PORT'
-  | 'SESSION_SECRET';
+  | 'SESSION_SECRET'
+  | 'THROTTLE_TTL'
+  | 'THROTTLE_LIMIT';

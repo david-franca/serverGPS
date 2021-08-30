@@ -14,11 +14,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
 import { winstonConfig } from './config/winston.config';
+import { Environments } from './interfaces';
 import { PropagatorService } from './propagator/propagator.service';
 import { StateIoAdapter } from './state/state.adapter';
 import { StateService } from './state/state.service';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
-import { Environments } from './interfaces';
 
 async function bootstrap() {
   const logger = WinstonModule.createLogger(winstonConfig);
@@ -41,6 +41,7 @@ async function bootstrap() {
     secret: configService.get('SESSION_SECRET'),
     resave: false,
     saveUninitialized: false,
+    name: 'server-session',
   };
   app.enableCors({
     credentials: true,
