@@ -1,6 +1,6 @@
 import { ConfigInterface } from '../interfaces';
 
-export const config: ConfigInterface[] = [
+export const defaultsConfig: ConfigInterface[] = [
   {
     port: 2790,
     protocol: 'GT06',

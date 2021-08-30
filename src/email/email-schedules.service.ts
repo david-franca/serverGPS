@@ -1,26 +1,23 @@
 import { CronJob } from 'cron';
 
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 
-import { EmailService } from '../email/email.service';
 import { CreateEmailScheduleDto } from './dto/create-email-schedule.dto';
 
 @Injectable()
 export class EmailSchedulesService {
-  protected logger: LoggerService;
+  private readonly logger = new Logger(this.constructor.name);
   constructor(
-    @Inject('GPS_LOGGER') logger: LoggerService,
-    private readonly emailService: EmailService,
     private readonly schedulerRegistry: SchedulerRegistry,
-  ) {
-    this.logger = logger;
-  }
+    private mailerService: MailerService,
+  ) {}
 
   scheduleEmail(emailSchedule: CreateEmailScheduleDto) {
     const date = new Date(emailSchedule.date);
     const job = new CronJob(date, () => {
-      this.emailService.sendMail({
+      this.mailerService.sendMail({
         to: emailSchedule.recipient,
         subject: emailSchedule.subject,
         text: emailSchedule.content,

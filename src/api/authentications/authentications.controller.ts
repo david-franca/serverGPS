@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -49,5 +50,11 @@ export class AuthenticationsController {
     const { user } = request;
     user.password = undefined;
     return user;
+  }
+
+  @UseGuards(CookieAuthenticationGuard)
+  @Patch(':token')
+  async confirmEMail() {
+    //
   }
 }

@@ -7,12 +7,14 @@ import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { Environments } from '../../interfaces';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthenticationsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly configService: ConfigService<Record<Environments, any>>,
+    private mailerService: MailerService,
   ) {}
 
   async register(registrationData: RegisterDto) {
@@ -69,5 +71,9 @@ export class AuthenticationsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  private async confirmEmail() {
+    // TODO
   }
 }

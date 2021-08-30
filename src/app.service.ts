@@ -72,7 +72,7 @@ export class AppService
           port,
         },
         () => {
-          this.logger.debug(
+          this.logger.verbose(
             `The TCP server is listening on ${this.options.host}:${port} over ${protocol} protocol`,
           );
         },

@@ -3,6 +3,7 @@ import * as createRedisStore from 'connect-redis';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as helmet from 'helmet';
+import { WinstonModule } from 'nest-winston';
 import * as passport from 'passport';
 import { createClient } from 'redis';
 
@@ -12,14 +13,18 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
-import { Environments } from './interfaces';
+import { winstonConfig } from './config/winston.config';
 import { PropagatorService } from './propagator/propagator.service';
 import { StateIoAdapter } from './state/state.adapter';
 import { StateService } from './state/state.service';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
+import { Environments } from './interfaces';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const logger = WinstonModule.createLogger(winstonConfig);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger,
+  });
   const { httpAdapter } = app.get(HttpAdapterHost);
   const configService: ConfigService<Record<Environments, any>> =
     app.get(ConfigService);
