@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TerminusModule } from '@nestjs/terminus';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthenticationsModule } from './api/authentications/authentications.module';
@@ -22,6 +23,7 @@ import {
   winstonConfig,
 } from './config';
 import { EmailSchedulesModule } from './email/email-schedules.module';
+import { HealthModule } from './health/health.module';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
@@ -34,7 +36,6 @@ import { StateModule } from './state/state.module';
 import { ExceptionsLoggerFilter } from './utils';
 
 @Module({
-  controllers: [],
   imports: [
     PrismaModule,
     DevicesModule,
@@ -48,11 +49,13 @@ import { ExceptionsLoggerFilter } from './utils';
     StateModule,
     PropagatorModule,
     RedisModule,
+    TerminusModule,
     WinstonModule.forRoot(winstonConfig),
     MailerModule.forRoot(mailerConfig),
     ConfigModule.forRoot(configOptions),
     BullModule.forRootAsync(asyncBullConfig),
     ThrottlerModule.forRootAsync(throttlerAsyncOptions),
+    HealthModule,
   ],
   providers: [
     AppService,
