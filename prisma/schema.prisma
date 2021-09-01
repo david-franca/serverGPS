@@ -25,6 +25,7 @@ model Device {
   location        Location[]
   status          Status[]
   alert           Alert[]
+  vehicle         Vehicle[]
 
   @@index([equipmentNumber, chipNumber])
 }
@@ -104,18 +105,133 @@ model Alert {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  active       Boolean  @default(true) @db.Boolean
-  deleted      Boolean  @default(false) @db.Boolean
-  createAt     DateTime @default(now())
-  updateAt     DateTime @updatedAt
-  name         String   @db.VarChar(100)
-  username     String   @unique @db.VarChar(100)
-  role         String   @db.VarChar(50)
-  password     String   @db.VarChar(100)
-  refreshToken String?  @db.VarChar
+  id       String   @id @default(uuid())
+  active   Boolean  @default(true) @db.Boolean
+  deleted  Boolean  @default(false) @db.Boolean
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  name     String   @db.VarChar(100)
+  username String   @unique @db.VarChar(100)
+  role     String   @db.VarChar(50)
+  password String   @db.VarChar(100)
 
   @@index([username])
+}
+
+model Client {
+  id            String      @id @default(uuid())
+  active        Boolean     @default(true) @db.Boolean
+  deleted       Boolean     @default(false) @db.Boolean
+  createAt      DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  fullName      String
+  cpfOrCnpj     String      @unique
+  cellPhone     String
+  landline      String
+  typeOfAddress TypeAddress
+  cep           String
+  street        String
+  number        String
+  district      String
+  complement    String
+  state         States
+  city          String
+  vehicle       Vehicle[]
+  branch        Branch[]
+}
+
+model Vehicle {
+  id           String       @id @default(uuid())
+  active       Boolean      @default(true) @db.Boolean
+  deleted      Boolean      @default(false) @db.Boolean
+  createAt     DateTime     @default(now())
+  updateAt     DateTime     @updatedAt
+  licensePlate String
+  type         VehiclesType
+  device       Device       @relation(fields: [deviceId], references: [id])
+  deviceId     String
+  client       Client       @relation(fields: [clientId], references: [id])
+  clientId     String
+  branch       Branch       @relation(fields: [branchId], references: [id])
+  branchId     String
+  brand        String
+  model        String
+  color        String
+  year         Int
+  chassi       Int
+  renavam      Int
+  observation  String
+}
+
+model Branch {
+  id       String    @id @default(uuid())
+  active   Boolean   @default(true) @db.Boolean
+  deleted  Boolean   @default(false) @db.Boolean
+  createAt DateTime  @default(now())
+  updateAt DateTime  @updatedAt
+  client   Client    @relation(fields: [clientId], references: [id])
+  clientId String
+  name     String
+  vehicle  Vehicle[]
+}
+
+enum VehiclesType {
+  Ambulancia          @map("Ambulância")
+  Barco               @map("Barco")
+  Bitrem              @map("Bitrem")
+  Carro               @map("Carro")
+  Caminhao            @map("Caminhão")
+  Caminhonete         @map("Caminhonete")
+  Caminhao_Betoneira  @map("Caminhão Betoneira")
+  Caminhao_Pipa       @map("Caminhão Pipa")
+  Colheitadeira       @map("Colheitadeira")
+  Escavadeira         @map("Escavadeira")
+  Moto                @map("Moto")
+  Motobomba           @map("Motobomba")
+  Motoniveladora      @map("Motoniveladora")
+  Onibus              @map("Ônibus")
+  Pa_Carregadora      @map("Pá Carregadora")
+  Pessoa              @map("Pessoa")
+  Semaforo            @map("Semáforo")
+  Trator              @map("Trator")
+  Trator_de_Esteira   @map("Trator de Esteira")
+  Outros              @map("Outros")
+}
+
+enum TypeAddress {
+  Residencial
+  Comercial
+  Outros
+}
+
+enum States {
+  AC  @map("Acre")
+  AL  @map("Alagoas")
+  AP  @map("Amapá")
+  AM  @map("Amazonas")
+  BA  @map("Bahia")
+  CE  @map("Ceará")
+  DF  @map("Distrito Federal")
+  ES  @map("Espírito Santo")
+  GO  @map("Goías")
+  MA  @map("Maranhão")
+  MT  @map("Mato Grosso")
+  MS  @map("Mato Grosso do Sul")
+  MG  @map("Minas Gerais")
+  PA  @map("Pará")
+  PB  @map("Paraíba")
+  PR  @map("Paraná")
+  PE  @map("Pernambuco")
+  PI  @map("Piauí")
+  RJ  @map("Rio de Janeiro")
+  RN  @map("Rio Grande do Norte")
+  RS  @map("Rio Grande do Sul")
+  RO  @map("Rondônia")
+  RR  @map("Roraíma")
+  SC  @map("Santa Catarina")
+  SP  @map("São Paulo")
+  SE  @map("Sergipe")
+  TO  @map("Tocantins")
 }
 
 enum Model {

@@ -1,5 +1,4 @@
-import { hashSync } from 'bcrypt';
-import { address, datatype, date, internet, name, phone } from 'faker';
+import { address, datatype, date, phone } from 'faker';
 
 import { MobileOperator, Prisma, PrismaClient, Timezone } from '@prisma/client';
 
@@ -122,21 +121,6 @@ for (let i = 0; i < 2000; i++) {
   });
 }
 
-const users: Prisma.UserCreateInput[] = [
-  {
-    name: 'David França',
-    password: hashSync('1234567', 10),
-    username: 'david.franca',
-    role: 'ADMIN',
-  },
-  {
-    name: `${name.firstName()} ${name.lastName()}`,
-    password: internet.password(10, true),
-    username: internet.userName(),
-    role: 'USER',
-  },
-];
-
 export async function main() {
   // Prisma create query to seed models in database
   console.log(`Start seeding ...`);
@@ -155,12 +139,12 @@ export async function main() {
     console.log(`Created location with id: ${location.id}`);
   }
 
-  for (const c of users) {
-    const user = await prisma.user.create({
-      data: c,
-    });
-    console.log(`Created user with id: ${user.id}`);
-  }
+  // for (const c of users) {
+  //   const user = await prisma.user.create({
+  //     data: c,
+  //   });
+  //   console.log(`Created user with id: ${user.id}`);
+  // }
 
   for (const d of statusPackage) {
     const status = await prisma.status.create({
