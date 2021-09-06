@@ -27,7 +27,7 @@ export class PrismaErrorException {
         throw new HttpException(`Record not found`, HttpStatus.BAD_REQUEST);
 
       default:
-        this.logger.error(error);
+        this.logger.error('Prisma Error =>', error);
     }
   }
 }

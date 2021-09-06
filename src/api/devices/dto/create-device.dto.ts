@@ -8,6 +8,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
+import { ApiProperty } from '@nestjs/swagger';
 import { MobileOperator, Model, Timezone } from '@prisma/client';
 
 export class CreateDeviceDto {
@@ -20,6 +21,7 @@ export class CreateDeviceDto {
   @IsNotEmpty()
   description: string;
 
+  @ApiProperty({ enum: Model })
   @IsEnum(Model)
   @IsNotEmpty()
   model: Model;
@@ -35,7 +37,9 @@ export class CreateDeviceDto {
   @IsNotEmpty()
   phone: string;
 
+  @ApiProperty({ enum: MobileOperator })
   @IsEnum(MobileOperator)
+  @IsNotEmpty()
   mobileOperator: MobileOperator;
 
   @MaxLength(25)
@@ -44,6 +48,7 @@ export class CreateDeviceDto {
   @IsNotEmpty()
   chipNumber: string;
 
+  @ApiProperty({ enum: Timezone })
   @IsEnum(Timezone)
   @IsNotEmpty()
   timezone: Timezone;

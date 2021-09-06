@@ -11,6 +11,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { winstonConfig } from './config/winston.config';
@@ -19,6 +20,7 @@ import { PropagatorService } from './propagator/propagator.service';
 import { StateIoAdapter } from './state/state.adapter';
 import { StateService } from './state/state.service';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
+import { swaggerConfig } from './config';
 
 async function bootstrap() {
   const logger = WinstonModule.createLogger(winstonConfig);
@@ -47,6 +49,8 @@ async function bootstrap() {
     credentials: true,
     origin: configService.get('CORS_HOST').split(', '),
   });
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api', app, document);
   app.use(cookieParser());
   app.use(helmet());
   app.use(compression());

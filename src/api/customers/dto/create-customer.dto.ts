@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { States, TypeAddress } from '@prisma/client';
 import {
   IsEnum,
@@ -38,6 +39,7 @@ export class CreateCustomerDto {
   @IsOptional()
   landline: string;
 
+  @ApiProperty({ enum: TypeAddress })
   @IsEnum(TypeAddress)
   @IsNotEmpty()
   typeOfAddress: TypeAddress;
@@ -69,6 +71,7 @@ export class CreateCustomerDto {
   @IsOptional()
   complement: string;
 
+  @ApiProperty({ enum: States })
   @IsEnum(States)
   @IsNotEmpty()
   state: States;

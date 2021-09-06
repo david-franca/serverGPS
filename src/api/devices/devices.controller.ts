@@ -6,11 +6,13 @@ import {
   CacheInterceptor,
   CacheKey,
   CacheTTL,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpException,
+  HttpStatus,
   Inject,
   Param,
   Patch,
@@ -18,14 +20,24 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
+import {
+  ApiCookieAuth,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { Device } from '@prisma/client';
 
+import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import { PaginationParams } from '../pagination/params.pagination';
+import { DeviceSwagger } from '../swagger';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 
+@ApiCookieAuth()
+@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('devices')
 export class DevicesController {
   constructor(
@@ -34,14 +46,19 @@ export class DevicesController {
   ) {}
 
   @Post()
+  @ApiCreatedResponse({
+    type: DeviceSwagger,
+    description: 'The device has been successfully created',
+  })
   async create(@Body() createDeviceDto: CreateDeviceDto): Promise<Device> {
-    return await this.devicesService.create(createDeviceDto);
+    return this.devicesService.create(createDeviceDto);
   }
 
   @UseInterceptors(CacheInterceptor)
   @CacheKey('GET_DEVICES_CACHE')
   @CacheTTL(60)
   @Get()
+  @ApiOkResponse({ type: DeviceSwagger })
   async findAll(
     @Query('search') search: string,
     @Query() { take, skip, order, sort }: PaginationParams,
@@ -78,11 +95,13 @@ export class DevicesController {
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: DeviceSwagger })
   async findOne(@Param() { id }: FindOneParams): Promise<Device> {
     return await this.devicesService.findOne({ id });
   }
 
   @Patch(':id')
+  @ApiOkResponse({ type: DeviceSwagger })
   async update(
     @Param() { id }: FindOneParams,
     @Body() updateDeviceDto: UpdateDeviceDto,
@@ -93,8 +112,9 @@ export class DevicesController {
     });
   }
 
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
+  @ApiNoContentResponse()
   async remove(@Param() { id }: FindOneParams): Promise<Device> {
     return await this.devicesService.update({
       where: {

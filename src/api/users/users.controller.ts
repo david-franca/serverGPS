@@ -1,7 +1,15 @@
-import { Controller } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiCookieAuth } from '@nestjs/swagger';
 
+import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
 import { UsersService } from './users.service';
 
+@ApiCookieAuth()
+@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

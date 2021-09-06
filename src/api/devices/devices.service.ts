@@ -17,7 +17,8 @@ export class DevicesService {
 
   async create(data: Prisma.DeviceCreateInput): Promise<Device> {
     await this.clearCache();
-    return this.prisma.device.create({ data });
+    console.log(data);
+    return await this.prisma.device.create({ data });
   }
 
   async findAll(params: {

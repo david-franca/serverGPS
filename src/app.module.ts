@@ -14,6 +14,8 @@ import { AuthenticationsModule } from './api/authentications/authentications.mod
 import { BranchesModule } from './api/branches/branches.module';
 import { CustomersModule } from './api/customers/customers.module';
 import { DevicesModule } from './api/devices/devices.module';
+import { EmailSchedulesModule } from './api/email/email-schedules.module';
+import { CookieAuthenticationGuard } from './api/guards/cookie-authentication.guard';
 import { UsersModule } from './api/users/users.module';
 import { VehiclesModule } from './api/vehicles/vehicles.module';
 import { AppService } from './app.service';
@@ -25,7 +27,6 @@ import {
   throttlerAsyncOptions,
   winstonConfig,
 } from './config';
-import { EmailSchedulesModule } from './email/email-schedules.module';
 import { HealthModule } from './health/health.module';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
@@ -37,7 +38,6 @@ import { PositionService } from './services/position/position.service';
 import { SocketsModule } from './sockets/sockets.module';
 import { StateModule } from './state/state.module';
 import { ExceptionsLoggerFilter } from './utils';
-import { CookieAuthenticationGuard } from './api/guards/cookie-authentication.guard';
 
 @Module({
   imports: [

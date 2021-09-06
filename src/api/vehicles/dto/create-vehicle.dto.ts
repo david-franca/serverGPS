@@ -12,6 +12,7 @@ import {
 import { VehiclesType } from '@prisma/client';
 
 import { IsChassi, IsLicensePlate, IsRenavam } from '../../../validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateVehicleDto {
   @IsLicensePlate()
@@ -20,6 +21,7 @@ export class CreateVehicleDto {
   @IsNotEmpty()
   licensePlate: string;
 
+  @ApiProperty({ enum: VehiclesType })
   @IsEnum(VehiclesType)
   @IsNotEmpty()
   type: VehiclesType;
