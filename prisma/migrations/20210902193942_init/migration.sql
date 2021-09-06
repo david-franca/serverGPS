@@ -1,4 +1,13 @@
 -- CreateEnum
+CREATE TYPE "VehiclesType" AS ENUM ('Ambulância', 'Barco', 'Bitrem', 'Carro', 'Caminhão', 'Caminhonete', 'Caminhão Betoneira', 'Caminhão Pipa', 'Colheitadeira', 'Escavadeira', 'Moto', 'Motobomba', 'Motoniveladora', 'Ônibus', 'Pá Carregadora', 'Pessoa', 'Semáforo', 'Trator', 'Trator de Esteira', 'Outros');
+
+-- CreateEnum
+CREATE TYPE "TypeAddress" AS ENUM ('Residencial', 'Comercial', 'Outros');
+
+-- CreateEnum
+CREATE TYPE "States" AS ENUM ('Acre', 'Alagoas', 'Amapá', 'Amazonas', 'Bahia', 'Ceará', 'Distrito Federal', 'Espírito Santo', 'Goías', 'Maranhão', 'Mato Grosso', 'Mato Grosso do Sul', 'Minas Gerais', 'Pará', 'Paraíba', 'Paraná', 'Pernambuco', 'Piauí', 'Rio de Janeiro', 'Rio Grande do Norte', 'Rio Grande do Sul', 'Rondônia', 'Roraíma', 'Santa Catarina', 'São Paulo', 'Sergipe', 'Tocantins');
+
+-- CreateEnum
 CREATE TYPE "Model" AS ENUM ('SUNTECH', 'GT06');
 
 -- CreateEnum
@@ -112,7 +121,65 @@ CREATE TABLE "User" (
     "username" VARCHAR(100) NOT NULL,
     "role" VARCHAR(50) NOT NULL,
     "password" VARCHAR(100) NOT NULL,
-    "refreshToken" VARCHAR,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Customer" (
+    "id" TEXT NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
+    "fullName" VARCHAR(50) NOT NULL,
+    "cpfOrCnpj" VARCHAR(14) NOT NULL,
+    "cellPhone" VARCHAR(11) NOT NULL,
+    "landline" VARCHAR(10),
+    "typeOfAddress" "TypeAddress" NOT NULL,
+    "cep" VARCHAR(9) NOT NULL,
+    "street" VARCHAR(100) NOT NULL,
+    "number" VARCHAR(6) NOT NULL,
+    "district" VARCHAR(50) NOT NULL,
+    "complement" VARCHAR(50),
+    "state" "States" NOT NULL,
+    "city" VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Vehicle" (
+    "id" TEXT NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
+    "licensePlate" VARCHAR(8) NOT NULL,
+    "type" "VehiclesType" NOT NULL,
+    "deviceId" TEXT,
+    "customerId" TEXT NOT NULL,
+    "branchId" TEXT NOT NULL,
+    "brand" VARCHAR(30),
+    "model" VARCHAR(30),
+    "color" VARCHAR(30),
+    "year" INTEGER,
+    "chassi" VARCHAR(17),
+    "renavam" VARCHAR(11),
+    "observation" VARCHAR(150),
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Branch" (
+    "id" TEXT NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "deleted" BOOLEAN NOT NULL DEFAULT false,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateAt" TIMESTAMP(3) NOT NULL,
+    "customerId" TEXT NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
 
     PRIMARY KEY ("id")
 );
@@ -138,6 +205,24 @@ CREATE UNIQUE INDEX "User.username_unique" ON "User"("username");
 -- CreateIndex
 CREATE INDEX "User.username_index" ON "User"("username");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Customer.cpfOrCnpj_unique" ON "Customer"("cpfOrCnpj");
+
+-- CreateIndex
+CREATE INDEX "Customer.cpfOrCnpj_index" ON "Customer"("cpfOrCnpj");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Vehicle.licensePlate_unique" ON "Vehicle"("licensePlate");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Vehicle.chassi_unique" ON "Vehicle"("chassi");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Vehicle.renavam_unique" ON "Vehicle"("renavam");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Vehicle_deviceId_unique" ON "Vehicle"("deviceId");
+
 -- AddForeignKey
 ALTER TABLE "Location" ADD FOREIGN KEY ("deviceId") REFERENCES "Device"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -149,3 +234,15 @@ ALTER TABLE "Status" ADD FOREIGN KEY ("infoId") REFERENCES "Info"("id") ON DELET
 
 -- AddForeignKey
 ALTER TABLE "Alert" ADD FOREIGN KEY ("deviceId") REFERENCES "Device"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Vehicle" ADD FOREIGN KEY ("deviceId") REFERENCES "Device"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Vehicle" ADD FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Vehicle" ADD FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Branch" ADD FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE CASCADE ON UPDATE CASCADE;

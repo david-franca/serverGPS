@@ -11,8 +11,11 @@ import { TerminusModule } from '@nestjs/terminus';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthenticationsModule } from './api/authentications/authentications.module';
+import { BranchesModule } from './api/branches/branches.module';
+import { CustomersModule } from './api/customers/customers.module';
 import { DevicesModule } from './api/devices/devices.module';
 import { UsersModule } from './api/users/users.module';
+import { VehiclesModule } from './api/vehicles/vehicles.module';
 import { AppService } from './app.service';
 import {
   asyncBullConfig,
@@ -56,6 +59,9 @@ import { ExceptionsLoggerFilter } from './utils';
     BullModule.forRootAsync(asyncBullConfig),
     ThrottlerModule.forRootAsync(throttlerAsyncOptions),
     HealthModule,
+    CustomersModule,
+    VehiclesModule,
+    BranchesModule,
   ],
   providers: [
     AppService,

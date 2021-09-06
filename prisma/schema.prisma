@@ -25,7 +25,7 @@ model Device {
   location        Location[]
   status          Status[]
   alert           Alert[]
-  vehicle         Vehicle[]
+  vehicle         Vehicle?
 
   @@index([equipmentNumber, chipNumber])
 }
@@ -118,26 +118,28 @@ model User {
   @@index([username])
 }
 
-model Client {
+model Customer {
   id            String      @id @default(uuid())
   active        Boolean     @default(true) @db.Boolean
   deleted       Boolean     @default(false) @db.Boolean
   createAt      DateTime    @default(now())
   updateAt      DateTime    @updatedAt
-  fullName      String
-  cpfOrCnpj     String      @unique
-  cellPhone     String
-  landline      String
+  fullName      String      @db.VarChar(50)
+  cpfOrCnpj     String      @unique @db.VarChar(14)
+  cellPhone     String      @db.VarChar(11)
+  landline      String?     @db.VarChar(10)
   typeOfAddress TypeAddress
-  cep           String
-  street        String
-  number        String
-  district      String
-  complement    String
+  cep           String      @db.VarChar(9)
+  street        String      @db.VarChar(100)
+  number        String      @db.VarChar(6)
+  district      String      @db.VarChar(50)
+  complement    String?     @db.VarChar(50)
   state         States
-  city          String
+  city          String      @db.VarChar(50)
   vehicle       Vehicle[]
   branch        Branch[]
+
+  @@index([cpfOrCnpj])
 }
 
 model Vehicle {
@@ -146,33 +148,33 @@ model Vehicle {
   deleted      Boolean      @default(false) @db.Boolean
   createAt     DateTime     @default(now())
   updateAt     DateTime     @updatedAt
-  licensePlate String
+  licensePlate String       @unique @db.VarChar(8)
   type         VehiclesType
-  device       Device       @relation(fields: [deviceId], references: [id])
-  deviceId     String
-  client       Client       @relation(fields: [clientId], references: [id])
-  clientId     String
+  device       Device?      @relation(fields: [deviceId], references: [id])
+  deviceId     String?
+  customer     Customer     @relation(fields: [customerId], references: [id])
+  customerId   String
   branch       Branch       @relation(fields: [branchId], references: [id])
   branchId     String
-  brand        String
-  model        String
-  color        String
-  year         Int
-  chassi       Int
-  renavam      Int
-  observation  String
+  brand        String?      @db.VarChar(30)
+  model        String?      @db.VarChar(30)
+  color        String?      @db.VarChar(30)
+  year         Int?         @db.Integer
+  chassi       String?      @unique @db.VarChar(17)
+  renavam      String?      @unique @db.VarChar(11)
+  observation  String?      @db.VarChar(150)
 }
 
 model Branch {
-  id       String    @id @default(uuid())
-  active   Boolean   @default(true) @db.Boolean
-  deleted  Boolean   @default(false) @db.Boolean
-  createAt DateTime  @default(now())
-  updateAt DateTime  @updatedAt
-  client   Client    @relation(fields: [clientId], references: [id])
-  clientId String
-  name     String
-  vehicle  Vehicle[]
+  id         String    @id @default(uuid())
+  active     Boolean   @default(true) @db.Boolean
+  deleted    Boolean   @default(false) @db.Boolean
+  createAt   DateTime  @default(now())
+  updateAt   DateTime  @updatedAt
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  customerId String
+  name       String    @db.VarChar(50)
+  vehicle    Vehicle[]
 }
 
 enum VehiclesType {

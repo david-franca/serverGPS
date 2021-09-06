@@ -1,14 +1,15 @@
 {
   "cSpell.words": [
     "APPDATA",
-    "Postgres",
-    "Suntech",
-    "Wifi",
+    "CNPJ",
     "imei",
     "luxon",
+    "Postgres",
     "resave",
     "rssi",
-    "websockets"
+    "Suntech",
+    "websockets",
+    "Wifi"
   ],
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#b61a3d",

@@ -174,6 +174,11 @@ export const QueryError = {
    * Timed out fetching a new connection from the pool. Please consider reducing the number of requests or increasing the `connection_limit` parameter (https://www.prisma.io/docs/concepts/components/prisma-client/connection-management#connection-pool). Current limit: {connection_limit}.
    */
   TimedOutFetchingConnectionFromThePool: 'P2024',
+
+  /**
+   * An operation failed because it depends on one or more records that were required but not found. {cause}
+   */
+  DependsOnOneOrMoreRecords: 'P2025',
 } as const;
 
 export const MigrationError = {

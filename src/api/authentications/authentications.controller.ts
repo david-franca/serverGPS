@@ -24,6 +24,7 @@ export class AuthenticationsController {
     private readonly authenticationsService: AuthenticationsService,
   ) {}
 
+  @UseGuards(CookieAuthenticationGuard)
   @Post('register')
   async create(@Body() createAuthenticationDto: RegisterDto) {
     return await this.authenticationsService.register(createAuthenticationDto);

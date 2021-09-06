@@ -6,7 +6,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DeviceNotFoundException } from './exception/devicesNotFound.exception';
+import { NotFoundException } from '../exception/NotFound.exception';
 
 @Injectable()
 export class DevicesService {
@@ -105,7 +105,7 @@ export class DevicesService {
     if (device) {
       return device;
     }
-    throw new DeviceNotFoundException(where.id);
+    throw new NotFoundException(where.id, 'Device');
   }
 
   async update(params: {
@@ -124,7 +124,7 @@ export class DevicesService {
         error instanceof PrismaClientKnownRequestError &&
         PrismaError.RecordDoesNotExist
       ) {
-        throw new DeviceNotFoundException(where.id);
+        throw new NotFoundException(where.id, 'Device');
       }
       throw error;
     }
@@ -144,7 +144,7 @@ export class DevicesService {
         error instanceof PrismaClientKnownRequestError &&
         error.code === PrismaError.RecordDoesNotExist
       ) {
-        throw new DeviceNotFoundException(where.id);
+        throw new NotFoundException(where.id, 'Device');
       }
       throw error;
     }

@@ -17,7 +17,6 @@ export class HttpCacheInterceptor extends CacheInterceptor {
       const request = context.switchToHttp().getRequest();
       return `${cacheKey}-${request._parsedUrl.query}`;
     }
-
     return super.trackBy(context);
   }
 }

@@ -56,3 +56,5 @@ lib-cov
 .docker/dbdata
 .docker/redisdata
 .docker/rabbitmq
+
+.dccache
