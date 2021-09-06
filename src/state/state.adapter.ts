@@ -10,7 +10,6 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 
 import { Environments } from '../interfaces';
 import { AuthenticatedSocket } from '../interfaces/socket.interface';
-import { PropagatorService } from '../propagator/propagator.service';
 import { StateService } from './state.service';
 
 const configService = new ConfigService<Record<Environments, any>>();
@@ -28,13 +27,11 @@ export class StateIoAdapter extends IoAdapter implements WebSocketAdapter {
   constructor(
     private readonly app: NestExpressApplication,
     private readonly stateService: StateService,
-    private readonly propagatorService: PropagatorService,
   ) {
     super(app);
   }
   createIOServer(port: number, options?: ServerOptions): Server {
     this.server = super.createIOServer(port, options);
-    this.propagatorService.injectSocketServer(this.server);
     this.server.use(async (socket: AuthenticatedSocket, next) => {
       const cookie = socket.handshake.headers.cookie;
       const { Authentication: authenticationToken } = parse(cookie);

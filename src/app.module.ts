@@ -31,9 +31,7 @@ import { HealthModule } from './health/health.module';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
-import { PropagatorModule } from './propagator/propagator.module';
 import { ProtocolModule } from './protocols/protocol.module';
-import { RedisModule } from './redis/redis.module';
 import { PositionService } from './services/position/position.service';
 import { SocketsModule } from './sockets/sockets.module';
 import { StateModule } from './state/state.module';
@@ -51,8 +49,6 @@ import { ExceptionsLoggerFilter } from './utils';
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     StateModule,
-    PropagatorModule,
-    RedisModule,
     TerminusModule,
     WinstonModule.forRoot(winstonConfig),
     MailerModule.forRoot(mailerConfig),

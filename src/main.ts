@@ -16,7 +16,6 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { winstonConfig } from './config/winston.config';
 import { Environments } from './interfaces';
-import { PropagatorService } from './propagator/propagator.service';
 import { StateIoAdapter } from './state/state.adapter';
 import { StateService } from './state/state.service';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
@@ -31,7 +30,6 @@ async function bootstrap() {
   const configService: ConfigService<Record<Environments, any>> =
     app.get(ConfigService);
   const stateService = app.get(StateService);
-  const propagatorService = app.get(PropagatorService);
   const RedisStore = createRedisStore(session);
   const redisClient = createClient({
     host: configService.get('REDIS_HOST'),
@@ -58,9 +56,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.useWebSocketAdapter(
-    new StateIoAdapter(app, stateService, propagatorService),
-  );
+  app.useWebSocketAdapter(new StateIoAdapter(app, stateService));
   app.useGlobalPipes(
     new ValidationPipe({
       errorHttpStatusCode: 422,
