@@ -28,21 +28,6 @@ services:
     networks:
       - postgres
 
-  rabbitmq:
-    image: rabbitmq:3.8.22-management-alpine
-    container_name: rabbitmq
-    hostname: rabbitmq
-    volumes:
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-      - ./.docker/rabbitmq/log/:/var/log/rabbitmq
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    env_file:
-      - ./rabbitmq.env
-    networks:
-      - postgres
-
 networks:
   postgres:
     driver: 'bridge'
