@@ -23,7 +23,7 @@ const configService = new ConfigService<Record<Environments, any>>();
 @WebSocketGateway({
   cors: {
     credentials: true,
-    origin: configService.get<string>('CORS_HOST').split(', '),
+    origin: configService.get<string>('CORS_HOST'),
   },
 })
 export class SocketsGateway
