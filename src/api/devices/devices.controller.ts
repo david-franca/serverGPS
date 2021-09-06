@@ -16,13 +16,11 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Device } from '@prisma/client';
 
 import { FindOneParams } from '../../utils/findOneParams.util';
-import { CookieAuthenticationGuard } from '../guards/cookie-authentication.guard';
 import { PaginationParams } from '../pagination/params.pagination';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
@@ -36,7 +34,6 @@ export class DevicesController {
   ) {}
 
   @Post()
-  @UseGuards(CookieAuthenticationGuard)
   async create(@Body() createDeviceDto: CreateDeviceDto): Promise<Device> {
     return await this.devicesService.create(createDeviceDto);
   }
@@ -45,7 +42,6 @@ export class DevicesController {
   @CacheKey('GET_DEVICES_CACHE')
   @CacheTTL(60)
   @Get()
-  @UseGuards(CookieAuthenticationGuard)
   async findAll(
     @Query('search') search: string,
     @Query() { take, skip, order, sort }: PaginationParams,
@@ -82,13 +78,11 @@ export class DevicesController {
   }
 
   @Get(':id')
-  @UseGuards(CookieAuthenticationGuard)
   async findOne(@Param() { id }: FindOneParams): Promise<Device> {
     return await this.devicesService.findOne({ id });
   }
 
   @Patch(':id')
-  @UseGuards(CookieAuthenticationGuard)
   async update(
     @Param() { id }: FindOneParams,
     @Body() updateDeviceDto: UpdateDeviceDto,
@@ -101,7 +95,6 @@ export class DevicesController {
 
   @HttpCode(204)
   @Delete(':id')
-  @UseGuards(CookieAuthenticationGuard)
   async remove(@Param() { id }: FindOneParams): Promise<Device> {
     return await this.devicesService.update({
       where: {

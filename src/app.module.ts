@@ -37,6 +37,7 @@ import { PositionService } from './services/position/position.service';
 import { SocketsModule } from './sockets/sockets.module';
 import { StateModule } from './state/state.module';
 import { ExceptionsLoggerFilter } from './utils';
+import { CookieAuthenticationGuard } from './api/guards/cookie-authentication.guard';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { ExceptionsLoggerFilter } from './utils';
     { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
     { provide: 'GPS_CONFIG_OPTIONS', useValue: { config: defaultsConfig } },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: CookieAuthenticationGuard },
   ],
 })
 export class AppModule {}

@@ -9,12 +9,10 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
 import { FindOneParams } from '../../utils/findOneParams.util';
-import { CookieAuthenticationGuard } from '../guards/cookie-authentication.guard';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -24,7 +22,6 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
-  @UseGuards(CookieAuthenticationGuard)
   @Post()
   create(@Body() createCustomerDto: CreateCustomerDto) {
     return this.customersService.create(createCustomerDto);
