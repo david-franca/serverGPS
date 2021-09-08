@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiCookieAuth } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
@@ -7,6 +7,7 @@ import {
 } from '@nestjs/terminus';
 
 @ApiCookieAuth()
+@ApiTags('health')
 @Controller('health')
 export class HealthController {
   constructor(

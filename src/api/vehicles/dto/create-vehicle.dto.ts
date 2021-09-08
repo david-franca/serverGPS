@@ -21,11 +21,11 @@ export class CreateVehicleDto {
   @IsNotEmpty()
   licensePlate: string;
 
-  @ApiProperty({ enum: VehiclesType })
   @IsEnum(VehiclesType)
   @IsNotEmpty()
   type: VehiclesType;
 
+  @ApiProperty({ nullable: true, required: false })
   @IsUUID()
   @IsOptional()
   deviceId: string;
@@ -38,36 +38,43 @@ export class CreateVehicleDto {
   @IsNotEmpty()
   branchId: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @MaxLength(30)
   @IsString()
   @IsOptional()
   brand: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @MaxLength(30)
   @IsString()
   @IsOptional()
   model: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @MaxLength(30)
   @IsString()
   @IsOptional()
   color: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @IsNumber({ maxDecimalPlaces: 4 })
   @IsOptional()
   year: number;
 
+  @ApiProperty({ nullable: true, required: false })
   @IsChassi()
   @IsString()
   @IsOptional()
   chassi: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @IsRenavam()
   @MaxLength(17)
   @IsString()
   @IsOptional()
   renavam: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @MaxLength(150)
   @IsString()
   @IsOptional()

@@ -6,13 +6,14 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiCookieAuth } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
 import { CreateEmailScheduleDto } from './dto/create-email-schedule.dto';
 import { EmailSchedulesService } from './email-schedules.service';
 
 @ApiCookieAuth()
+@ApiTags('emails')
 @UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('email-scheduling')
 export class EmailSchedulesController {

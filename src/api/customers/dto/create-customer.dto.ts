@@ -34,12 +34,12 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   cellPhone: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @Length(10)
   @IsNumberString({ no_symbols: true })
   @IsOptional()
   landline: string;
 
-  @ApiProperty({ enum: TypeAddress })
   @IsEnum(TypeAddress)
   @IsNotEmpty()
   typeOfAddress: TypeAddress;
@@ -65,13 +65,13 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   district: string;
 
+  @ApiProperty({ nullable: true, required: false })
   @MinLength(3)
   @MaxLength(100)
   @IsString()
   @IsOptional()
   complement: string;
 
-  @ApiProperty({ enum: States })
   @IsEnum(States)
   @IsNotEmpty()
   state: States;

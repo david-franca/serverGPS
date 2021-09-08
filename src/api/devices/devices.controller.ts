@@ -1,4 +1,5 @@
 import { Cache } from 'cache-manager';
+import { randomUUID } from 'crypto';
 
 import {
   Body,
@@ -21,22 +22,45 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOkResponse,
+  ApiParam,
+  ApiParamOptions,
+  ApiTags,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { Device } from '@prisma/client';
 
 import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import { PaginationParams } from '../pagination/params.pagination';
-import { DeviceSwagger } from '../swagger';
+import {
+  badRequestOptions,
+  DeviceSwagger,
+  forbiddenOptions,
+  options,
+  unprocessableOptions,
+} from '../swagger';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 
+const paramsOptions: ApiParamOptions = {
+  name: 'id',
+  example: randomUUID(),
+  type: String,
+  description: 'UUID of the device',
+};
+
 @ApiCookieAuth()
+@ApiTags('devices')
+@ApiUnprocessableEntityResponse(unprocessableOptions)
+@ApiForbiddenResponse(forbiddenOptions)
+@ApiBadRequestResponse(badRequestOptions)
 @UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('devices')
 export class DevicesController {
@@ -46,10 +70,7 @@ export class DevicesController {
   ) {}
 
   @Post()
-  @ApiCreatedResponse({
-    type: DeviceSwagger,
-    description: 'The device has been successfully created',
-  })
+  @ApiCreatedResponse(options('device', 'POST', DeviceSwagger))
   async create(@Body() createDeviceDto: CreateDeviceDto): Promise<Device> {
     return this.devicesService.create(createDeviceDto);
   }
@@ -58,7 +79,7 @@ export class DevicesController {
   @CacheKey('GET_DEVICES_CACHE')
   @CacheTTL(60)
   @Get()
-  @ApiOkResponse({ type: DeviceSwagger })
+  @ApiOkResponse(options('devices', 'GET', DeviceSwagger))
   async findAll(
     @Query('search') search: string,
     @Query() { take, skip, order, sort }: PaginationParams,
@@ -95,13 +116,15 @@ export class DevicesController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: DeviceSwagger })
+  @ApiParam(paramsOptions)
+  @ApiOkResponse(options('device', 'GETBYID', DeviceSwagger))
   async findOne(@Param() { id }: FindOneParams): Promise<Device> {
     return await this.devicesService.findOne({ id });
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: DeviceSwagger })
+  @ApiParam(paramsOptions)
+  @ApiOkResponse(options('device', 'PATCH', DeviceSwagger))
   async update(
     @Param() { id }: FindOneParams,
     @Body() updateDeviceDto: UpdateDeviceDto,
@@ -114,7 +137,8 @@ export class DevicesController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  @ApiNoContentResponse()
+  @ApiParam(paramsOptions)
+  @ApiNoContentResponse(options('device', 'DELETE'))
   async remove(@Param() { id }: FindOneParams): Promise<Device> {
     return await this.devicesService.update({
       where: {

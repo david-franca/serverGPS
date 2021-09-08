@@ -48,7 +48,10 @@ async function bootstrap() {
     origin: configService.get('CORS_HOST').split(', '),
   });
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/v1', app, document, {
+    customSiteTitle: 'Docs APV API',
+    swaggerOptions: { supportedSubmitMethods: [], persistAuthorization: true },
+  });
   app.use(cookieParser());
   app.use(helmet());
   app.use(compression());

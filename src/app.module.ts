@@ -16,6 +16,7 @@ import { CustomersModule } from './api/customers/customers.module';
 import { DevicesModule } from './api/devices/devices.module';
 import { EmailSchedulesModule } from './api/email/email-schedules.module';
 import { CookieAuthenticationGuard } from './api/guards/cookie-authentication.guard';
+import { HealthModule } from './api/health/health.module';
 import { UsersModule } from './api/users/users.module';
 import { VehiclesModule } from './api/vehicles/vehicles.module';
 import { AppService } from './app.service';
@@ -27,7 +28,6 @@ import {
   throttlerAsyncOptions,
   winstonConfig,
 } from './config';
-import { HealthModule } from './health/health.module';
 import { LoggerInterceptor } from './interceptors/logger.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';

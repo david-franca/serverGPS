@@ -8,39 +8,43 @@ import { BaseSwagger } from './base.swagger';
 const pessoa = fakerBr.pessoa();
 const endereco = pessoa.endereco;
 export class CustomerSwagger extends BaseSwagger implements Customer {
-  @ApiProperty({ default: pessoa.nome })
+  @ApiProperty({ example: pessoa.nome })
   fullName: string;
 
-  @ApiProperty({ default: pessoa.cpf })
+  @ApiProperty({ example: pessoa.cpf })
   cpfOrCnpj: string;
 
-  @ApiProperty({ default: pessoa.celular })
+  @ApiProperty({ example: '85996682594' })
   cellPhone: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '8533421352' })
   landline: string | null;
 
   @ApiProperty({ enum: TypeAddress })
   typeOfAddress: TypeAddress;
 
-  @ApiProperty({ default: endereco.cep })
+  @ApiProperty({ example: endereco.cep })
   cep: string;
 
-  @ApiProperty({ default: endereco.logradouro })
+  @ApiProperty({ example: endereco.logradouro })
   street: string;
 
-  @ApiProperty({ default: endereco.numero })
+  @ApiProperty({ example: endereco.numero })
   number: string;
 
-  @ApiProperty({ default: endereco.bairro })
+  @ApiProperty({ example: endereco.bairro })
   district: string;
 
-  @ApiProperty({ default: endereco.complemento })
+  @ApiProperty({
+    default: endereco.complemento,
+    nullable: true,
+    required: false,
+  })
   complement: string | null;
 
   @ApiProperty({ enum: States, default: endereco.estado })
   state: States;
 
-  @ApiProperty({ default: endereco.cidade })
+  @ApiProperty({ example: endereco.cidade })
   city: string;
 }
