@@ -1,6 +1,11 @@
 import { Request } from 'express';
 
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { IS_PUBLIC_KEY } from '../../validator';
@@ -17,6 +22,11 @@ export class CookieAuthenticationGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-    return request.isAuthenticated();
+
+    if (!request.isAuthenticated()) {
+      throw new UnauthorizedException();
+    }
+
+    return true;
   }
 }

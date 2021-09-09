@@ -17,7 +17,7 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
@@ -31,13 +31,14 @@ import { FindOneParams } from '../../utils/findOneParams.util';
 import {
   badRequestOptions,
   BranchSwagger,
-  forbiddenOptions,
+  unauthorizedOptions,
   options,
   unprocessableOptions,
 } from '../swagger';
 import { BranchesService } from './branches.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
+import { Roles } from '../../validator';
 
 const paramsOptions: ApiParamOptions = {
   name: 'id',
@@ -49,13 +50,14 @@ const paramsOptions: ApiParamOptions = {
 @ApiCookieAuth()
 @ApiTags('branches')
 @ApiUnprocessableEntityResponse(unprocessableOptions)
-@ApiForbiddenResponse(forbiddenOptions)
+@ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
 @UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('branches')
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 
+  @Roles('ADMIN', 'USER')
   @Post()
   @ApiCreatedResponse(options('branch', 'POST', BranchSwagger))
   create(@Body() createBranchDto: CreateBranchDto) {

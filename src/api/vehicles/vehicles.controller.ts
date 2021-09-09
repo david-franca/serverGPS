@@ -17,7 +17,7 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
@@ -29,7 +29,7 @@ import {
 import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import {
-  forbiddenOptions,
+  unauthorizedOptions,
   options,
   unprocessableOptions,
   VehicleSwagger,
@@ -49,7 +49,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiCookieAuth()
 @ApiTags('vehicles')
 @ApiUnprocessableEntityResponse(unprocessableOptions)
-@ApiForbiddenResponse(forbiddenOptions)
+@ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
 @UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('vehicles')

@@ -17,7 +17,7 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
@@ -31,7 +31,7 @@ import { FindOneParams } from '../../utils/findOneParams.util';
 import {
   badRequestOptions,
   CustomerSwagger,
-  forbiddenOptions,
+  unauthorizedOptions,
   options,
   unprocessableOptions,
 } from '../swagger';
@@ -49,7 +49,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiCookieAuth()
 @ApiTags('customers')
 @ApiUnprocessableEntityResponse(unprocessableOptions)
-@ApiForbiddenResponse(forbiddenOptions)
+@ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
 @Controller('customers')
 @UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)

@@ -8,9 +8,12 @@ export const options = (
 ): ApiResponseOptions => {
   const titleCapitalized = name.charAt(0).toUpperCase() + name.substring(1);
   let description = '';
+  let isArray = false;
+
   switch (method) {
     case 'GET':
       description = `Returns all ${name} in array.`;
+      isArray = true;
       break;
 
     case 'POST':
@@ -29,5 +32,5 @@ export const options = (
       description = `No content return. ${titleCapitalized} successfully removed.`;
       break;
   }
-  return { type, description };
+  return { type, description, isArray };
 };

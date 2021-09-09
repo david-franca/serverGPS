@@ -25,7 +25,7 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
@@ -41,7 +41,7 @@ import { PaginationParams } from '../pagination/params.pagination';
 import {
   badRequestOptions,
   DeviceSwagger,
-  forbiddenOptions,
+  unauthorizedOptions,
   options,
   unprocessableOptions,
 } from '../swagger';
@@ -59,7 +59,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiCookieAuth()
 @ApiTags('devices')
 @ApiUnprocessableEntityResponse(unprocessableOptions)
-@ApiForbiddenResponse(forbiddenOptions)
+@ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
 @UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
 @Controller('devices')
