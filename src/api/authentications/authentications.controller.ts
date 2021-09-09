@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 
 import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
-import { Public, Roles } from '../../validator';
+import { Public } from '../../validator';
 import { LoginCredentialsGuard } from '../guards/loginCredentials.guard';
 import {
   badRequestOptions,
@@ -46,7 +46,6 @@ export class AuthenticationsController {
     private readonly authenticationsService: AuthenticationsService,
   ) {}
 
-  @Roles('ADMIN')
   @Post('register')
   @ApiCreatedResponse({
     type: UserSwagger,

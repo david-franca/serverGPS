@@ -38,7 +38,6 @@ import {
 import { BranchesService } from './branches.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
-import { Roles } from '../../validator';
 
 const paramsOptions: ApiParamOptions = {
   name: 'id',
@@ -57,7 +56,6 @@ const paramsOptions: ApiParamOptions = {
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 
-  @Roles('ADMIN', 'USER')
   @Post()
   @ApiCreatedResponse(options('branch', 'POST', BranchSwagger))
   create(@Body() createBranchDto: CreateBranchDto) {
