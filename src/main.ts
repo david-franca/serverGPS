@@ -1,3 +1,4 @@
+import { hash } from 'bcrypt';
 import * as compression from 'compression';
 import * as createRedisStore from 'connect-redis';
 import * as cookieParser from 'cookie-parser';
@@ -14,12 +15,13 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { swaggerConfig } from './config';
 import { winstonConfig } from './config/winston.config';
 import { Environments } from './interfaces';
+import { PrismaService } from './prisma/prisma.service';
 import { StateIoAdapter } from './state/state.adapter';
 import { StateService } from './state/state.service';
 import { ExceptionsLoggerFilter, NotFoundExceptionFilter } from './utils';
-import { swaggerConfig } from './config';
 
 async function bootstrap() {
   const logger = WinstonModule.createLogger(winstonConfig);
@@ -31,6 +33,23 @@ async function bootstrap() {
     app.get(ConfigService);
   const stateService = app.get(StateService);
   const RedisStore = createRedisStore(session);
+  const prismaService = app.get(PrismaService);
+  const user = await prismaService.user.count();
+
+  if (!user) {
+    const admin = await prismaService.user.create({
+      data: {
+        name: 'admin',
+        username: 'admin',
+        password: await hash(
+          configService.get('ADMIN_PASS'),
+          configService.get('SALT_NUMBER'),
+        ),
+        role: 'ADMIN',
+      },
+    });
+    logger.log(`Created admin user with ${admin.id} id`);
+  }
   const redisClient = createClient({
     host: configService.get('REDIS_HOST'),
     port: configService.get('REDIS_PORT'),

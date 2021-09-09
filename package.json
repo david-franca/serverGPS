@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@casl/ability": "^5.4.3",
     "@hapi/joi": "^17.1.1",
     "@nestjs-modules/mailer": "^1.6.0",
     "@nestjs/axios": "^0.0.1",

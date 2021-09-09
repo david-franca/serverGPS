@@ -23,5 +23,6 @@ export const configOptions: ConfigModuleOptions = {
     SESSION_SECRET: string().required(),
     THROTTLE_TTL: number().required(),
     THROTTLE_LIMIT: number().required(),
+    ADMIN_PASS: string().required(),
   }),
 };

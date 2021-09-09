@@ -18,4 +18,5 @@ export type Environments =
   | 'SERVER_PORT'
   | 'SESSION_SECRET'
   | 'THROTTLE_TTL'
-  | 'THROTTLE_LIMIT';
+  | 'THROTTLE_LIMIT'
+  | 'ADMIN_PASS';

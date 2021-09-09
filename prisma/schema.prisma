@@ -112,7 +112,7 @@ model User {
   updateAt DateTime @updatedAt
   name     String   @db.VarChar(100)
   username String   @unique @db.VarChar(100)
-  role     String   @db.VarChar(50)
+  role     Role
   password String   @db.VarChar(100)
 
   @@index([username])
@@ -277,4 +277,11 @@ enum Timezone {
   GMT10   @map("GMT+10")
   GMT11   @map("GMT+11")
   GMT12   @map("GMT+12")
+}
+
+enum Role {
+  USER
+  ADMIN
+  CLIENT
+  OPERATOR
 }

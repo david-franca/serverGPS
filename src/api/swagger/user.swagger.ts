@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { fakerBr } from 'js-brasil';
 
@@ -12,6 +13,6 @@ export class UserSwagger extends BaseSwagger {
   @ApiProperty({ default: pessoa.usuario })
   username: string;
 
-  @ApiProperty()
-  role: string;
+  @ApiProperty({ enum: Role })
+  role: Role;
 }

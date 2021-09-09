@@ -16,6 +16,9 @@ CREATE TYPE "MobileOperator" AS ENUM ('Claro', 'Oi', 'Tim', 'Vivo', 'Vodafone', 
 -- CreateEnum
 CREATE TYPE "Timezone" AS ENUM ('GMT-14', 'GMT-13', 'GMT-12', 'GMT-11', 'GMT-10', 'GMT-9', 'GMT-8', 'GMT-7', 'GMT-6', 'GMT-5', 'GMT-4', 'GMT-3', 'GMT-2', 'GMT-1', 'GMT+1', 'GMT+2', 'GMT+3', 'GMT+4', 'GMT+5', 'GMT+6', 'GMT+7', 'GMT+8', 'GMT+9', 'GMT+10', 'GMT+11', 'GMT+12');
 
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN', 'CLIENT', 'OPERATOR');
+
 -- CreateTable
 CREATE TABLE "Device" (
     "id" TEXT NOT NULL,
@@ -119,7 +122,7 @@ CREATE TABLE "User" (
     "updateAt" TIMESTAMP(3) NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "username" VARCHAR(100) NOT NULL,
-    "role" VARCHAR(50) NOT NULL,
+    "role" "Role" NOT NULL,
     "password" VARCHAR(100) NOT NULL,
 
     PRIMARY KEY ("id")

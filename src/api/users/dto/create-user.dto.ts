@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 
 export class CreateUserDto implements Prisma.UserCreateInput {
   @MaxLength(100)
@@ -18,8 +18,7 @@ export class CreateUserDto implements Prisma.UserCreateInput {
   @IsNotEmpty()
   username: string;
 
-  @MaxLength(50)
-  @IsString()
+  @IsEnum(Role)
   @IsNotEmpty()
-  role: string;
+  role: Role;
 }
