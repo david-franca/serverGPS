@@ -2,6 +2,7 @@ import { hash } from 'bcrypt';
 import * as compression from 'compression';
 import * as createRedisStore from 'connect-redis';
 import * as cookieParser from 'cookie-parser';
+import * as csurf from 'csurf';
 import * as session from 'express-session';
 import * as helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
@@ -48,7 +49,7 @@ async function bootstrap() {
         role: 'ADMIN',
       },
     });
-    logger.log(`Created admin user with ${admin.id} id`);
+    logger.log(`Created admin user with ${admin.id} id`, 'Main');
   }
   const redisClient = createClient({
     host: configService.get('REDIS_HOST'),
@@ -75,6 +76,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
   app.use(session(sessionOptions));
+  app.use(csurf({ sessionKey: 'server-session', cookie: true }));
   app.use(passport.initialize());
   app.use(passport.session());
 
