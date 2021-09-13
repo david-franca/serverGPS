@@ -17,22 +17,22 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
   ApiParamOptions,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
-import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
+import { ErrorsInterceptor, SentryInterceptor } from '../../interceptors';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import {
   badRequestOptions,
   BranchSwagger,
-  unauthorizedOptions,
   options,
+  unauthorizedOptions,
   unprocessableOptions,
 } from '../swagger';
 import { BranchesService } from './branches.service';
@@ -51,7 +51,11 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
+@UseInterceptors(
+  ClassSerializerInterceptor,
+  ErrorsInterceptor,
+  SentryInterceptor,
+)
 @Controller('branches')
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}

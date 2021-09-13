@@ -19,4 +19,5 @@ export type Environments =
   | 'SESSION_SECRET'
   | 'THROTTLE_TTL'
   | 'THROTTLE_LIMIT'
-  | 'ADMIN_PASS';
+  | 'ADMIN_PASS'
+  | 'SENTRY_DNS';

@@ -17,20 +17,20 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
   ApiParamOptions,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
-import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
+import { ErrorsInterceptor, SentryInterceptor } from '../../interceptors';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import {
-  unauthorizedOptions,
   options,
+  unauthorizedOptions,
   unprocessableOptions,
   VehicleSwagger,
 } from '../swagger';
@@ -51,7 +51,11 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
+@UseInterceptors(
+  ClassSerializerInterceptor,
+  ErrorsInterceptor,
+  SentryInterceptor,
+)
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}

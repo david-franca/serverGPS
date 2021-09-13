@@ -15,13 +15,13 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiUnauthorizedResponse,
   ApiOkResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
-import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
+import { ErrorsInterceptor } from '../../interceptors';
 import { Public } from '../../validator';
 import { LoginCredentialsGuard } from '../guards/loginCredentials.guard';
 import {

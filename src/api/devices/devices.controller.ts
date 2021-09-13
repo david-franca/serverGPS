@@ -25,24 +25,24 @@ import {
   ApiBadRequestResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
-  ApiUnauthorizedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiParam,
   ApiParamOptions,
   ApiTags,
+  ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { Device } from '@prisma/client';
 
-import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
+import { ErrorsInterceptor, SentryInterceptor } from '../../interceptors';
 import { FindOneParams } from '../../utils/findOneParams.util';
 import { PaginationParams } from '../pagination/params.pagination';
 import {
   badRequestOptions,
   DeviceSwagger,
-  unauthorizedOptions,
   options,
+  unauthorizedOptions,
   unprocessableOptions,
 } from '../swagger';
 import { DevicesService } from './devices.service';
@@ -61,7 +61,11 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
+@UseInterceptors(
+  ClassSerializerInterceptor,
+  ErrorsInterceptor,
+  SentryInterceptor,
+)
 @Controller('devices')
 export class DevicesController {
   constructor(

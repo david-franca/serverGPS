@@ -2,7 +2,6 @@ import { hash } from 'bcrypt';
 import * as compression from 'compression';
 import * as createRedisStore from 'connect-redis';
 import * as cookieParser from 'cookie-parser';
-import * as csurf from 'csurf';
 import * as session from 'express-session';
 import * as helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
@@ -14,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule } from '@nestjs/swagger';
+import * as Sentry from '@sentry/node';
 
 import { AppModule } from './app.module';
 import { swaggerConfig } from './config';
@@ -32,6 +32,11 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   const configService: ConfigService<Record<Environments, any>> =
     app.get(ConfigService);
+  Sentry.init({
+    dsn: configService.get('SENTRY_DNS'),
+    integrations: [new Sentry.Integrations.Http({ tracing: true })],
+    tracesSampleRate: 1.0,
+  });
   const stateService = app.get(StateService);
   const RedisStore = createRedisStore(session);
   const prismaService = app.get(PrismaService);
@@ -76,10 +81,11 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
   app.use(session(sessionOptions));
-  app.use(csurf({ sessionKey: 'server-session', cookie: true }));
   app.use(passport.initialize());
   app.use(passport.session());
-
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+  app.use(Sentry.Handlers.errorHandler());
   app.useWebSocketAdapter(new StateIoAdapter(app, stateService));
   app.useGlobalPipes(
     new ValidationPipe({

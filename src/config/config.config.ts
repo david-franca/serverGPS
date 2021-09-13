@@ -24,5 +24,6 @@ export const configOptions: ConfigModuleOptions = {
     THROTTLE_TTL: number().required(),
     THROTTLE_LIMIT: number().required(),
     ADMIN_PASS: string().required(),
+    SENTRY_DNS: string().required(),
   }),
 };

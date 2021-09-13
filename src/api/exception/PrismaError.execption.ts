@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
+
 import { PrismaError } from '../../database/prismaErrorCodes.enum';
 
 export class PrismaErrorException {
@@ -6,25 +7,18 @@ export class PrismaErrorException {
   handleError(error: any) {
     switch (error.code) {
       case PrismaError.RequiredRelationViolation:
-        throw new HttpException(
-          'Device already in use',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new BadRequestException('Device already in use');
 
       case PrismaError.DependsOnOneOrMoreRecords:
-        throw new HttpException(
-          'An operation failed because it depends on one or more records that were required but not found.',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new NotFoundException('Record not found');
 
       case PrismaError.UniqueConstraintViolation:
-        throw new HttpException(
+        throw new BadRequestException(
           `${error.meta.target[0]} already in use for another vehicle`,
-          HttpStatus.BAD_REQUEST,
         );
 
       case PrismaError.RecordDoesNotExist:
-        throw new HttpException(`Record not found`, HttpStatus.BAD_REQUEST);
+        throw new NotFoundException(`Record not found`);
 
       default:
         this.logger.error('Prisma Error =>', error);

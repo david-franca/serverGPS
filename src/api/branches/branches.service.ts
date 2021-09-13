@@ -1,8 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
-import { PrismaError } from '../../database/prismaErrorCodes.enum';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotFoundException } from '../exception/NotFound.exception';
 import { CreateBranchDto } from './dto/create-branch.dto';
@@ -11,19 +9,12 @@ import { CreateBranchDto } from './dto/create-branch.dto';
 export class BranchesService {
   constructor(private prisma: PrismaService) {}
   async create(data: CreateBranchDto) {
-    try {
-      return await this.prisma.branch.create({
-        data: {
-          name: data.name,
-          customer: { connect: { id: data.customerId } },
-        },
-      });
-    } catch (error) {
-      if (error.code === PrismaError.DependsOnOneOrMoreRecords) {
-        throw new HttpException('Record not found', HttpStatus.BAD_REQUEST);
-      }
-      console.log(error);
-    }
+    return await this.prisma.branch.create({
+      data: {
+        name: data.name,
+        customer: { connect: { id: data.customerId } },
+      },
+    });
   }
 
   async findAll(params: {
@@ -56,16 +47,6 @@ export class BranchesService {
     data: Prisma.BranchUpdateInput;
   }) {
     const { data, where } = params;
-    try {
-      return await this.prisma.branch.update({ data, where });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        PrismaError.RecordDoesNotExist
-      ) {
-        throw new NotFoundException(where.id, 'Device');
-      }
-      throw error;
-    }
+    return await this.prisma.branch.update({ data, where });
   }
 }

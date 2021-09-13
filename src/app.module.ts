@@ -28,7 +28,7 @@ import {
   throttlerAsyncOptions,
   winstonConfig,
 } from './config';
-import { LoggerInterceptor } from './interceptors/logger.interceptor';
+import { LoggerInterceptor } from './interceptors';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { ProtocolModule } from './protocols/protocol.module';

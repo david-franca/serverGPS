@@ -5,11 +5,15 @@ import {
 } from '@nestjs/common';
 import { ApiCookieAuth } from '@nestjs/swagger';
 
-import { ErrorsInterceptor } from '../../interceptors/errors.interceptor';
+import { ErrorsInterceptor, SentryInterceptor } from '../../interceptors';
 import { UsersService } from './users.service';
 
 @ApiCookieAuth()
-@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
+@UseInterceptors(
+  ClassSerializerInterceptor,
+  ErrorsInterceptor,
+  SentryInterceptor,
+)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
