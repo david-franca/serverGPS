@@ -15,16 +15,15 @@ module.exports = {
 
   deploy: {
     production: {
-      user: 'ubuntu',
-      host: ['davidfranca.tech'],
+      user: process.env.EC2_USERNAME,
+      host: [process.env.EC2_HOST],
       key: process.env.HOME + '/Downloads/AWSAPV.pem',
       ref: 'origin/master',
-      repo: 'git@github.com:francinha02/serverGPS.git',
+      repo: process.env.EC2_REPO,
       path: '/home/ubuntu/teste/deploy',
-      'pre-deploy-local': "echo 'This is a local executed command'",
       'post-deploy':
-        'yarn && docker-compose down && docker-compose up -d --build && npx prisma migrate deploy && yarn build && pm2 reload ecosystem.config.js --env production',
-      'pre-setup': '',
+        'yarn && docker-compose down && docker-compose up -d --build --remove-orphans && npx prisma migrate deploy && yarn build && pm2 reload ecosystem.config.js --env production',
+      'pre-setup': 'touch .env && cp .env.example .env',
     },
   },
 };
