@@ -1,5 +1,12 @@
 import { WinstonModule } from 'nest-winston';
 
+import {
+  asyncBullConfig,
+  configOptions,
+  mailerConfig,
+  throttlerAsyncOptions,
+  winstonConfig,
+} from '@common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { BullModule } from '@nestjs/bull';
 import { DynamicModule, ForwardReference, Type } from '@nestjs/common';
@@ -9,13 +16,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TerminusModule } from '@nestjs/terminus';
 import { ThrottlerModule } from '@nestjs/throttler';
 
-import {
-  asyncBullConfig,
-  configOptions,
-  mailerConfig,
-  throttlerAsyncOptions,
-  winstonConfig,
-} from '../common';
 import {
   AuthenticationsModule,
   BranchesModule,

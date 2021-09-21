@@ -1,11 +1,11 @@
 import { compare, hash } from 'bcrypt';
 
+import { PrismaError } from '@common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Environments } from '@types';
 
-import { PrismaError } from '../../../common';
-import { Environments } from '../../../@types';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 

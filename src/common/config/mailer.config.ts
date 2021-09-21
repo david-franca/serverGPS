@@ -1,8 +1,7 @@
 import { MailerOptions } from '@nestjs-modules/mailer';
 // import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigService } from '@nestjs/config';
-
-import { Environments } from '../../@types';
+import { Environments } from '@types';
 
 const configService = new ConfigService<Record<Environments, any>>();
 

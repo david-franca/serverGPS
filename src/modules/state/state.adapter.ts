@@ -7,8 +7,8 @@ import { WebSocketAdapter } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { AuthenticatedSocket, Environments } from '@types';
 
-import { AuthenticatedSocket, Environments } from '../../@types';
 import { StateService } from './state.service';
 
 const configService = new ConfigService<Record<Environments, any>>();

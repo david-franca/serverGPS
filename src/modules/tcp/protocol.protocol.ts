@@ -1,6 +1,7 @@
 import { Socket as TCPSocket } from 'net';
 
-import { ProtocolName } from '../../@types';
+import { ProtocolName } from '@types';
+
 import { GT06Protocol } from './gt06';
 import { SuntechProtocol } from './suntech';
 

@@ -1,6 +1,6 @@
 import { SharedBullAsyncConfiguration } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Environments } from '../../@types';
+import { Environments } from '@types';
 
 export const asyncBullConfig: SharedBullAsyncConfiguration = {
   imports: [ConfigModule],

@@ -1,3 +1,4 @@
+import { ErrorsInterceptor, SentryInterceptor } from '@common';
 import {
   ClassSerializerInterceptor,
   Controller,
@@ -5,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { ApiCookieAuth } from '@nestjs/swagger';
 
-import { ErrorsInterceptor, SentryInterceptor } from '../../../common';
 import { UsersService } from './users.service';
 
 @ApiCookieAuth()

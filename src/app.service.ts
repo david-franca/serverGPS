@@ -9,8 +9,8 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { ConfigInterface, Options, ProtocolName } from '@types';
 
-import { ConfigInterface, Options, ProtocolName } from './@types';
 import { GpsDevice } from './modules/tcp/models';
 
 @Injectable()

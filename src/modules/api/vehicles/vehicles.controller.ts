@@ -1,6 +1,15 @@
 import { randomUUID } from 'crypto';
 
 import {
+  badRequestOptions,
+  ErrorsInterceptor,
+  options,
+  SentryInterceptor,
+  unauthorizedOptions,
+  unprocessableOptions,
+  VehicleSwagger,
+} from '@common';
+import {
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -25,17 +34,8 @@ import {
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+import { FindOneParams } from '@utils';
 
-import {
-  badRequestOptions,
-  ErrorsInterceptor,
-  options,
-  SentryInterceptor,
-  unauthorizedOptions,
-  unprocessableOptions,
-  VehicleSwagger,
-} from '../../../common';
-import { FindOneParams } from '../../../utils';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclesService } from './vehicles.service';

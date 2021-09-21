@@ -1,8 +1,6 @@
 import { Socket as TCPSocket } from 'net';
 
 import { Device } from '@prisma/client';
-
-import { BaseProtocolDecoder } from '../';
 import {
   BitUtil,
   bufferToHexString,
@@ -10,7 +8,9 @@ import {
   DateBuilder,
   distanceBetweenCoordinates,
   UnitsConverter,
-} from '../../../utils';
+} from '@utils';
+
+import { BaseProtocolDecoder } from '../';
 import { CellTower, DeviceSession, Network, Position } from '../models';
 
 export class GT06ProtocolDecoder extends BaseProtocolDecoder {

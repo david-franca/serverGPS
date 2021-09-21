@@ -14,8 +14,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { Environments } from '@types';
 
-import { Environments } from '../../@types';
 import { SocketsService } from './sockets.service';
 
 const configService = new ConfigService<Record<Environments, any>>();

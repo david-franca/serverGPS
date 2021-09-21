@@ -1,4 +1,12 @@
 import {
+  badRequestOptions,
+  ErrorsInterceptor,
+  LoginCredentialsGuard,
+  unauthorizedOptions,
+  unprocessableOptions,
+  UserSwagger,
+} from '@common';
+import {
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -20,19 +28,11 @@ import {
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+import { RequestWithUser } from '@types';
+import { Public } from '@validators';
 
-import {
-  badRequestOptions,
-  ErrorsInterceptor,
-  LoginCredentialsGuard,
-  unauthorizedOptions,
-  unprocessableOptions,
-  UserSwagger,
-} from '../../../common';
-import { Public } from '../../../validators';
 import { AuthenticationsService } from './authentications.service';
 import { RegisterDto } from './dto/register.dto';
-import { RequestWithUser } from './interface/request.interface';
 
 @ApiCookieAuth()
 @ApiUnprocessableEntityResponse(unprocessableOptions)

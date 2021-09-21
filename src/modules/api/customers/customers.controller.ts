@@ -1,6 +1,15 @@
 import { randomUUID } from 'crypto';
 
 import {
+  badRequestOptions,
+  CustomerSwagger,
+  ErrorsInterceptor,
+  options,
+  SentryInterceptor,
+  unauthorizedOptions,
+  unprocessableOptions,
+} from '@common';
+import {
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -25,17 +34,8 @@ import {
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+import { FindOneParams } from '@utils';
 
-import {
-  badRequestOptions,
-  CustomerSwagger,
-  ErrorsInterceptor,
-  options,
-  SentryInterceptor,
-  unauthorizedOptions,
-  unprocessableOptions,
-} from '../../../common';
-import { FindOneParams } from '../../../utils';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';

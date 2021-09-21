@@ -1,10 +1,10 @@
 import { Cache } from 'cache-manager';
 
+import { NotFoundException, PrismaError } from '@common';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { Device, Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
-import { NotFoundException, PrismaError } from '../../../common';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()

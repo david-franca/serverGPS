@@ -2,14 +2,14 @@ import { Socket as TCPSocket } from 'net';
 
 import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-
-import { Protocol } from '../';
 import {
   ProtocolDecoderTypes,
   ProtocolEncoderTypes,
   ProtocolName,
   Protocols,
-} from '../../../@types';
+} from '@types';
+
+import { Protocol } from '../';
 
 export abstract class AbstractGpsDevice {
   uid: string;

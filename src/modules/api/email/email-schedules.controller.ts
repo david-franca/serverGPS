@@ -1,3 +1,4 @@
+import { ErrorsInterceptor, SentryInterceptor } from '@common';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -8,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
-import { ErrorsInterceptor, SentryInterceptor } from '../../../common';
 import { CreateEmailScheduleDto } from './dto/create-email-schedule.dto';
 import { EmailSchedulesService } from './email-schedules.service';
 

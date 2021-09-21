@@ -1,6 +1,15 @@
 import { randomUUID } from 'crypto';
 
 import {
+  badRequestOptions,
+  BranchSwagger,
+  ErrorsInterceptor,
+  options,
+  SentryInterceptor,
+  unauthorizedOptions,
+  unprocessableOptions,
+} from '@common';
+import {
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -25,17 +34,8 @@ import {
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+import { FindOneParams } from '@utils';
 
-import {
-  badRequestOptions,
-  BranchSwagger,
-  ErrorsInterceptor,
-  options,
-  SentryInterceptor,
-  unauthorizedOptions,
-  unprocessableOptions,
-} from '../../../common';
-import { FindOneParams } from '../../../utils';
 import { BranchesService } from './branches.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';

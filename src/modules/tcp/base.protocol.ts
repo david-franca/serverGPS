@@ -1,4 +1,5 @@
-import { Protocol } from '../../@types';
+import { Protocol } from '@types';
+
 import { Command } from './models';
 
 export abstract class BaseProtocol implements Protocol {

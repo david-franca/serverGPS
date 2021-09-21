@@ -8,20 +8,21 @@ import { WinstonModule } from 'nest-winston';
 import * as passport from 'passport';
 import { createClient } from 'redis';
 
+import {
+  ExceptionsLoggerFilter,
+  NotFoundExceptionFilter,
+  swaggerConfig,
+  winstonConfig,
+} from '@common';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
+import { Environments } from '@types';
 
-import { Environments } from './@types';
 import { AppModule } from './app.module';
-import { swaggerConfig, winstonConfig } from './common/config';
-import {
-  ExceptionsLoggerFilter,
-  NotFoundExceptionFilter,
-} from './common/filters';
 import { PrismaService } from './modules/prisma/prisma.service';
 import { StateIoAdapter } from './modules/state/state.adapter';
 import { StateService } from './modules/state/state.service';

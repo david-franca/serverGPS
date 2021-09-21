@@ -2,8 +2,7 @@ import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerAsyncOptions } from '@nestjs/throttler';
-
-import { Environments } from '../../@types';
+import { Environments } from '@types';
 
 export const throttlerAsyncOptions: ThrottlerAsyncOptions = {
   imports: [ConfigModule],

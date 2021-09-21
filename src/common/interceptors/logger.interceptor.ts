@@ -8,8 +8,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-
-import { RequestWithUser } from '../../@types';
+import { RequestWithUser } from '@types';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {

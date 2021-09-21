@@ -2,6 +2,15 @@ import { Cache } from 'cache-manager';
 import { randomUUID } from 'crypto';
 
 import {
+  badRequestOptions,
+  DeviceSwagger,
+  ErrorsInterceptor,
+  options,
+  SentryInterceptor,
+  unauthorizedOptions,
+  unprocessableOptions,
+} from '@common';
+import {
   Body,
   CACHE_MANAGER,
   CacheInterceptor,
@@ -34,17 +43,8 @@ import {
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { Device } from '@prisma/client';
+import { FindOneParams } from '@utils';
 
-import {
-  badRequestOptions,
-  DeviceSwagger,
-  ErrorsInterceptor,
-  options,
-  SentryInterceptor,
-  unauthorizedOptions,
-  unprocessableOptions,
-} from '../../../common';
-import { FindOneParams } from '../../../utils';
 import { PaginationParams } from '../pagination/params.pagination';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';

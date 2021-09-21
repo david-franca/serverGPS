@@ -1,14 +1,14 @@
-import { Provider } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { ThrottlerGuard } from '@nestjs/throttler';
-
-import { AppService } from '../app.service';
 import {
   CookieAuthenticationGuard,
   defaultsConfig,
   ExceptionsLoggerFilter,
   LoggerInterceptor,
-} from '../common';
+} from '@common';
+import { Provider } from '@nestjs/common';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ThrottlerGuard } from '@nestjs/throttler';
+
+import { AppService } from '../app.service';
 import { PrismaService } from '../modules';
 
 export const providers: Provider<any>[] = [

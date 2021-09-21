@@ -1,4 +1,4 @@
-import { ConfigInterface } from '../../@types';
+import { ConfigInterface } from '@types';
 
 export const defaultsConfig: ConfigInterface[] = [
   {

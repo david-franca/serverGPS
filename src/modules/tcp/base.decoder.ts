@@ -1,10 +1,10 @@
 import { AddressInfo, Socket as TCPSocket } from 'net';
 
 import { Device } from '@prisma/client';
+import { Protocol } from '@types';
 
-import { Protocol } from '../../@types';
-import { DeviceSession } from './models';
 import { PrismaService } from '../prisma/prisma.service';
+import { DeviceSession } from './models';
 
 export abstract class BaseProtocolDecoder {
   private static PROTOCOL_UNKNOWN = 'unknown';

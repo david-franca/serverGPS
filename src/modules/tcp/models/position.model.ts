@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 
-import { convertMapToObject } from '../../../utils';
+import { convertMapToObject } from '@utils';
+
 import { Network } from './';
 import Message from './message.model';
 

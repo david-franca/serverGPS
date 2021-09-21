@@ -13,8 +13,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 import { States, TypeAddress } from '@prisma/client';
-
-import { IsCPFOrCNPJ } from '../../../../validators';
+import { IsCPFOrCNPJ } from '@validators';
 
 export class CreateCustomerDto {
   @MaxLength(50)

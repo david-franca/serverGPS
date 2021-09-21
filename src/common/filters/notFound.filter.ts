@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import * as path from 'path';
+import { resolve } from 'path';
 
 import {
   ArgumentsHost,
@@ -14,8 +14,9 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const pathToHtml = path.resolve(
+    const pathToHtml = resolve(
       __dirname,
+      '..',
       '..',
       '..',
       '..',

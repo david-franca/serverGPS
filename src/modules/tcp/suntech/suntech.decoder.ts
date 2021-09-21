@@ -1,10 +1,10 @@
 import { Socket } from 'net';
 
 import { Device } from '@prisma/client';
+import { AdapterInterface } from '@types';
+import { BitUtil, DateFormat, UnitsConverter } from '@utils';
 
 import { BaseProtocolDecoder } from '../';
-import { AdapterInterface } from '../../../@types';
-import { BitUtil, DateFormat, UnitsConverter } from '../../../utils';
 import {
   CellTower,
   DeviceSession,

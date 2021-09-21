@@ -1,6 +1,5 @@
+import { PrismaError } from '@common';
 import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
-
-import { PrismaError } from '../../common/database/prismaErrorCodes.enum';
 
 export class PrismaErrorException {
   private logger = new Logger(this.constructor.name);

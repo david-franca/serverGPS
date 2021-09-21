@@ -1,7 +1,7 @@
+import { NotFoundException } from '@common';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { NotFoundException } from '../../../common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBranchDto } from './dto/create-branch.dto';
 

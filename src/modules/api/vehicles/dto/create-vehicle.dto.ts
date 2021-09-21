@@ -11,8 +11,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger';
 import { VehiclesType } from '@prisma/client';
-
-import { IsChassi, IsLicensePlate, IsRenavam } from '../../../../validators';
+import { IsChassi, IsLicensePlate, IsRenavam } from '@validators';
 
 export class CreateVehicleDto {
   @IsLicensePlate()

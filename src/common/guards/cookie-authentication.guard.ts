@@ -7,8 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-
-import { IS_PUBLIC_KEY } from '../../validators';
+import { IS_PUBLIC_KEY } from '@validators';
 
 @Injectable()
 export class CookieAuthenticationGuard implements CanActivate {
