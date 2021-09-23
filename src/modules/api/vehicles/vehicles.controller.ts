@@ -2,7 +2,6 @@ import { randomUUID } from 'crypto';
 
 import {
   badRequestOptions,
-  ErrorsInterceptor,
   options,
   SentryInterceptor,
   unauthorizedOptions,
@@ -11,7 +10,6 @@ import {
 } from '@common';
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -52,11 +50,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(
-  ClassSerializerInterceptor,
-  ErrorsInterceptor,
-  SentryInterceptor,
-)
+@UseInterceptors(SentryInterceptor)
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
@@ -98,7 +92,6 @@ export class VehiclesController {
   @ApiParam(paramsOptions)
   @ApiNoContentResponse(options('vehicle', 'DELETE'))
   remove(@Param() { id }: FindOneParams) {
-    console.log(id);
     return this.vehiclesService.update({
       where: { id },
       data: {

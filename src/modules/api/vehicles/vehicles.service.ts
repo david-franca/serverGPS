@@ -1,5 +1,5 @@
 import { NotFoundException } from '@common';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '../../prisma/prisma.service';
@@ -15,10 +15,7 @@ export class VehiclesService {
     });
 
     if (vehicleCheck) {
-      throw new HttpException(
-        'Device just attached to another vehicle',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException('Device just attached to another vehicle');
     }
 
     if (createVehicleDto.deviceId) {

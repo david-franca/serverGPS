@@ -11,7 +11,6 @@ import {
 } from '@common';
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -53,11 +52,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
 @Controller('customers')
-@UseInterceptors(
-  ClassSerializerInterceptor,
-  ErrorsInterceptor,
-  SentryInterceptor,
-)
+@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 

@@ -11,7 +11,6 @@ import {
 } from '@common';
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -52,11 +51,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(
-  ClassSerializerInterceptor,
-  ErrorsInterceptor,
-  SentryInterceptor,
-)
+@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
 @Controller('branches')
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}

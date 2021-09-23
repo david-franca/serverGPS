@@ -1,8 +1,12 @@
 import { compare, hash } from 'bcrypt';
 
 import { PrismaError } from '@common';
-import { MailerService } from '@nestjs-modules/mailer';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Environments } from '@types';
 
@@ -14,7 +18,6 @@ export class AuthenticationsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly configService: ConfigService<Record<Environments, any>>,
-    private mailerService: MailerService,
   ) {}
 
   async register(registrationData: RegisterDto) {
@@ -28,19 +31,13 @@ export class AuthenticationsService {
         ...registrationData,
         password: hashedPassword,
       });
-      createUser.password = undefined;
+      delete createUser.password;
       return createUser;
     } catch (error) {
       if (error.code === PrismaError.UniqueConstraintViolation) {
-        throw new HttpException(
-          'User with that username already exists',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new ConflictException('User with that username already exists');
       }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException('Something went wrong');
     }
   }
 
@@ -53,10 +50,7 @@ export class AuthenticationsService {
       user.password = undefined;
       return user;
     } catch (error) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException('Wrong credentials provided');
     }
   }
 
@@ -66,14 +60,7 @@ export class AuthenticationsService {
   ) {
     const isPasswordMatching = await compare(plainTextPassword, hashedPassword);
     if (!isPasswordMatching) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException('Wrong credentials provided');
     }
-  }
-
-  private async confirmEmail() {
-    // TODO
   }
 }

@@ -1,2 +1,2 @@
 export * from './NotFound.exception';
-export * from './PrismaError.execption';
+export * from './PrismaError.exception';

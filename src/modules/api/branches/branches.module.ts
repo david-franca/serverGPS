@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { BranchesService } from './branches.service';
+
+import { PrismaModule } from '../../prisma/prisma.module';
 import { BranchesController } from './branches.controller';
-import { PrismaService } from '../../prisma/prisma.service';
+import { BranchesService } from './branches.service';
 
 @Module({
   controllers: [BranchesController],
-  providers: [BranchesService, PrismaService],
+  providers: [BranchesService],
+  imports: [PrismaModule],
 })
 export class BranchesModule {}

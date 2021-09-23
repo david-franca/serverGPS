@@ -10,7 +10,6 @@ import {
   Processor,
 } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { PositionService } from '../../../services';
 import { Position } from '../models';
@@ -19,7 +18,6 @@ import { Position } from '../models';
 export class ProtocolProcessor {
   constructor(
     private positionService: PositionService,
-    private eventEmitter: EventEmitter2,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
   @OnQueueActive()

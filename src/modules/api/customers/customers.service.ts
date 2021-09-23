@@ -1,5 +1,9 @@
 import { NotFoundException, PrismaError } from '@common';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
@@ -16,15 +20,11 @@ export class CustomersService {
       });
     } catch (error) {
       if (error.code === PrismaError.UniqueConstraintViolation) {
-        throw new HttpException(
+        throw new BadRequestException(
           'Customer with that CPF/CNPJ already exists',
-          HttpStatus.BAD_REQUEST,
         );
       }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new InternalServerErrorException('Something went wrong');
     }
   }
 

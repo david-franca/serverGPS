@@ -16,7 +16,6 @@ export class DevicesService {
 
   async create(data: Prisma.DeviceCreateInput): Promise<Device> {
     await this.clearCache();
-    console.log(data);
     return await this.prisma.device.create({ data });
   }
 
@@ -102,10 +101,10 @@ export class DevicesService {
 
   async findOne(where: Prisma.DeviceWhereUniqueInput): Promise<Device> {
     const device = await this.prisma.device.findUnique({ where });
-    if (device) {
-      return device;
-    }
-    throw new NotFoundException(where.id, 'Device');
+    // if (device) {
+    return device;
+    // }
+    // throw new NotFoundException(where.id, 'Device');
   }
 
   async update(params: {

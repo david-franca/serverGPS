@@ -35,7 +35,7 @@ export class AppService
   }
 
   handleConnection(socket: TCPSocket, protocol: ProtocolName) {
-    this.logger.debug(
+    this.logger.info(
       `Incoming connection from ${socket.remoteAddress}:${socket.remotePort}`,
       protocol,
     );
@@ -58,7 +58,7 @@ export class AppService
       }
     });
     if (index < 0) return;
-    this.logger.debug(`Device ${uid} disconnected.`);
+    this.logger.info(`Device ${uid} disconnected.`);
     this.eventEmitter.emit('disconnected');
   }
 

@@ -8,12 +8,7 @@ import { WinstonModule } from 'nest-winston';
 import * as passport from 'passport';
 import { createClient } from 'redis';
 
-import {
-  ExceptionsLoggerFilter,
-  NotFoundExceptionFilter,
-  swaggerConfig,
-  winstonConfig,
-} from '@common';
+import { ExceptionsLoggerFilter, swaggerConfig, winstonConfig } from '@common';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
@@ -32,7 +27,22 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger,
   });
+
+  // Validations
+  app.useGlobalPipes(
+    new ValidationPipe({
+      errorHttpStatusCode: 422,
+      transform: true,
+    }),
+  );
+
+  // Prisma Client Exception Filter for unhandled exceptions
   const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new ExceptionsLoggerFilter(httpAdapter));
+
+  const prismaService = app.get(PrismaService);
+  prismaService.enableShutdownHooks(app);
+
   const configService: ConfigService<Record<Environments, any>> =
     app.get(ConfigService);
   Sentry.init({
@@ -40,9 +50,24 @@ async function bootstrap() {
     integrations: [new Sentry.Integrations.Http({ tracing: true })],
     tracesSampleRate: 1.0,
   });
+
+  // Redis Cache
   const stateService = app.get(StateService);
+
+  // Cors
+  app.enableCors({
+    credentials: true,
+    origin: configService.get('CORS_HOST').split(', '),
+  });
+
+  // Swagger Api
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/v1', app, document, {
+    customSiteTitle: 'Docs APV API',
+    swaggerOptions: { supportedSubmitMethods: [], persistAuthorization: true },
+  });
+
   const RedisStore = createRedisStore(session);
-  const prismaService = app.get(PrismaService);
   const count = await prismaService.user.count();
 
   if (!count) {
@@ -71,15 +96,8 @@ async function bootstrap() {
     saveUninitialized: false,
     name: 'server-session',
   };
-  app.enableCors({
-    credentials: true,
-    origin: configService.get('CORS_HOST').split(', '),
-  });
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/v1', app, document, {
-    customSiteTitle: 'Docs APV API',
-    swaggerOptions: { supportedSubmitMethods: [], persistAuthorization: true },
-  });
+
+  // Middleware
   app.use(cookieParser());
   app.use(helmet());
   app.use(compression());
@@ -90,16 +108,6 @@ async function bootstrap() {
   app.use(Sentry.Handlers.tracingHandler());
   app.use(Sentry.Handlers.errorHandler());
   app.useWebSocketAdapter(new StateIoAdapter(app, stateService));
-  app.useGlobalPipes(
-    new ValidationPipe({
-      errorHttpStatusCode: 422,
-      transform: true,
-    }),
-  );
-  app.useGlobalFilters(
-    new ExceptionsLoggerFilter(httpAdapter),
-    new NotFoundExceptionFilter(),
-  );
   await app.listen(configService.get('SERVER_PORT'));
 }
 bootstrap();

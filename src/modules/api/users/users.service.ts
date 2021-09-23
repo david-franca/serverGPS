@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
 import { Environments } from '@types';
@@ -26,10 +26,7 @@ export class UsersService {
     if (user) {
       return user;
     }
-    throw new HttpException(
-      'User with this username does not exist',
-      HttpStatus.NOT_FOUND,
-    );
+    throw new NotFoundException('User with this username does not exist');
   }
 
   async findOne(id: string) {
@@ -37,10 +34,7 @@ export class UsersService {
       where: { id },
     });
     if (!user) {
-      throw new HttpException(
-        'User with this id does not exist',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('User with this id does not exist');
     }
     return user;
   }

@@ -16,14 +16,13 @@ import {
   CacheInterceptor,
   CacheKey,
   CacheTTL,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Inject,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -62,11 +61,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(
-  ClassSerializerInterceptor,
-  ErrorsInterceptor,
-  SentryInterceptor,
-)
+@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
 @Controller('devices')
 export class DevicesController {
   constructor(
@@ -111,12 +106,9 @@ export class DevicesController {
         skip,
       });
     } catch (e) {
-      throw new HttpException(
-        {
-          message: e.message,
-        },
-        500,
-      );
+      throw new InternalServerErrorException({
+        message: e.message,
+      });
     }
   }
 

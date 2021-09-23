@@ -4,14 +4,15 @@ import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Environments } from '@types';
 
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaModule } from '../../prisma/prisma.module';
 import { DevicesController } from './devices.controller';
 import { DevicesService } from './devices.service';
 
 @Module({
   controllers: [DevicesController],
-  providers: [DevicesService, PrismaService],
+  providers: [DevicesService],
   imports: [
+    PrismaModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

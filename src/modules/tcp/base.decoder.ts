@@ -3,15 +3,14 @@ import { AddressInfo, Socket as TCPSocket } from 'net';
 import { Device } from '@prisma/client';
 import { Protocol } from '@types';
 
-import { PrismaService } from '../prisma/prisma.service';
 import { DeviceSession } from './models';
+import prisma from './prisma';
 
 export abstract class BaseProtocolDecoder {
   private static PROTOCOL_UNKNOWN = 'unknown';
   private protocol: Protocol;
   private channelDeviceSession: DeviceSession; // connection-based protocols
   private addressDeviceSessions: Map<AddressInfo, DeviceSession>; // connection less protocols
-  private prisma = new PrismaService();
 
   /**
    * getProtocolName
@@ -50,7 +49,7 @@ export abstract class BaseProtocolDecoder {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const uniqueId of uniqueIds) {
           if (uniqueId) {
-            device = await this.prisma.device.findFirst({
+            device = await prisma.device.findFirst({
               where: {
                 equipmentNumber: uniqueId,
               },

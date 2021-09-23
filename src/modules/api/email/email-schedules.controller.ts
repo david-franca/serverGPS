@@ -1,12 +1,5 @@
 import { ErrorsInterceptor, SentryInterceptor } from '@common';
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Post,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { CreateEmailScheduleDto } from './dto/create-email-schedule.dto';
@@ -14,11 +7,7 @@ import { EmailSchedulesService } from './email-schedules.service';
 
 @ApiCookieAuth()
 @ApiTags('emails')
-@UseInterceptors(
-  ClassSerializerInterceptor,
-  ErrorsInterceptor,
-  SentryInterceptor,
-)
+@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
 @Controller('email-scheduling')
 export class EmailSchedulesController {
   constructor(private readonly emailSchedulesService: EmailSchedulesService) {}

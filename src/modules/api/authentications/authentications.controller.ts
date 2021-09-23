@@ -1,7 +1,6 @@
 import {
   badRequestOptions,
   ErrorsInterceptor,
-  LoginCredentialsGuard,
   unauthorizedOptions,
   unprocessableOptions,
   UserSwagger,
@@ -13,7 +12,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Patch,
   Post,
   Req,
   UseGuards,
@@ -33,6 +31,7 @@ import { Public } from '@validators';
 
 import { AuthenticationsService } from './authentications.service';
 import { RegisterDto } from './dto/register.dto';
+import { LoginCredentialsGuard } from '@common';
 
 @ApiCookieAuth()
 @ApiUnprocessableEntityResponse(unprocessableOptions)
@@ -40,7 +39,7 @@ import { RegisterDto } from './dto/register.dto';
 @ApiBadRequestResponse(badRequestOptions)
 @ApiTags('auth')
 @Controller('authentication')
-@UseInterceptors(ClassSerializerInterceptor, ErrorsInterceptor)
+@UseInterceptors(ErrorsInterceptor, ClassSerializerInterceptor)
 export class AuthenticationsController {
   constructor(
     private readonly authenticationsService: AuthenticationsService,
@@ -81,10 +80,5 @@ export class AuthenticationsController {
     const { user } = request;
     user.password = undefined;
     return user;
-  }
-
-  @Patch(':token')
-  async confirmEMail() {
-    //
   }
 }

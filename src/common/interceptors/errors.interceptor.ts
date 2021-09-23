@@ -16,7 +16,6 @@ export class ErrorsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        console.log('err =>', err);
         if (err instanceof PrismaClientKnownRequestError) {
           return throwError(() => new PrismaErrorException().handleError(err));
         }

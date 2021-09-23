@@ -105,15 +105,16 @@ model Alert {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  active   Boolean  @default(true) @db.Boolean
-  deleted  Boolean  @default(false) @db.Boolean
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  name     String   @db.VarChar(100)
-  username String   @unique @db.VarChar(100)
-  role     Role
-  password String   @db.VarChar(100)
+  id           String   @id @default(uuid())
+  active       Boolean  @default(true) @db.Boolean
+  deleted      Boolean  @default(false) @db.Boolean
+  createAt     DateTime @default(now())
+  updateAt     DateTime @updatedAt
+  name         String   @db.VarChar(100)
+  username     String   @unique @db.VarChar(100)
+  role         Role
+  password     String   @db.VarChar(100)
+  refreshToken String?  @db.VarChar
 
   @@index([username])
 }
