@@ -59,6 +59,16 @@ export class VehiclesService {
       cursor,
       where,
       orderBy,
+      include: {
+        branch: true,
+        device: {
+          include: {
+            location: { orderBy: { fixTime: 'desc' }, take: 10 },
+            alert: true,
+            status: true,
+          },
+        },
+      },
     });
   }
 

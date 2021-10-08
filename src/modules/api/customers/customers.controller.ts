@@ -5,6 +5,7 @@ import {
   CustomerSwagger,
   ErrorsInterceptor,
   options,
+  PrismaParamPipe,
   SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
@@ -19,6 +20,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -64,8 +66,8 @@ export class CustomersController {
 
   @Get()
   @ApiOkResponse(options('customers', 'GET', CustomerSwagger))
-  findAll() {
-    return this.customersService.findAll({});
+  findAll(@Query(new PrismaParamPipe()) params) {
+    return this.customersService.findAll(params);
   }
 
   @Get(':id')

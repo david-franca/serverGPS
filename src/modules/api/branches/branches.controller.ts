@@ -5,6 +5,7 @@ import {
   BranchSwagger,
   ErrorsInterceptor,
   options,
+  PrismaParamPipe,
   SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
@@ -19,6 +20,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -64,8 +66,8 @@ export class BranchesController {
 
   @Get()
   @ApiOkResponse(options('branches', 'GET', BranchSwagger))
-  findAll() {
-    return this.branchesService.findAll({});
+  findAll(@Query(new PrismaParamPipe()) params) {
+    return this.branchesService.findAll(params);
   }
 
   @Get(':id')

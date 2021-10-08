@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import {
   badRequestOptions,
   options,
+  PrismaParamPipe,
   SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
@@ -18,6 +19,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -63,8 +65,8 @@ export class VehiclesController {
 
   @Get()
   @ApiOkResponse(options('vehicles', 'GET', VehicleSwagger))
-  findAll() {
-    return this.vehiclesService.findAll({});
+  findAll(@Query(new PrismaParamPipe()) params) {
+    return this.vehiclesService.findAll(params);
   }
 
   @Get(':id')
