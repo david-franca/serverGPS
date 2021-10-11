@@ -11,23 +11,12 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "typeRoots": [
-      "src/@types",
-      "node_modules/@types"
-    ],
+    "typeRoots": ["src/@types", "node_modules/@types"],
     "paths": {
-      "@common": [
-        "./src/common"
-      ],
-      "@validators": [
-        "./src/validators"
-      ],
-      "@types": [
-        "./src/@types/index"
-      ],
-      "@utils": [
-        "./src/utils"
-      ]
+      "@common": ["./src/common"],
+      "@validators": ["./src/validators"],
+      "@types": ["./src/@types/index"],
+      "@utils": ["./src/utils"]
     }
   }
 }

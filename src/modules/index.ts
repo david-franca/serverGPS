@@ -14,8 +14,6 @@ export * from './prisma/prisma.service';
 
 // Others Modules
 export * from './casl/casl.module';
-export * from './sockets/sockets.module';
-export * from './state/state.module';
 
 // TCP Protocol Server
 export * from './tcp/protocol/protocol.module';

@@ -46,6 +46,22 @@ export interface Options {
   host?: string;
 }
 
+export interface TokenPayload {
+  name: string;
+  username: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+  iss?: string;
+  sub?: string;
+}
+
+export interface CookiesProps {
+  maxAge: number;
+  key: string;
+  token: string;
+}
+
 export interface AdapterInterface {
   decode(msg: Buffer): Promise<Position>;
   getPrefix(): string;
@@ -79,6 +95,12 @@ export type Environments =
   | 'SESSION_SECRET'
   | 'THROTTLE_TTL'
   | 'THROTTLE_LIMIT'
+  | 'JWT_ACCESS_TOKEN_PRIVATE_KEY'
+  | 'JWT_ACCESS_TOKEN_PUBLIC_KEY'
+  | 'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
+  | 'JWT_REFRESH_TOKEN_PRIVATE_KEY'
+  | 'JWT_REFRESH_TOKEN_PUBLIC_KEY'
+  | 'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
   | 'ADMIN_PASS'
   | 'SENTRY_DNS';
 

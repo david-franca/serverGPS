@@ -1,4 +1,5 @@
 import { compare, hash } from 'bcrypt';
+import { Response } from 'express';
 
 import { PrismaError } from '@common';
 import {
@@ -8,7 +9,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Environments } from '@types';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { CookiesProps, Environments, TokenPayload } from '@types';
 
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -17,6 +19,7 @@ import { RegisterDto } from './dto/register.dto';
 export class AuthenticationsService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
     private readonly configService: ConfigService<Record<Environments, any>>,
   ) {}
 
@@ -47,7 +50,7 @@ export class AuthenticationsService {
 
       await this.verifyPassword(plainTextPassword, user.password);
 
-      user.password = undefined;
+      delete user.password;
       return user;
     } catch (error) {
       throw new BadRequestException('Wrong credentials provided');
@@ -62,5 +65,88 @@ export class AuthenticationsService {
     if (!isPasswordMatching) {
       throw new BadRequestException('Wrong credentials provided');
     }
+  }
+
+  public getCookieWithJwtAccessToken(
+    userId: string,
+    name: string,
+    username: string,
+    role: string,
+  ) {
+    const payload: TokenPayload = { name, username, role };
+
+    // SIGNING OPTIONS
+    const signOptions: JwtSignOptions = {
+      subject: userId,
+      privateKey: this.configService.get('JWT_ACCESS_TOKEN_PRIVATE_KEY'),
+    };
+
+    const token = this.jwtService.sign(payload, signOptions);
+    const maxAge =
+      Number(this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')) * 1000;
+
+    return {
+      token,
+      maxAge,
+      key: 'Authentication',
+    };
+  }
+
+  public getCookieWithJwtRefreshToken(
+    userId: string,
+    name: string,
+    username: string,
+    role: string,
+  ) {
+    const payload: TokenPayload = { name, username, role };
+
+    const maxAge =
+      Number(this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')) *
+      1000;
+
+    // SIGNING OPTIONS
+    const signOptions: JwtSignOptions = {
+      expiresIn: `${maxAge / 1000}s`,
+      privateKey: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
+      subject: userId,
+    };
+
+    const token = this.jwtService.sign(payload, signOptions);
+    return {
+      maxAge,
+      token,
+      key: 'Refresh',
+    };
+  }
+
+  public async getUserFromAuthenticationToken(token: string) {
+    if (!token) {
+      return null;
+    }
+    const payload: TokenPayload = this.jwtService.verify(token);
+    if (payload.username) {
+      return await this.usersService.findByUsername(payload.username);
+    }
+  }
+
+  public deleteCookies(res: Response, cookies: Record<string, string>) {
+    const keys = Object.keys(cookies);
+    keys.forEach((key) => {
+      res.clearCookie(key, {
+        httpOnly: true,
+        sameSite: 'none',
+      });
+    });
+  }
+
+  public setCookies(res: Response, options: CookiesProps[]) {
+    options.forEach((opt) => {
+      const { key, maxAge, token } = opt;
+      res.cookie(key, token, {
+        httpOnly: true,
+        maxAge,
+        sameSite: 'none',
+      });
+    });
   }
 }

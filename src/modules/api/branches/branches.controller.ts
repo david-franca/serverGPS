@@ -6,7 +6,6 @@ import {
   ErrorsInterceptor,
   options,
   PrismaParamPipe,
-  SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
 } from '@common';
@@ -53,7 +52,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
+@UseInterceptors(ErrorsInterceptor)
 @Controller('branches')
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}

@@ -1,19 +1,23 @@
+import { Response } from 'express';
+
 import {
   badRequestOptions,
   ErrorsInterceptor,
+  JwtAuthenticationGuard,
+  LocalAuthenticationGuard,
   unauthorizedOptions,
   unprocessableOptions,
   UserSwagger,
 } from '@common';
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Post,
   Req,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -29,9 +33,9 @@ import {
 import { RequestWithUser } from '@types';
 import { Public } from '@validators';
 
+import { UsersService } from '../users/users.service';
 import { AuthenticationsService } from './authentications.service';
 import { RegisterDto } from './dto/register.dto';
-import { LoginCredentialsGuard } from '@common';
 
 @ApiCookieAuth()
 @ApiUnprocessableEntityResponse(unprocessableOptions)
@@ -39,10 +43,11 @@ import { LoginCredentialsGuard } from '@common';
 @ApiBadRequestResponse(badRequestOptions)
 @ApiTags('auth')
 @Controller('authentication')
-@UseInterceptors(ErrorsInterceptor, ClassSerializerInterceptor)
+@UseInterceptors(ErrorsInterceptor)
 export class AuthenticationsController {
   constructor(
     private readonly authenticationsService: AuthenticationsService,
+    private readonly userService: UsersService,
   ) {}
 
   @Post('register')
@@ -56,21 +61,51 @@ export class AuthenticationsController {
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(LoginCredentialsGuard)
+  @UseGuards(LocalAuthenticationGuard)
   @Post('login')
   @ApiOkResponse({ type: UserSwagger, description: 'Login successfully.' })
   async login(@Req() request: RequestWithUser) {
-    return request.user;
+    const { user } = request;
+    const { id, name, username, role } = user;
+    const accessTokenCookie =
+      this.authenticationsService.getCookieWithJwtAccessToken(
+        id,
+        name,
+        username,
+        role,
+      );
+    const refreshTokenCookie =
+      this.authenticationsService.getCookieWithJwtRefreshToken(
+        id,
+        name,
+        username,
+        role,
+      );
+
+    await this.userService.setCurrentRefreshToken(refreshTokenCookie.token, id);
+
+    this.authenticationsService.setCookies(request.res, [
+      accessTokenCookie,
+      refreshTokenCookie,
+    ]);
+
+    delete user.password;
+    delete user.refreshToken;
+    return user;
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
   @ApiOkResponse({ description: 'Log-out successfully' })
-  async logOut(@Req() request: RequestWithUser) {
-    request.logOut();
-    request.session.cookie.maxAge = 0;
+  async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
+    await this.userService.removeRefreshToken(request.user.id);
+    this.authenticationsService.deleteCookies(response, request.cookies);
+
+    return response.sendStatus(200);
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get()
   @ApiOkResponse({
     type: UserSwagger,
@@ -78,7 +113,24 @@ export class AuthenticationsController {
   })
   authenticate(@Req() request: RequestWithUser) {
     const { user } = request;
-    user.password = undefined;
+    delete user.password;
     return user;
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('refresh')
+  refresh(@Req() request: RequestWithUser) {
+    const { id, name, username, role } = request.user;
+    const accessTokenCookie =
+      this.authenticationsService.getCookieWithJwtAccessToken(
+        id,
+        name,
+        username,
+        role,
+      );
+
+    this.authenticationsService.setCookies(request.res, [accessTokenCookie]);
+    request.user.password = undefined;
+    return request.user;
   }
 }

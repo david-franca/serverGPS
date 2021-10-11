@@ -1,5 +1,5 @@
 import {
-  CookieAuthenticationGuard,
+  // CookieAuthenticationGuard,
   defaultsConfig,
   ErrorsInterceptor,
   ExceptionsLoggerFilter,
@@ -21,6 +21,6 @@ export const providers: Provider<any>[] = [
   { provide: APP_FILTER, useClass: ExceptionsLoggerFilter },
   { provide: APP_FILTER, useClass: NotFoundExceptionFilter },
   { provide: APP_GUARD, useClass: ThrottlerGuard },
-  { provide: APP_GUARD, useClass: CookieAuthenticationGuard },
+  // { provide: APP_GUARD, useClass: CookieAuthenticationGuard },
   { provide: 'GPS_CONFIG_OPTIONS', useValue: { config: defaultsConfig } },
 ];

@@ -4,7 +4,6 @@ import {
   badRequestOptions,
   options,
   PrismaParamPipe,
-  SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
   VehicleSwagger,
@@ -20,7 +19,6 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -52,7 +50,6 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(SentryInterceptor)
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}

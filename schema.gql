@@ -1,0 +1,44 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  getAll: [Vehicle!]!
+}
+
+type Vehicle {
+  active: Boolean!
+  branchId: String!
+  brand: String
+  chassi: String
+  color: String
+
+  """
+  Identifies the date and time when the object was created.
+  """
+  createAt: DateTime!
+  customerId: String!
+  deleted: Boolean!
+  deviceId: String
+
+  """
+  Identifies the unique uuid of the object
+  """
+  id: ID!
+  licensePlate: String!
+  model: String
+  observation: String
+  renavam: String
+  type: String!
+
+  """
+  Identifies the date and time when the object was last updated.
+  """
+  updateAt: DateTime!
+  year: Float
+}

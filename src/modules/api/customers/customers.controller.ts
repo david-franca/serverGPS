@@ -6,7 +6,6 @@ import {
   ErrorsInterceptor,
   options,
   PrismaParamPipe,
-  SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
 } from '@common';
@@ -54,7 +53,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
 @Controller('customers')
-@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
+@UseInterceptors(ErrorsInterceptor)
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 

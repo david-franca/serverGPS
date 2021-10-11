@@ -60,6 +60,7 @@ export abstract class BaseProtocol implements Protocol {
     command: Command,
   ): void {
     // TODO
+    console.log(channel, remoteAddress, command);
   }
 
   public setTextCommandEncoder(textCommandEncoder) {
@@ -68,5 +69,6 @@ export abstract class BaseProtocol implements Protocol {
 
   public sendTextCommand(destAddress, command): void {
     //TODO
+    console.log(destAddress, command);
   }
 }

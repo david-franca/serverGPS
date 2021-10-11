@@ -6,7 +6,6 @@ import {
   DeviceSwagger,
   ErrorsInterceptor,
   options,
-  SentryInterceptor,
   unauthorizedOptions,
   unprocessableOptions,
 } from '@common';
@@ -61,7 +60,7 @@ const paramsOptions: ApiParamOptions = {
 @ApiUnprocessableEntityResponse(unprocessableOptions)
 @ApiUnauthorizedResponse(unauthorizedOptions)
 @ApiBadRequestResponse(badRequestOptions)
-@UseInterceptors(ErrorsInterceptor, SentryInterceptor)
+@UseInterceptors(ErrorsInterceptor)
 @Controller('devices')
 export class DevicesController {
   constructor(

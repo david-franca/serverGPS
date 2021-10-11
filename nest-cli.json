@@ -9,15 +9,10 @@
           "classValidatorShim": true,
           "introspectComments": true,
           "controllerFileNameSuffix": ".controller.ts",
-          "dtoFileNameSuffix": [
-            ".dto.ts",
-            ".entity.ts"
-          ]
+          "dtoFileNameSuffix": [".dto.ts", ".entity.ts"]
         }
       }
     ],
-    "assets": [
-      "i18n/**/*"
-    ]
+    "assets": ["i18n/**/*"]
   }
 }

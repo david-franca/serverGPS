@@ -8,9 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Nest Framework",
-      "args": [
-        "${workspaceFolder}/src/main.ts"
-      ],
+      "args": ["${workspaceFolder}/src/main.ts"],
       "runtimeArgs": [
         "--nolazy",
         "-r",
@@ -23,9 +21,7 @@
       "cwd": "${workspaceRoot}",
       "console": "integratedTerminal",
       "protocol": "inspector",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
     }
   ]
 }
