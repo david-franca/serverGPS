@@ -1,27 +1,27 @@
-import { number, object, string } from '@hapi/joi';
+import * as Joi from '@hapi/joi';
 import { ConfigModuleOptions } from '@nestjs/config';
 
 export const configOptions: ConfigModuleOptions = {
   cache: true,
-  validationSchema: object({
-    NODE_ENV: string()
+  validationSchema: Joi.object({
+    NODE_ENV: Joi.string()
       .valid('development', 'production', 'test', 'provision')
       .default('development'),
-    DATABASE_URL: string().required(),
-    REDIS_HOST: string().required(),
-    REDIS_PORT: number().required(),
-    REDIS_PASSWORD: string().required(),
-    SALT_NUMBER: number().required(),
-    CORS_HOST: string().required(),
-    EMAIL_HOST: string().required(),
-    EMAIL_USER: string().required(),
-    EMAIL_PASSWORD: string().required(),
-    EMAIL_PORT: number().required(),
-    SERVER_PORT: number().required(),
-    SESSION_SECRET: string().required(),
-    THROTTLE_TTL: number().required(),
-    THROTTLE_LIMIT: number().required(),
-    ADMIN_PASS: string().required(),
-    SENTRY_DNS: string().required(),
+    DATABASE_URL: Joi.string().required(),
+    REDIS_HOST: Joi.string().required(),
+    REDIS_PORT: Joi.number().required(),
+    REDIS_PASSWORD: Joi.string().required(),
+    SALT_NUMBER: Joi.number().required(),
+    CORS_HOST: Joi.string().required(),
+    EMAIL_HOST: Joi.string().required(),
+    EMAIL_USER: Joi.string().required(),
+    EMAIL_PASSWORD: Joi.string().required(),
+    EMAIL_PORT: Joi.number().required(),
+    SERVER_PORT: Joi.number().required(),
+    SESSION_SECRET: Joi.string().required(),
+    THROTTLE_TTL: Joi.number().required(),
+    THROTTLE_LIMIT: Joi.number().required(),
+    ADMIN_PASS: Joi.string().required(),
+    SENTRY_DNS: Joi.string().required(),
   }),
 };

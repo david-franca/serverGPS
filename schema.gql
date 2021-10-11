@@ -18,17 +18,13 @@ type Vehicle {
   chassi: String
   color: String
 
-  """
-  Identifies the date and time when the object was created.
-  """
+  """Identifies the date and time when the object was created."""
   createAt: DateTime!
   customerId: String!
   deleted: Boolean!
   deviceId: String
 
-  """
-  Identifies the unique uuid of the object
-  """
+  """Identifies the unique uuid of the object"""
   id: ID!
   licensePlate: String!
   model: String
@@ -36,9 +32,7 @@ type Vehicle {
   renavam: String
   type: String!
 
-  """
-  Identifies the date and time when the object was last updated.
-  """
+  """Identifies the date and time when the object was last updated."""
   updateAt: DateTime!
   year: Float
 }
