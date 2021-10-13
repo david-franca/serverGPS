@@ -23,5 +23,12 @@ export const configOptions: ConfigModuleOptions = {
     THROTTLE_LIMIT: Joi.number().required(),
     ADMIN_PASS: Joi.string().required(),
     SENTRY_DNS: Joi.string().required(),
+    GRAPHQL_PLAYGROUND: Joi.number(),
+    JWT_REFRESH_TOKEN_PRIVATE_KEY: Joi.string().required(),
+    JWT_REFRESH_TOKEN_PUBLIC_KEY: Joi.string().required(),
+    JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().required(),
+    JWT_ACCESS_TOKEN_PRIVATE_KEY: Joi.string().required(),
+    JWT_ACCESS_TOKEN_PUBLIC_KEY: Joi.string().required(),
+    JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.number().required(),
   }),
 };
