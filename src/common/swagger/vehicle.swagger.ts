@@ -44,4 +44,7 @@ export class VehicleSwagger extends BaseSwagger implements Vehicle {
 
   @ApiProperty()
   observation: string;
+
+  @ApiProperty({ default: 'Observações', required: false })
+  note: string;
 }

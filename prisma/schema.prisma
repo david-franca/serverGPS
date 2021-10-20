@@ -21,6 +21,7 @@ model Device {
   mobileOperator  MobileOperator
   chipNumber      String         @unique @db.VarChar(25)
   timezone        Timezone
+  note            String?        @db.Text
   // Relation fields
   location        Location[]
   status          Status[]
@@ -85,7 +86,7 @@ model Status {
   rssi     Int?     @db.SmallInt
   // Relation fields
   deviceId String
-  infoId   String
+  infoId   String   @unique
   device   Device   @relation(fields: [deviceId], references: [id])
   info     Info     @relation(fields: [infoId], references: [id])
 }
@@ -115,6 +116,7 @@ model User {
   role         Role
   password     String   @db.VarChar(100)
   refreshToken String?  @db.VarChar
+  note         String?  @db.Text
 
   @@index([username])
 }
@@ -137,6 +139,7 @@ model Customer {
   complement    String?     @db.VarChar(50)
   state         States
   city          String      @db.VarChar(50)
+  note          String?     @db.Text
   vehicle       Vehicle[]
   branch        Branch[]
 
@@ -152,7 +155,7 @@ model Vehicle {
   licensePlate String       @unique @db.VarChar(8)
   type         VehiclesType
   device       Device?      @relation(fields: [deviceId], references: [id])
-  deviceId     String?
+  deviceId     String?      @unique
   customer     Customer     @relation(fields: [customerId], references: [id])
   customerId   String
   branch       Branch       @relation(fields: [branchId], references: [id])
@@ -164,6 +167,7 @@ model Vehicle {
   chassi       String?      @unique @db.VarChar(17)
   renavam      String?      @unique @db.VarChar(11)
   observation  String?      @db.VarChar(150)
+  note         String?      @db.Text
 }
 
 model Branch {
@@ -176,6 +180,7 @@ model Branch {
   customerId String
   name       String    @db.VarChar(50)
   vehicle    Vehicle[]
+  note       String?   @db.Text
 }
 
 enum VehiclesType {

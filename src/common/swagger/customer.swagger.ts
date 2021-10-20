@@ -47,4 +47,7 @@ export class CustomerSwagger extends BaseSwagger implements Customer {
 
   @ApiProperty({ example: endereco.cidade })
   city: string;
+
+  @ApiProperty({ default: 'Observações', required: false })
+  note: string;
 }

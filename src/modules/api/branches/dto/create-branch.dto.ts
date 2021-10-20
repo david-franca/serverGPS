@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common';
 import { IsNotEmpty, IsString, IsUUID, MaxLength } from 'class-validator';
 
 export class CreateBranchDto {
@@ -9,4 +10,8 @@ export class CreateBranchDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @MaxLength(250)
+  @Optional()
+  note: string;
 }

@@ -11,4 +11,7 @@ export class BranchSwagger extends BaseSwagger implements Branch {
 
   @ApiProperty({ default: fakerBr.empresa().nome })
   name: string;
+
+  @ApiProperty({ default: 'Observações', required: false })
+  note: string;
 }

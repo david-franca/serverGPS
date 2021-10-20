@@ -32,4 +32,7 @@ export class DeviceSwagger extends BaseSwagger implements Device {
 
   @ApiProperty({ enum: Timezone })
   timezone: Timezone;
+
+  @ApiProperty({ default: 'Observações', required: false })
+  note: string;
 }
