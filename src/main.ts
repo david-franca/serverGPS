@@ -40,10 +40,7 @@ async function bootstrap() {
     app.get(ConfigService);
 
   // Cors
-  app.enableCors({
-    credentials: true,
-    origin: configService.get('CORS_HOST').split(', '),
-  });
+  app.enableCors();
 
   // Swagger Api
   const document = SwaggerModule.createDocument(app, swaggerConfig);
