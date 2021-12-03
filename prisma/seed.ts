@@ -1,5 +1,6 @@
 import { hashSync } from 'bcrypt';
 import { address, datatype, date, internet, name, phone } from 'faker';
+import { fakerBr } from 'js-brasil';
 
 import { MobileOperator, Prisma, PrismaClient, Timezone } from '@prisma/client';
 
@@ -146,6 +147,57 @@ const users: Prisma.UserCreateInput[] = [
   },
 ];
 
+const customers: Prisma.CustomerCreateInput[] = [];
+
+for (let i = 0; i < 500; i++) {
+  customers.push({
+    id: datatype.uuid(),
+    cellPhone: fakerBr.telefone().replace(/[^0-9]/g, ''),
+    cep: fakerBr.cep(),
+    city: fakerBr.pessoa().endereco.cidade,
+    cpfOrCnpj: fakerBr.pessoa().cpf,
+    district: fakerBr.pessoa().endereco.bairro,
+    fullName: fakerBr.pessoa().nome,
+    number: String(fakerBr.pessoa().endereco.numero),
+    state: fakerBr.pessoa().endereco.estadoSigla,
+    street: `Rua ${fakerBr.pessoa().endereco.logradouro}`,
+    complement: fakerBr.pessoa().endereco.complemento,
+    typeOfAddress: 'Outros',
+  });
+}
+
+const branches: Prisma.BranchCreateInput[] = [];
+
+for (let i = 0; i < 5; i++) {
+  const random = Math.floor(Math.random() * 200);
+  branches.push({
+    customer: { connect: { id: customers[random].id } },
+    name: fakerBr.empresa().nome,
+    id: datatype.uuid(),
+  });
+}
+
+const vehicles: Prisma.VehicleCreateInput[] = [];
+
+for (let i = 0; i < 1500; i++) {
+  const randomBranches = Math.floor(Math.random() * 5);
+  const randomCustomer = Math.floor(Math.random() * 500);
+  const randomDevice = Math.floor(Math.random() * 100);
+  vehicles.push({
+    branch: { connect: { id: branches[randomBranches].id } },
+    customer: { connect: { id: customers[randomCustomer].id } },
+    licensePlate: fakerBr.veiculo().placa,
+    chassi: fakerBr.veiculo().chassi.replace(/[^0-9]/g, ''),
+    brand: fakerBr.veiculo().marca,
+    model: fakerBr.veiculo().modelo.substr(0, 29),
+    renavam: fakerBr.renavam().replace(/[^0-9]/g, ''),
+    color: fakerBr.veiculo().cor,
+    year: 2021,
+    type: 'Carro',
+    device: { connect: { id: adapterData[randomDevice].id } },
+  });
+}
+
 export async function main() {
   // Prisma create query to seed models in database
   console.log(`Start seeding ...`);
@@ -176,6 +228,27 @@ export async function main() {
       data: d,
     });
     console.log(`Created status with id: ${status.id}`);
+  }
+
+  for (const e of customers) {
+    const customer = await prisma.customer.create({
+      data: e,
+    });
+    console.log(`Created customer with id: ${customer.id}`);
+  }
+
+  for (const f of branches) {
+    const branch = await prisma.branch.create({
+      data: f,
+    });
+    console.log(`Created branch with id: ${branch.id}`);
+  }
+
+  for (const g of vehicles) {
+    const vehicle = await prisma.vehicle.create({
+      data: g,
+    });
+    console.log(`Created vehicle with id: ${vehicle.id}`);
   }
 
   console.log(`Seeding finished.`);
